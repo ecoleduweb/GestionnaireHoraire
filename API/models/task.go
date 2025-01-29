@@ -8,7 +8,7 @@ type Task struct {
 	Id          int       `json:"id" gorm:"primaryKey;autoIncrement;not null"`
 	Name        string    `json:"name" gorm:"type:varchar(50);not null"`
 	Description string    `json:"description" gorm:"type:text;not null"`
-	State       string    `json:"state" gorm:"type:enum('à faire','en cours','terminé');not null;default:'todo'"`
+	State       string    `json:"state" gorm:"type:enum('à faire','en cours','terminé');not null;default:'à faire'"`
 	Billable    bool      `json:"billable" gorm:"type:boolean;not null;default:false"`
 	StartDate   time.Time `json:"start_date" gorm:"not null"`
 	EndDate     time.Time `json:"end_date" gorm:"not null"`
