@@ -7,7 +7,16 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
+
+// DB est une variable globale pour accéder à la base de données.
+var DB Database
+
+// Database est une interface qui définit les méthodes de la base de données utilisées dans le contrôleur.
+type Database interface {
+	Create(value interface{}) *gorm.DB
+}
 
 // Fonction controlleur qui permet d'ajouter une tâche dans la base de données.
 func CreateTask(c *gin.Context) {
@@ -58,5 +67,5 @@ func CreateTask(c *gin.Context) {
 	}
 
 	//Retourne la réponse au frontend
-	c.JSON(http.StatusOK, gin.H{"reponse": "La tâche à bien été ajouté à la base de données."})
+	c.JSON(http.StatusOK, gin.H{"reponse": "La tâche a bien été ajoutée à la base de données."})
 }

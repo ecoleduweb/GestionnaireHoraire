@@ -23,22 +23,35 @@ func Connect() {
 	}
 
 	// Lire les variables d'environnement
+	env := os.Getenv("ENV")
+	println(env)
 	user := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASSWORD")
-	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
-	database := os.Getenv("DB_NAME")
+	host := os.Getenv("DB_HOST")
+
+	var databaseName string
+
+	// Définir le host et le nom de la base de données en fonction de l'environnement
+	switch env {
+	case "TEST":
+		databaseName = os.Getenv("DB_NAME_TEST")
+	case "DEV", "PROD":
+		databaseName = os.Getenv("DB_NAME_RUN")
+	default:
+		log.Fatalf("Environnement non pris en charge : %s", env)
+	}
 
 	// Construire la chaîne de connexion DSN
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		user, password, host, port, database,
+		user, password, host, port, databaseName,
 	)
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Erreur de connexion à la base de données : ", err)
 	} else {
-		log.Println("Connexion effectué")
+		log.Println("Connexion à la base de données effectuée avec succès")
 	}
 
 	// Migrer le modèle
@@ -46,7 +59,7 @@ func Connect() {
 	if err != nil {
 		log.Fatal("Erreur lors de la migration des modèles : ", err)
 	} else {
-		log.Println("Migrations effectuées")
+		log.Println("Migrations effectuées avec succès")
 	}
 
 	DB = db
