@@ -1,0 +1,47 @@
+name: Deployer LLIO
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'API/**'        # Se déclenche si changements dans API
+      - 'LLIO2025/**'   # Se déclenche si changements dans frontend
+
+jobs:
+  deploy-api:
+    if: github.event.paths[0] == 'API/**'  # Ne s'exécute que si changements dans API
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Go API
+        uses: appleboy/ssh-action@v0.1.2
+        with:
+          host: ${{secrets.DEV_SSH_HOST}}
+          key: ${{secrets.DEV_SSH_KEY}}
+          username: ${{ secrets.SSH_USERNAME}}
+          script: |
+            cd /root/ProjetLLIO2025/GestionnaireHoraire
+            sudo systemctl stop llio-api.service
+            git pull origin main
+            cd API
+            go mod tidy
+            sudo systemctl start llio-api
+            echo 'API deployment successful'
+
+  deploy-frontend:
+    if: github.event.paths[0] == 'LLIO2025/**'  # Ne s'exécute que si changements dans frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Svelte Frontend
+        uses: appleboy/ssh-action@v0.1.2
+        with:
+          host: ${{secrets.DEV_SSH_HOST}}
+          key: ${{secrets.DEV_SSH_KEY}}
+          username: ${{ secrets.SSH_USERNAME}}
+          script: |
+            cd /root/ProjetLLIO2025/GestionnaireHoraire
+            sudo systemctl stop llio-frontend.service
+            git pull origin main
+            cd LLIO2025
+            npm install
+            npm run build
+            sudo systemctl start llio-frontend
+            echo 'Frontend deployment successful'
