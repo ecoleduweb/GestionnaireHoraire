@@ -12,7 +12,7 @@ import (
 // Version fonctionnel mais inspirer de ChatGPT sans vérification de sécurité et efficacité
 func main() {
 	r := gin.Default()
-	os.Setenv("ENV", "TEST")
+	os.Setenv("ENV", "DEV")
 	database.Connect()
 	routes.RegisterRoutes(r)
 	r.Run(":8080")

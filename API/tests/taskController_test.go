@@ -45,6 +45,7 @@ func TestCreateTask(t *testing.T) {
 	}
 	fmt.Println("Nouveau répertoire courant :", updatedDir)
 
+	os.Setenv("ENV", "DEV")
 	// Initialiser la base de données de test
 	database.Connect()
 
@@ -64,8 +65,8 @@ func TestCreateTask(t *testing.T) {
 		ProjectId   int       `json:"project_id"`
 		CategoryId  int       `json:"category_id"`
 	}{
-		Name:        "Test Task",
-		Description: "This is a test task",
+		Name:        "Test tâche",
+		Description: "Test automatique de la création de tâche",
 		State:       "à faire",
 		Billable:    true,
 		StartDate:   time.Now(),
@@ -87,7 +88,7 @@ func TestCreateTask(t *testing.T) {
 
 	// Exécution de la requête
 	router.ServeHTTP(w, req)
-
+	println(w.Code)
 	// Vérification du code de statut HTTP
 	assert.Equal(t, http.StatusOK, w.Code)
 
