@@ -14,4 +14,11 @@ func RegisterRoutes(r *gin.Engine) {
 		( 2025-01-29/Quentin ): Il faudra faire appel à un middleware pour valider le token d'authentification
 	*/
 	r.POST("/create-user", controllers.CreateTask)
+
+	// Groupe de routes pour les tâches(event/task)
+	taskGroup := r.Group("/tasks")
+	{
+		taskGroup.POST("/create", controllers.CreateTask)
+	}
+
 }
