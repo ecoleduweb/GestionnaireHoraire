@@ -7,7 +7,6 @@ on:
 
 jobs:
   deploy-api:
-    if: contains(github.event.commits[0].modified, '.github/workflows/API/**')
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Go API
@@ -33,7 +32,6 @@ jobs:
             echo 'API deployment successful'
 
   deploy-frontend:
-    if: contains(github.event.commits[0].modified, '.github/workflows/LLIO2025/**')
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Svelte Frontend
