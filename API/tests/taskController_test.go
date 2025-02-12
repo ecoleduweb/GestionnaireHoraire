@@ -3,8 +3,6 @@ package tests
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -22,28 +20,7 @@ import (
 // TestCreateTask est la fonction de test pour le contrôleur CreateTask.
 func TestCreateTask(t *testing.T) {
 
-	// Obtenir le répertoire courant actuel
-	currentDir, err := os.Getwd()
-	if err != nil {
-		fmt.Println("Erreur lors de la récupération du répertoire courant :", err)
-		return
-	}
-	fmt.Println("Répertoire courant actuel :", currentDir)
-
-	// Remonter d'un niveau dans l'arborescence des répertoires pour trouver le .env
-	err = os.Chdir("..")
-	if err != nil {
-		log.Fatalf("Erreur lors du changement de répertoire :%v", err)
-		return
-	}
-
-	// Vérifier le nouveau répertoire courant
-	updatedDir, err := os.Getwd()
-	if err != nil {
-		fmt.Println("Erreur lors de la récupération du répertoire courant :", err)
-		return
-	}
-	fmt.Println("Nouveau répertoire courant :", updatedDir)
+	changeCurrentDiretory()
 
 	os.Setenv("ENV", "DEV")
 	// Initialiser la base de données de test
@@ -97,7 +74,7 @@ func TestCreateTask(t *testing.T) {
 		Reponse string    `json:"reponse"`
 		Task    DAOs.Task `json:"task"`
 	}
-	err = json.Unmarshal(w.Body.Bytes(), &responseBody)
+	err := json.Unmarshal(w.Body.Bytes(), &responseBody)
 	assert.NoError(t, err)
 	assert.Equal(t, "La tâche a bien été ajoutée à la base de données.", responseBody.Reponse)
 	assert.Equal(t, task.Name, responseBody.Task.Name)
