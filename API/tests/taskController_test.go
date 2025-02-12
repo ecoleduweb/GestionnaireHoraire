@@ -28,7 +28,7 @@ func TestCreateTask(t *testing.T) {
 
 	// Création d'un routeur Gin
 	router := gin.Default()
-	router.POST("/tasks/create", controllers.CreateTask)
+	router.POST("/tasks", controllers.CreateTask)
 
 	// Création d'une tâche à envoyer dans la requête
 	task := struct {
@@ -57,7 +57,7 @@ func TestCreateTask(t *testing.T) {
 	jsonValue, _ := json.Marshal(task)
 
 	// Création d'une requête HTTP POST
-	req, _ := http.NewRequest("POST", "/tasks/create", bytes.NewBuffer(jsonValue))
+	req, _ := http.NewRequest("POST", "/tasks", bytes.NewBuffer(jsonValue))
 	req.Header.Set("Content-Type", "application/json")
 
 	// Création d'un enregistreur de réponse HTTP
