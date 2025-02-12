@@ -2,7 +2,7 @@ package database
 
 import (
 	"fmt"
-	"llio-api/models"
+	"llio-api/models/DAOs"
 	"log"
 	"os"
 
@@ -55,7 +55,7 @@ func Connect() {
 	}
 
 	// Migrer le modèle
-	err = db.AutoMigrate(&models.Task{})
+	err = db.AutoMigrate(&DAOs.Task{})
 	if err != nil {
 		log.Fatal("Erreur lors de la migration des modèles : ", err)
 	} else {

@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"llio-api/database"
-	"llio-api/models"
+	"llio-api/models/DTOs"
+	"llio-api/services"
+
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,18 +13,7 @@ import (
 func CreateTask(c *gin.Context) {
 	//Récupération de la tâche dans la requête
 
-	var reqBody struct {
-		Name        string    `json:"name" binding:"required"`
-		Description string    `json:"description" binding:"required"`
-		State       string    `json:"state"`
-		Billable    bool      `json:"billable"`
-		StartDate   time.Time `json:"start_date" binding:"required"`
-		EndDate     time.Time `json:"end_date" binding:"required"`
-		//On va le trouver avec le token UserId	mais pour l'instant
-		UserId     int `json:"user_id" binding:"required"`
-		ProjectId  int `json:"project_id" binding:"required"`
-		CategoryId int `json:"category_id" binding:"required"`
-	}
+	var reqBody DTOs.TaskDTO
 
 	//Validation des données entrantes
 	if err := c.ShouldBindJSON(&reqBody); err != nil {
@@ -33,30 +22,13 @@ func CreateTask(c *gin.Context) {
 		return
 	}
 
-	//Création d'une tâche
-	task := models.Task{
-		Name:        reqBody.Name,
-		Description: reqBody.Description,
-		State:       reqBody.State,
-		Billable:    reqBody.Billable,
-		StartDate:   reqBody.StartDate,
-		EndDate:     reqBody.EndDate,
-		UserId:      reqBody.UserId,
-		ProjectId:   reqBody.ProjectId,
-		CategoryId:  reqBody.CategoryId,
-	}
-
-	//Vérification valeur par défault
-	if task.State == "" {
-		task.State = "à faire"
-	}
-
-	//Création de la tâches dans la base de données
-	if err := database.DB.Create(&task).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de créer la tâche dans la base de données."})
+	//Appeler le service pour créer une tâche
+	task, err := services.CreateTaskService(&reqBody)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	//Retourne la réponse au frontend
-	c.JSON(http.StatusOK, gin.H{"reponse": "La tâche a bien été ajoutée à la base de données."})
+	c.JSON(http.StatusOK, gin.H{"reponse": "La tâche a bien été ajoutée à la base de données.", "task": task})
 }

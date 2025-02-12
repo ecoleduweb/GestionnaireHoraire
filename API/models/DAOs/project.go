@@ -1,14 +1,16 @@
-package models
+package DAOs
 
 import (
 	"time"
 )
 
-type Category struct {
+type Project struct {
 	Id          int       `json:"id" gorm:"primaryKey;autoIncrement;not null"`
 	Name        string    `json:"name" gorm:"type:varchar(50);not null"`
 	Description string    `json:"description" gorm:"type:text;not null"`
-	Task        []Task    `json:"task" gorm:"foreignKey:CategoryId;references:Id"`
+	Status      bool      `json:"status" gorm:"type:boolean;not null;default:true"`
+	Task        []Task    `json:"task" gorm:"foreignKey:ProjectId;references:Id"`
 	CreatedAt   time.Time `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt   time.Time `json:"updated_at" gorm:"autoUpdateTime"`
+	EndAt       time.Time `json:"end_at"`
 }

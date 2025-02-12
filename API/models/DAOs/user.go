@@ -1,4 +1,4 @@
-package models
+package DAOs
 
 type User struct {
 	Id        int    `json:"id" gorm:"primaryKey;autoIncrement;not null"`
