@@ -90,7 +90,7 @@ func TestCreateTask(t *testing.T) {
 	router.ServeHTTP(w, req)
 
 	// Vérification du code de statut HTTP
-	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, http.StatusCreated, w.Code)
 
 	// Vérification du corps de la réponse
 	var responseBody struct {
