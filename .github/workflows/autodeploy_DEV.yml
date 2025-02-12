@@ -4,9 +4,9 @@ on:
     branches:
       - main
       - JL_AutoDeploy_DEV
-    paths:
-      - "API/**" # Se déclenche si changements dans API
-      - "LLIO2025/**" # Se déclenche si changements dans frontend test
+    #paths:
+    #- "API/**" # Se déclenche si changements dans API
+    #- "LLIO2025/**" # Se déclenche si changements dans frontend test
 
 jobs:
   deploy-api:
