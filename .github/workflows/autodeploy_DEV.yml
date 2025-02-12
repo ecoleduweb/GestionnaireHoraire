@@ -1,14 +1,16 @@
 name: Deployer LLIO
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - JL_AutoDeploy_DEV
     paths:
-      - 'API/**'        # Se déclenche si changements dans API
-      - 'LLIO2025/**'   # Se déclenche si changements dans frontend
+      - "API/**" # Se déclenche si changements dans API
+      - "LLIO2025/**" # Se déclenche si changements dans frontend
 
 jobs:
   deploy-api:
-    if: github.event.paths[0] == 'API/**'  # Ne s'exécute que si changements dans API
+    if: github.event.paths[0] == 'API/**' # Ne s'exécute que si changements dans API
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Go API
@@ -27,7 +29,7 @@ jobs:
             echo 'API deployment successful'
 
   deploy-frontend:
-    if: github.event.paths[0] == 'LLIO2025/**'  # Ne s'exécute que si changements dans frontend
+    if: github.event.paths[0] == 'LLIO2025/**' # Ne s'exécute que si changements dans frontend
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Svelte Frontend
