@@ -1,5 +1,5 @@
-import type { Task } from "$lib/interfaces";
-import { GET, POST, PUT, DELETE } from "../server";
+import type { Task } from "../Models/index";
+import { GET, POST, PUT, DELETE } from "../ts/server";
 
 let tasks: Task[];
 

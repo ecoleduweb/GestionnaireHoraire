@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type { Task, User, Project, Category } from "$lib/interfaces";
-    import { TASK_CONFIG } from "../config/task.config";
+    import type { Task, User, Project, Category } from "../../Models";
+    import { TASK_CONFIG } from "../../config/task.config";
 
     export let show = false;
     export let users: User[] = [];

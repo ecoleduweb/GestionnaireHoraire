@@ -1,10 +1,10 @@
 <script lang="ts">
     import { CalendarService } from "../services/calendar.service";
     import { onMount } from "svelte";
-    import EventModal from "$lib/EventModal.svelte";
+    import EventModal from "../Components/Calendar/EventModal.svelte";
     import "./calendar.css";
     import { TaskService } from "../services/task.service";
-    import type { Task } from "$lib/interfaces";
+    import type { Task } from "../Models";
 
     let calendarEl = $state<HTMLElement | null>(null);
     let calendarService = $state<CalendarService | null>(null);
