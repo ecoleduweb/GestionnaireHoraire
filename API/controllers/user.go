@@ -8,7 +8,7 @@ import (
 
 // Exemple de données
 var users = []string{"Alice", "Bob", "Charlie"}
-//test autodeploy
+
 // Récupérer tous les utilisateurs
 func GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"users": users})
