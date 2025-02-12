@@ -2,19 +2,15 @@ import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import type { EventClickArg, DateSelectArg } from '@fullcalendar/core/index.js';
 
 export class CalendarService {
-    /** @type {Calendar | null} */
-    calendar;
+    calendar: Calendar | null = null;
+    onDateSelect?: (info: DateSelectArg) => void;
+    onEventClick?: (info: EventClickArg) => void;
+    onViewChange?: (view: string) => void;
 
-    constructor() {
-        this.calendar = null;
-    }
-
-    /**
-     * @param {HTMLElement} element
-     */
-    initialize(element) {
+    initialize(element: HTMLElement) {
         this.calendar = new Calendar(element, {
             plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
             initialView: 'dayGridMonth',
@@ -23,22 +19,11 @@ export class CalendarService {
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
-            events: [ 
-                {
-                    title: 'Test Event',
-                    start: new Date(),
-                    end: new Date(),
-                },
-                {
-                    title: 'Test Event 2',
-                    start: new Date('2025-01-21 12:00:00'),
-                    end: new Date('2025-01-21 13:00:00'),
-                }
-            ],
             editable: true,
             selectable: true,
-            select: this.handleDateSelect.bind(this),
-            eventClick: this.handleEventClick.bind(this)
+            select: (info) => this.onDateSelect?.(info),
+            eventClick: (info) => this.onEventClick?.(info),
+            viewDidMount: (info) => this.onViewChange?.(info.view.type)
         });
     }
 
@@ -46,17 +31,11 @@ export class CalendarService {
         this.calendar?.render();
     }
 
-    /**
-     * @param {import("@fullcalendar/core").DateSelectArg} info
-     */
-    handleDateSelect(info) {
-        console.log('Date sélectionnée:', info.startStr);
+    addEvent(event: any) {
+        this.calendar?.addEvent(event);
     }
 
-    /**
-     * @param {import("@fullcalendar/core").EventClickArg} info
-     */
-    handleEventClick(info) {
-        console.log('Événement cliqué:', info.event.title);
+    removeEvent(event: any) {
+        event.remove();
     }
 }
