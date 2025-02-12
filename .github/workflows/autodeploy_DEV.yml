@@ -4,13 +4,10 @@ on:
     branches:
       - main
       - JL_AutoDeploy_DEV
-    paths:
-      - "API/**"
-      - "LLIO2025/**"
 
 jobs:
   deploy-api:
-    if: contains(github.event.head_commit.modified, 'API/')
+    if: contains(github.event.commits[0].modified, '.github/workflows/API/**')
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Go API
@@ -36,7 +33,7 @@ jobs:
             echo 'API deployment successful'
 
   deploy-frontend:
-    if: contains(github.event.head_commit.modified, 'LLIO2025/')
+    if: contains(github.event.commits[0].modified, '.github/workflows/LLIO2025/**')
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Svelte Frontend
