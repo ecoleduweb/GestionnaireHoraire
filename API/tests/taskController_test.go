@@ -13,7 +13,7 @@ import (
 
 	"llio-api/controllers"
 	"llio-api/database"
-	"llio-api/models"
+	"llio-api/models/DAOs"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -88,17 +88,26 @@ func TestCreateTask(t *testing.T) {
 
 	// Exécution de la requête
 	router.ServeHTTP(w, req)
-	println(w.Code)
+
 	// Vérification du code de statut HTTP
 	assert.Equal(t, http.StatusOK, w.Code)
 
 	// Vérification du corps de la réponse
-	expectedResponse := `{"reponse":"La tâche a bien été ajoutée à la base de données."}`
-	assert.Equal(t, expectedResponse, w.Body.String())
+	var responseBody struct {
+		Reponse string    `json:"reponse"`
+		Task    DAOs.Task `json:"task"`
+	}
+	err = json.Unmarshal(w.Body.Bytes(), &responseBody)
+	assert.NoError(t, err)
+	assert.Equal(t, "La tâche a bien été ajoutée à la base de données.", responseBody.Reponse)
+	assert.Equal(t, task.Name, responseBody.Task.Name)
+	assert.Equal(t, task.Description, responseBody.Task.Description)
+	assert.Equal(t, task.State, responseBody.Task.State)
+	assert.Equal(t, task.Billable, responseBody.Task.Billable)
 
 	// Vérification que la tâche est bien ajoutée dans la base de données
-	var createdTask models.Task
-	errDB := database.DB.Where("name = ?", "Test Task").First(&createdTask).Error
+	var createdTask DAOs.Task
+	errDB := database.DB.Where("name = ?", task.Name).First(&createdTask).Error
 	assert.NoError(t, errDB)
-	assert.Equal(t, "Test Task", createdTask.Name)
+	assert.Equal(t, task.Name, createdTask.Name)
 }
