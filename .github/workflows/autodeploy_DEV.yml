@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - JL_AutoDeploy_DEV
 
 jobs:
   deploy-api:
