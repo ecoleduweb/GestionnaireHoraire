@@ -14,3 +14,12 @@ type TaskDTO struct {
 	ProjectId   int       `json:"project_id" binding:"required"`
 	CategoryId  int       `json:"category_id" binding:"required"`
 }
+
+type TaskResponse struct {
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	State       string    `json:"state"`
+	Billable    bool      `json:"billable"`
+	StartDate   time.Time `json:"start_date"`
+	EndDate     time.Time `json:"end_date"`
+}

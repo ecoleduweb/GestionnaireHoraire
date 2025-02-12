@@ -23,12 +23,12 @@ func CreateTask(c *gin.Context) {
 	}
 
 	//Appeler le service pour créer une tâche
-	task, err := services.CreateTaskService(&reqBody)
+	_, err := services.CreateTaskService(&reqBody)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	//Retourne la réponse au frontend
-	c.JSON(http.StatusOK, gin.H{"reponse": "La tâche a bien été ajoutée à la base de données.", "task": task})
+	c.JSON(http.StatusOK, gin.H{"reponse": "La tâche a bien été ajoutée à la base de données."})
 }
