@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - JL_AutoDeploy_DEV
 
 jobs:
   deploy-api:
@@ -24,6 +25,16 @@ jobs:
             echo "Pulling latest changes..."
             git pull origin JL_AutoDeploy_DEV
             cd API
+            echo "Creating .env file..."
+            cat > .env << EOF
+            DB_USER=${{ secrets.DB_USER }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            DB_HOST=${{ secrets.DB_HOST }}
+            DB_PORT=${{ secrets.DB_PORT }}
+            DB_NAME_RUN=${{ secrets.DB_NAME_RUN }}
+            DB_NAME_TEST=${{ secrets.DB_NAME_TEST }}
+            ENV=${{ secrets.ENV }}
+            EOF
             echo "Running go mod tidy..."
             go mod tidy
             echo "Starting API service..."
@@ -50,7 +61,7 @@ jobs:
             git pull origin JL_AutoDeploy_DEV
             cd LLIO2025
             echo "Installing dependencies..."
-            npm install
+            npm ci
             echo "Building application..."
             npm run build
             echo "Starting frontend service..."

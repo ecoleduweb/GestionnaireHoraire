@@ -1,0 +1,16 @@
+# Build
+/build/
+/dist/
+
+# Dependencies
+/node_modules/
+
+# Svelte specific
+.svelte-kit/
+package/
+
+# Autres
+.DS_Store
+.env
+.env.*
+!.env.example
