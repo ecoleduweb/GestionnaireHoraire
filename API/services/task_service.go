@@ -8,10 +8,10 @@ import (
 )
 
 // CreateTaskService encapsule la logique métier pour la création d'une tâche
-func CreateTaskService(reqBody *DTOs.TaskDTO) (*DAOs.Task, error) {
+func CreateTaskService(reqBody *DTOs.TaskDTO) error {
 	//Vérification des champs obligatoire
 	if reqBody.Name == "" || reqBody.Description == "" || reqBody.StartDate.IsZero() || reqBody.EndDate.IsZero() {
-		return nil, errors.New("des champs obligatoires sont manquants")
+		return errors.New("des champs obligatoires sont manquants")
 	}
 
 	// Mapper le body vers le modèle Task
@@ -32,10 +32,5 @@ func CreateTaskService(reqBody *DTOs.TaskDTO) (*DAOs.Task, error) {
 		task.State = "à faire"
 	}
 
-	// Appeler la couche repository pour insérer la tâche
-	if err := repositories.CreateTask(task); err != nil {
-		return nil, err
-	}
-
-	return task, nil
+	return repositories.CreateTask(task)
 }
