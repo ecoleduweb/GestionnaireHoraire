@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import EventModal from "../Components/Calendar/EventModal.svelte";
     import "./calendar.css";
-    import { TaskService } from "../services/task.service";
+    import { TaskApiService } from "../services/TaskApiService";
     import type { Task } from "../Models";
 
     let calendarEl = $state<HTMLElement | null>(null);
@@ -19,12 +19,12 @@
 
     async function loadTasks() {
         try {
-            const tasks = await TaskService.getTasks();
+            const tasks = await TaskApiService.getTasks();
             tasks.forEach((task) => {
                 calendarService?.addEvent({
                     title: task.name,
-                    start: task.startDate,
-                    end: task.endDate,
+                    start: task.startDateTime,
+                    end: task.endDateTime,
                     extendedProps: { ...task },
                 });
             });
@@ -71,16 +71,20 @@
         }
     });
 
-    async function handleEventSubmit(taskData: Partial<Task>) {
+    async function handleEventSubmit(taskData: Task) {
         if (!selectedDate || !calendarService) return;
 
         const startDate = new Date(selectedDate.start);
 
-        const [startHours, startMinutes] = taskData.startTime.split(":");
+        const [startHours, startMinutes] = taskData.startDateTime
+            .toTimeString()
+            .split(":");
         startDate.setHours(parseInt(startHours), parseInt(startMinutes), 0);
 
         const endDate = new Date(startDate);
-        const [endHours, endMinutes] = taskData.endTime.split(":");
+        const [endHours, endMinutes] = taskData.endDateTime
+            .toTimeString()
+            .split(":");
         endDate.setHours(parseInt(endHours), parseInt(endMinutes), 0);
 
         if (endDate < startDate) {
@@ -106,17 +110,17 @@
             userId: taskData.userId,
             projectId: taskData.projectId,
             categoryId: taskData.categoryId,
-            startDate,
-            endDate,
+            startDateTime: startDate,
+            endDateTime: endDate,
         };
 
         try {
-            const newTask = await TaskService.createTask(task);
+            const newTask = await TaskApiService.createTask(task);
             calendarService.addEvent({
                 id: newTask.id.toString(),
                 title: newTask.name,
-                start: newTask.startDate,
-                end: newTask.endDate,
+                start: newTask.startDateTime,
+                end: newTask.endDateTime,
                 extendedProps: { ...newTask },
             });
         } catch (error) {
@@ -125,15 +129,19 @@
         }
     }
 
-    async function handleEventUpdate(taskData: Partial<Task>) {
+    async function handleEventUpdate(taskData: Task) {
         if (!calendarService?.calendar) return;
 
         const startDate = new Date(selectedDate.start);
-        const [startHours, startMinutes] = taskData.startTime.split(":");
+        const [startHours, startMinutes] = taskData.startDateTime
+            .toTimeString()
+            .split(":");
         startDate.setHours(parseInt(startHours), parseInt(startMinutes), 0);
 
         const endDate = new Date(startDate);
-        const [endHours, endMinutes] = taskData.endTime.split(":");
+        const [endHours, endMinutes] = taskData.endDateTime
+            .toTimeString()
+            .split(":");
         endDate.setHours(parseInt(endHours), parseInt(endMinutes), 0);
 
         const updatedTask: Task = {
@@ -145,12 +153,12 @@
             userId: taskData.userId,
             projectId: taskData.projectId,
             categoryId: taskData.categoryId,
-            startDate,
-            endDate,
+            startDateTime: startDate,
+            endDateTime: endDate,
         };
 
         try {
-            const result = await TaskService.updateTask(updatedTask);
+            const result = await TaskApiService.updateTask(updatedTask);
             const existingEvent = calendarService.calendar.getEventById(
                 result.id.toString(),
             );
@@ -159,8 +167,8 @@
                 calendarService.addEvent({
                     id: result.id.toString(),
                     title: result.name,
-                    start: result.startDate,
-                    end: result.endDate,
+                    start: result.startDateTime,
+                    end: result.endDateTime,
                     extendedProps: { ...result },
                 });
             }
@@ -174,7 +182,7 @@
         if (!calendarService?.calendar) return;
 
         try {
-            await TaskService.deleteTask(taskToDelete.id);
+            await TaskApiService.deleteTask(taskToDelete.id);
             const existingEvent = calendarService.calendar.getEventById(
                 taskToDelete.id.toString(),
             );
@@ -192,20 +200,16 @@
     <div bind:this={calendarEl}></div>
 </div>
 
-<EventModal
-    bind:show={showModal}
-    {users}
-    {projects}
-    {categories}
-    bind:editMode
-    {editTask}
-    onSubmit={handleEventSubmit}
-    onUpdate={handleEventUpdate}
-    onDelete={handleEventDelete}
-    onClose={() => {
-        showModal = false;
-        selectedDate = null;
-        editMode = false;
-        editTask = null;
-    }}
-/>
+{#if showModal}
+    <EventModal
+        show={showModal}
+        {users}
+        {projects}
+        {categories}
+        taskToEdit={editTask}
+        onDelete={handleEventDelete}
+        onClose={() => {
+            showModal = false;
+        }}
+    />
+{/if}

@@ -4,13 +4,11 @@ export interface Task {
     description: string;
     state: "à faire" | "en cours" | "terminé";
     billable: boolean;
-    startDate: Date;
-    endDate: Date;
+    startDateTime: Date;
+    endDateTime: Date;
     userId: number;
     projectId: number;
     categoryId: number;
-    startTime?: string;
-    endTime?: string;
 }
 
 export interface User {

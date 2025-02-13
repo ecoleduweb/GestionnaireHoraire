@@ -3,16 +3,28 @@ import { GET, POST, PUT, DELETE } from "../ts/server";
 
 let tasks: Task[];
 
-const getTaskData = async (): Promise<Task[]> => 
-    await GET<Task[]>("/task/all");
+const transformTasksDates = (task: any): Task => ({
+    ...task,
+    startDate: new Date(task.startDate),
+    endDate: new Date(task.endDate)
+});
 
+const transformTasksArray = (tasks: any[]): Task[] => 
+    tasks.map(transformTasksDates);
+
+const getTaskData = async (): Promise<Task[]> => {
+    const response = await GET<Task[]>("/task/all");
+    return transformTasksArray(response);
+};
 
 const createTask = async (task: Task): Promise<Task> => {
-    return await POST<Task, Task>("/task", task);
+    const response = await POST<Task, Task>("/task", task);
+    return transformTasksDates(response);
 };
 
 const updateTask = async (task: Task): Promise<Task> => {
-    return await PUT<Task, Task>("/task/${task.id}", task);
+    const response = await PUT<Task, Task>("/task/${task.id}", task);
+    return transformTasksDates(response);
 };
 
 const deleteTask = async (id: number): Promise<void> => {
@@ -27,7 +39,7 @@ export const cacheTasks = async () => {
         if (tasks?.length) {
             taskData = tasks;
         } else if (savedData) {
-            taskData = JSON.parse(savedData);
+            taskData = transformTasksArray(JSON.parse(savedData));
         } else {
             taskData = await getTaskData();
             tasks = taskData;
@@ -42,7 +54,7 @@ export const cacheTasks = async () => {
     return taskData;
 };
 
-export const TaskService = {
+export const TaskApiService = {
     getTasks: () => cacheTasks(),
     createTask,
     updateTask,

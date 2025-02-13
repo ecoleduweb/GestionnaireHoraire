@@ -1,37 +1,46 @@
 <script lang="ts">
     import type { Task, User, Project, Category } from "../../Models";
     import { TASK_CONFIG } from "../../config/task.config";
+    import { taskTemplate } from "../../forms/task";
+    import { TaskService } from "../../services/TaskService";
+    import { getHoursFromDate, getMinutesFromDate } from "../../utils/date";
 
-    export let show = false;
-    export let users: User[] = [];
-    export let projects: Project[] = [];
-    export let categories: Category[] = [];
-    export let editMode = false;
-    export let editTask: Partial<Task> | null = null;
-
-    export let onSubmit: (task: Partial<Task>) => void;
-    export let onClose: () => void;
-    export let onUpdate: (task: Partial<Task>) => void;
-    export let onDelete: (task: Partial<Task>) => void;
-
-    let startHours = "00";
-    let startMinutes = "00";
-    let endHours = "00";
-    let endMinutes = "00";
-
-    let task: Partial<Task> = {
-        ...TASK_CONFIG.defaultTask,
+    type Props = {
+        show: boolean;
+        users: User[];
+        projects: Project[];
+        categories: Category[];
+        taskToEdit: Task | null;
+        onClose: () => void;
+        onDelete: (task: Task) => void;
     };
 
-    $: if (editMode && editTask) {
-        task = { ...editTask };
-        const startDate = new Date(editTask.startDate);
-        const endDate = new Date(editTask.endDate);
+    let {
+        show,
+        users,
+        projects,
+        categories,
+        taskToEdit,
+        onClose,
+        onDelete,
+    }: Props = $props();
 
-        startHours = startDate.getHours().toString().padStart(2, "0");
-        startMinutes = startDate.getMinutes().toString().padStart(2, "0");
-        endHours = endDate.getHours().toString().padStart(2, "0");
-        endMinutes = endDate.getMinutes().toString().padStart(2, "0");
+    const editMode = taskToEdit !== null;
+
+    const task = $state<Task>(taskTemplate.generate());
+    const time = $state({
+        startHours: "00",
+        startMinutes: "00",
+        endHours: "00",
+        endMinutes: "00",
+    });
+
+    if (taskToEdit) {
+        Object.assign(task, taskToEdit);
+        time.startHours = getHoursFromDate(taskToEdit.startDateTime);
+        time.startMinutes = getMinutesFromDate(taskToEdit.startDateTime);
+        time.endHours = getHoursFromDate(taskToEdit.endDateTime);
+        time.endMinutes = getMinutesFromDate(taskToEdit.endDateTime);
     }
 
     const {
@@ -39,53 +48,59 @@
         time: { hours, minutes },
     } = TASK_CONFIG;
 
-    function handleSubmit() {
-        if (task.name && task.userId && task.projectId && task.categoryId) {
-            const taskWithtime = {
-                ...task,
-                startTime: `${startHours}:${startMinutes}`,
-                endTime: `${endHours}:${endMinutes}`,
-            };
-            if (editMode) {
-                onUpdate(taskWithtime);
-            } else {
-                onSubmit(taskWithtime);
-            }
-            resetForm();
+    const validateEndTime = () => {
+        if (
+            parseInt(time.endHours) < parseInt(time.startHours) ||
+            (parseInt(time.endHours) === parseInt(time.startHours) &&
+                parseInt(time.endMinutes) < parseInt(time.startMinutes))
+        ) {
+            time.endHours = time.startHours;
+            time.endMinutes = time.startMinutes;
         }
-    }
+    };
 
-    function handleDelete() {
+    const handleSubmit = async () => {
+        if (task.name && task.userId && task.projectId && task.categoryId) {
+            const startDateTime = new Date(task.startDateTime);
+            const endDateTime = new Date(task.endDateTime);
+
+            const taskToSubmit: Task = {
+                ...task,
+                startDateTime,
+                endDateTime,
+            };
+
+            try {
+                if (editMode) {
+                    await TaskService.updateTask(taskToSubmit);
+                } else {
+                    await TaskService.addTask(taskToSubmit);
+                }
+                onClose();
+            } catch (error) {
+                console.error("Erreur", error);
+            }
+        }
+    };
+
+    const handleDelete = () => {
         if (confirm("Supprimer cette tâche ?")) {
             onDelete(task);
-            resetForm();
         }
-    }
+    };
 
-    function resetForm() {
-        task = { ...TASK_CONFIG.defaultTask };
-        startHours = "00";
-        startMinutes = "00";
-        endHours = "00";
-        endMinutes = "00";
-        show = false;
-        editMode = false;
-        editTask = null;
-    }
-
-    function handleClose() {
-        resetForm();
+    const handleClose = () => {
         onClose();
-    }
+    };
 
-    $: {
+    {
         if (
-            parseInt(endHours) < parseInt(startHours) ||
-            (parseInt(endHours) === parseInt(startHours) &&
-                parseInt(endMinutes) < parseInt(startMinutes))
+            parseInt(time.endHours) < parseInt(time.startHours) ||
+            (parseInt(time.endHours) === parseInt(time.startHours) &&
+                parseInt(time.endMinutes) < parseInt(time.startMinutes))
         ) {
-            endHours = startHours;
-            endMinutes = startMinutes;
+            time.endHours = time.startHours;
+            time.endMinutes = time.startMinutes;
         }
     }
 </script>
@@ -145,12 +160,12 @@
                     <div class="time-select">
                         <label>Heure de début*</label>
                         <div class="time-pickers">
-                            <select bind:value={startHours}>
+                            <select bind:value={time.startHours}>
                                 {#each hours as hour}
                                     <option value={hour}>{hour}h</option>
                                 {/each}
                             </select>
-                            <select bind:value={startMinutes}>
+                            <select bind:value={time.startMinutes}>
                                 {#each minutes as minute}
                                     <option value={minute}>{minute}</option>
                                 {/each}
@@ -160,12 +175,18 @@
                     <div class="time-select">
                         <label>Heure de fin*</label>
                         <div class="time-pickers">
-                            <select bind:value={endHours}>
+                            <select
+                                bind:value={time.endHours}
+                                on:change={validateEndTime}
+                            >
                                 {#each hours as hour}
                                     <option value={hour}>{hour}h</option>
                                 {/each}
                             </select>
-                            <select bind:value={endMinutes}>
+                            <select
+                                bind:value={time.endMinutes}
+                                on:change={validateEndTime}
+                            >
                                 {#each minutes as minute}
                                     <option value={minute}>{minute}</option>
                                 {/each}
