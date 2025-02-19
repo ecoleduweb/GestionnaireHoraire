@@ -72,25 +72,48 @@
     });
 
     async function handleTaskSubmit(taskData: Task) {
-        if (!calendarService) return;
-
-        calendarService.addEvent({
-            id: taskData.id.toString(),
-            title: taskData.name,
-            start: taskData.startDateTime,
-            end: taskData.endDateTime,
-            extendedProps: { ...taskData },
-        });
+        if (!calendarService) {
+            console.error("Service du calendrier non initialisé");
+            return;
+        }
+        try {
+            calendarService.addEvent({
+                id: taskData.id.toString(),
+                title: taskData.name,
+                start: taskData.startDateTime,
+                end: taskData.endDateTime,
+                extendedProps: { ...taskData },
+            });
+        } catch (error) {
+            console.error("Erreur lors d'ajout de tâche", error);
+            throw error;
+        }
     }
 
     async function handleTaskUpdate(task: Task) {
-        if (!calendarService?.calendar) return;
-        calendarService.updateEvent(task);
+        if (!calendarService?.calendar) {
+            console.error("Service du calendrier non initialisé");
+            return;
+        }
+        try {
+            calendarService.updateEvent(task);
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour de la tâche", error);
+            throw error;
+        }
     }
 
     async function handleTaskDelete(task: Task) {
-        if (!calendarService?.calendar || !task.id) return;
-        calendarService.deleteTask(task.id.toString());
+        if (!calendarService?.calendar || !task.id) {
+            console.error("Service du calendrier non initialisé");
+            return;
+        }
+        try {
+            calendarService.deleteTask(task.id.toString());
+        } catch (error) {
+            console.error("Erreur lors de la suppression de la tâche", error);
+            throw error;
+        }
     }
 </script>
 

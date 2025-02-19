@@ -64,7 +64,7 @@
     };
 
     const handleSubmit = async () => {
-        if (task.name && task.userId && task.projectId && task.categoryId) {
+        if (!task.name && !task.userId && !task.projectId && !task.categoryId) {
             alert("Veuillez remplir tous les champs obligatoires");
             return;
         }
@@ -125,17 +125,6 @@
     const handleClose = () => {
         onClose();
     };
-
-    {
-        if (
-            parseInt(time.endHours) < parseInt(time.startHours) ||
-            (parseInt(time.endHours) === parseInt(time.startHours) &&
-                parseInt(time.endMinutes) < parseInt(time.startMinutes))
-        ) {
-            time.endHours = time.startHours;
-            time.endMinutes = time.startMinutes;
-        }
-    }
 </script>
 
 {#if show}

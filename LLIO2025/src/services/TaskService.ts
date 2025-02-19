@@ -2,6 +2,7 @@ import { TaskApiService } from './TaskApiService';
 import type { Task } from '../Models';
 
 export class TaskService {
+
     static addTask = async (task: Task) => {
         try {
             const taskToSend = {
@@ -11,7 +12,8 @@ export class TaskService {
             };
             return await TaskApiService.createTask(taskToSend);
         } catch (error) {
-            console.error("Erreur lors de la création de la tâche", error);
+            const errorMessage = `Erreur lors de l'ajout d'une tâche: ${error.message}`;
+            console.error(errorMessage)
             throw error;
         }
     }
@@ -25,7 +27,8 @@ export class TaskService {
             };
             return await TaskApiService.updateTask(taskToUpdate);
         } catch (error) {
-            console.error("Erreur lors de la mise à jour de la tâche", error);
+            const errorMessage = `Erreur lors de la modification d'une tâche: ${error.message}`;
+            console.error(errorMessage)
             throw error;
         }
     }
