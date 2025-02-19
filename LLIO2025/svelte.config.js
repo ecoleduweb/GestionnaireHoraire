@@ -6,17 +6,12 @@ import adapter from '@sveltejs/adapter-node';
 
 const config = {
 
-    kit: {
-
-        adapter: adapter(),
-
-        paths: {
-
-            base: '/llio-frontend'
-
-        }
-
-    }
+ kit: {
+  adapter: adapter(),
+  paths: {
+   base: '/llio-frontend'
+  }
+ }
 
 };
 

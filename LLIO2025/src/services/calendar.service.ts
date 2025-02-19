@@ -28,9 +28,9 @@ export class CalendarService {
         });
     }
 
-    render() {
-        this.calendar?.render();
-    }
+  render() {
+    this.calendar?.render();
+  }
 
     addEvent(event: any) {
         this.calendar?.addEvent(event);

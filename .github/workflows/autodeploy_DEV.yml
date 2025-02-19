@@ -1,0 +1,68 @@
+name: Deployer LLIO
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Go API
+        uses: appleboy/ssh-action@v0.1.2
+        with:
+          host: ${{secrets.DEV_SSH_HOST}}
+          key: ${{secrets.DEV_SSH_KEY}}
+          username: ${{ secrets.SSH_USERNAME}}
+          debug: true
+          script: |
+            echo "Starting API deployment..."
+            cd /root/ProjetLLIO2025/GestionnaireHoraire
+            echo "Current directory: $(pwd)"
+            echo "Stopping API service..."
+            sudo systemctl stop llio-api.service
+            echo "Pulling latest changes..."
+            git pull origin main
+            cd API
+            echo "Creating .env file..."
+            cat > .env << EOF
+            DB_USER=${{ secrets.DB_USER }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            DB_HOST=${{ secrets.DB_HOST }}
+            DB_PORT=${{ secrets.DB_PORT }}
+            DB_NAME_RUN=${{ secrets.DB_NAME_RUN }}
+            DB_NAME_TEST=${{ secrets.DB_NAME_TEST }}
+            ENV=${{ secrets.ENV }}
+            EOF
+            echo "Running go mod tidy..."
+            go mod tidy
+            echo "Starting API service..."
+            sudo systemctl start llio-api
+            echo 'API deployment successful'
+
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Svelte Frontend
+        uses: appleboy/ssh-action@v0.1.2
+        with:
+          host: ${{secrets.DEV_SSH_HOST}}
+          key: ${{secrets.DEV_SSH_KEY}}
+          username: ${{ secrets.SSH_USERNAME}}
+          debug: true
+          script: |
+            echo "Starting Frontend deployment..."
+            cd /root/ProjetLLIO2025/GestionnaireHoraire
+            echo "Current directory: $(pwd)"
+            echo "Stopping frontend service..."
+            sudo systemctl stop llio-frontend.service
+            echo "Pulling latest changes..."
+            git pull origin main
+            cd LLIO2025
+            echo "Installing dependencies..."
+            npm ci
+            echo "Building application..."
+            npm run build
+            echo "Starting frontend service..."
+            sudo systemctl start llio-frontend
+            echo 'Frontend deployment successful'
