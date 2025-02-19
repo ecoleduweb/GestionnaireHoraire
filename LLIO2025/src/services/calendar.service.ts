@@ -3,6 +3,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import type { EventClickArg, DateSelectArg } from '@fullcalendar/core/index.js';
+import type { Task } from '../Models';
 
 export class CalendarService {
     calendar: Calendar | null = null;
@@ -35,7 +36,24 @@ export class CalendarService {
         this.calendar?.addEvent(event);
     }
 
-    removeEvent(event: any) {
-        event.remove();
+    updateEvent(task: Task) {
+        const existingEvent = this.calendar?.getEventById(task.id.toString());
+        if (existingEvent) {
+            existingEvent.remove();
+            this.addEvent({
+                id: task.id.toString(),
+                title: task.name,
+                start: task.startDateTime,
+                end: task.endDateTime,
+                extendedProps: { ...task },
+            });
+        }
+    }
+
+    deleteTask(eventId: string) {
+        const event = this.calendar?.getEventById(eventId);
+        if (event) {
+            event.remove();
+        }
     }
 }

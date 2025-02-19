@@ -1,8 +1,8 @@
 <script lang="ts">
     import type { Task, User, Project, Category } from "../../Models";
-    import { TASK_CONFIG } from "../../config/task.config";
     import { taskTemplate } from "../../forms/task";
     import { TaskService } from "../../services/TaskService";
+    import { TaskApiService } from "../../services/TaskApiService";
     import { getHoursFromDate, getMinutesFromDate } from "../../utils/date";
 
     type Props = {
@@ -13,6 +13,8 @@
         taskToEdit: Task | null;
         onClose: () => void;
         onDelete: (task: Task) => void;
+        onSubmit: (task: Task) => void;
+        onUpdate: (task: Task) => void;
     };
 
     let {
@@ -23,6 +25,8 @@
         taskToEdit,
         onClose,
         onDelete,
+        onSubmit,
+        onUpdate,
     }: Props = $props();
 
     const editMode = taskToEdit !== null;
@@ -46,7 +50,7 @@
     const {
         states,
         time: { hours, minutes },
-    } = TASK_CONFIG;
+    } = taskTemplate;
 
     const validateEndTime = () => {
         if (
@@ -61,31 +65,60 @@
 
     const handleSubmit = async () => {
         if (task.name && task.userId && task.projectId && task.categoryId) {
-            const startDateTime = new Date(task.startDateTime);
-            const endDateTime = new Date(task.endDateTime);
+            alert("Veuillez remplir tous les champs obligatoires");
+            return;
+        }
 
-            const taskToSubmit: Task = {
-                ...task,
-                startDateTime,
-                endDateTime,
-            };
+        const startDateTime = new Date(task.startDateTime);
+        const endDateTime = new Date(task.endDateTime);
 
-            try {
-                if (editMode) {
-                    await TaskService.updateTask(taskToSubmit);
-                } else {
-                    await TaskService.addTask(taskToSubmit);
-                }
-                onClose();
-            } catch (error) {
-                console.error("Erreur", error);
+        startDateTime.setHours(
+            parseInt(time.startHours),
+            parseInt(time.startMinutes),
+            0,
+        );
+        endDateTime.setHours(
+            parseInt(time.endHours),
+            parseInt(time.endMinutes),
+            0,
+        );
+
+        if (endDateTime < startDateTime) {
+            endDateTime.setDate(endDateTime.getDate() + 1);
+        }
+
+        const taskToSubmit = {
+            ...task,
+            startDateTime,
+            endDateTime,
+            description: task.description || "",
+            billable: task.billable || false,
+        };
+
+        try {
+            if (editMode) {
+                const updatedTask = await TaskService.updateTask(taskToSubmit);
+                onUpdate(updatedTask);
+            } else {
+                const newTask = await TaskService.addTask(taskToSubmit);
+                onSubmit(newTask);
             }
+            onClose();
+        } catch (error) {
+            console.error("Erreur", error);
         }
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
+        if (!task.id) return;
+
         if (confirm("Supprimer cette tâche ?")) {
-            onDelete(task);
+            try {
+                await TaskApiService.deleteTask(task.id);
+                onDelete(task);
+            } catch (error) {
+                console.error("Erreur lors de la suppression", error);
+            }
         }
     };
 

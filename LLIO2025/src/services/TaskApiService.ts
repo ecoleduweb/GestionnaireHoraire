@@ -31,7 +31,7 @@ const deleteTask = async (id: number): Promise<void> => {
     await DELETE("/task/${id}");
 };
 
-export const cacheTasks = async () => {
+export const fetchTasks = async () => {
     let savedData = localStorage.getItem("Task");
     let taskData: Task[];
 
@@ -55,7 +55,7 @@ export const cacheTasks = async () => {
 };
 
 export const TaskApiService = {
-    getTasks: () => cacheTasks(),
+    getTasks: () => fetchTasks(),
     createTask,
     updateTask,
     deleteTask
