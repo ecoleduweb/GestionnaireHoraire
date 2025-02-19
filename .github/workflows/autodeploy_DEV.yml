@@ -22,6 +22,7 @@ jobs:
             echo "Stopping API service..."
             sudo systemctl stop llio-api.service
             echo "Pulling latest changes..."
+            git reset --hard  # Pour s'assurer qu'il n'y a pas de conflits locaux
             git pull origin main
             cd API
             echo "Creating .env file..."
@@ -46,6 +47,7 @@ jobs:
             echo 'API deployment successful'
 
   deploy-frontend:
+    needs: deploy-api
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Svelte Frontend
@@ -62,6 +64,7 @@ jobs:
             echo "Stopping frontend service..."
             sudo systemctl stop llio-frontend.service
             echo "Pulling latest changes..."
+            git reset --hard  # Pour s'assurer qu'il n'y a pas de conflits locaux
             git pull origin main
             cd LLIO2025
             echo "Installing dependencies..."
