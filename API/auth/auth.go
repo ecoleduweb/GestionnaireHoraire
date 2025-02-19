@@ -1,10 +1,11 @@
 package auth
 
 import (
+	"llio-api/useful"
 	"log"
 	"net/http"
 	"os"
-	"llio-api/useful"
+
 	"github.com/gorilla/sessions"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
@@ -14,15 +15,15 @@ import (
 func NewAuth() {
 	useful.LoadEnv()
 	authenticationConfig := struct {
-		AureAdClientID  string
+		AzureAdClientID string
 		AzureAdSecret   string
 		AzureAdCallback string
 	}{
-		AureAdClientID:  os.Getenv("AZUREAD_CLIENT_ID"),
+		AzureAdClientID: os.Getenv("AZUREAD_CLIENT_ID"),
 		AzureAdSecret:   os.Getenv("AZUREAD_CLIENT_SECRET"),
 		AzureAdCallback: os.Getenv("AZUREAD_CALLBACK_URL"),
 	}
-	if authenticationConfig.AureAdClientID == "" || authenticationConfig.AzureAdSecret == "" || authenticationConfig.AzureAdCallback == "" {
+	if authenticationConfig.AzureAdClientID == "" || authenticationConfig.AzureAdSecret == "" || authenticationConfig.AzureAdCallback == "" {
 		log.Fatal("Les variables d'environnement AzureAD ne sont pas définies")
 	}
 
@@ -50,7 +51,7 @@ func NewAuth() {
 
 	goth.UseProviders(
 		azureadv2.New(
-			authenticationConfig.AureAdClientID,
+			authenticationConfig.AzureAdClientID,
 			authenticationConfig.AzureAdSecret,
 			authenticationConfig.AzureAdCallback,
 			azureadv2.ProviderOptions{
