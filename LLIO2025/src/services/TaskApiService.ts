@@ -2,7 +2,7 @@ import type { Task } from "../Models/index";
 import { GET, POST, PUT, DELETE } from "../ts/server";
 import { writable } from "svelte/store";
 
-const tasks = writable<Task[]>([]);
+let tasks: Task[];
 
 interface RawTask extends Omit<Task, 'startDateTime' | 'endDateTime'> {
     startDateTime: string | Date;
