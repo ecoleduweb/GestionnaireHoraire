@@ -2,7 +2,7 @@
     import { CalendarService } from "../services/calendar.service";
     import { onMount } from "svelte";
     import TaskModal from "../Components/Calendar/TaskModal.svelte";
-    import "./calendar.css";
+    import "../style/calendar.css";
     import { TaskApiService } from "../services/TaskApiService";
     import type { Task } from "../Models";
 
