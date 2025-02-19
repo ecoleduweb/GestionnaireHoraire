@@ -29,4 +29,3 @@ func AuthRoutes(r *gin.Engine) {
 	r.GET("/logout/:provider", controllers.Logout)
 	r.GET("/auth/:provider", controllers.Auth)
 }
-
