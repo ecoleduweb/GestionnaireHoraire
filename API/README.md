@@ -8,11 +8,18 @@ Une API développée en Go avec le framework Gin-Gonic.
 
 ```plaintext
 API/
-├── main.go        # Point d'entrée de l'application
 ├── controllers/   # Logique des routes
+├── database/      # Connexion et configuration de la base de données
+├── main.go        # Point d'entrée de l'application
+├── middleware/    # Middlewares
 ├── models/        # Modèles de données
+│   ├── DAOs/      # Objets d'accès aux données
+│   └── DTOs/      # Objets de transfert de données
+├── repositories/  # Gestion des accès aux données
 ├── routes/        # Définition des routes
-└── middleware/    # Middlewares
+├── services/      # Logique métier
+├── tests/         # Tests unitaires et d'intégration
+└── useful/        # Fonctions utilitaires
 ```
 # Golang
 1. Installation de la derniere version stable de go sur golang.org
