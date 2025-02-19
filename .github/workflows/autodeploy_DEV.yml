@@ -35,7 +35,7 @@ jobs:
             ENV=${{ secrets.ENV }}
             EOF
             echo "Running go mod tidy..."
-            go mod tidy
+            /usr/local/go/bin/go mod tidy 
             echo "Starting API service..."
             sudo systemctl start llio-api
             echo 'API deployment successful'
@@ -60,7 +60,7 @@ jobs:
             git pull origin main
             cd LLIO2025
             echo "Installing dependencies..."
-            npm ci
+            npm install
             echo "Building application..."
             npm run build
             echo "Starting frontend service..."
