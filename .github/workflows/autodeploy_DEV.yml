@@ -34,7 +34,6 @@ jobs:
             DB_NAME_TEST=${{ secrets.DB_NAME_TEST }}
             ENV=${{ secrets.ENV }}
             EOF
-            echo "Setting up Go environment..."
             echo "Running go mod tidy..."
             /usr/local/go/bin/go mod tidy 
             echo "Starting API service..."
