@@ -4,7 +4,7 @@ import "time"
 
 // TaskRequest représente les données entrantes pour créer une tâche
 type TaskDTO struct {
-	Name        string    `json:"name" binding:"required"`
+	Name        string    `json:"name" binding:"required,max=50"`
 	Description string    `json:"description" binding:"required"`
 	State       string    `json:"state"`
 	Billable    bool      `json:"billable"`

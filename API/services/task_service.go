@@ -1,18 +1,31 @@
 package services
 
 import (
-	"errors"
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
 	"llio-api/repositories"
 )
 
+func VerifyCreateTaskJSON(taskDTO *DTOs.TaskDTO) []DTOs.FieldError {
+	var errors []DTOs.FieldError
+
+	if taskDTO.State == "" {
+		taskDTO.State = "à faire"
+	}
+
+	// Vérifier que StartDate est avant EndDate
+	if taskDTO.StartDate.After(taskDTO.EndDate) {
+		errors = append(errors, DTOs.FieldError{
+			Field:   "start_date",
+			Message: "La date de début doit être avant la date de fin",
+		})
+	}
+
+	return errors
+}
+
 // CreateTaskService encapsule la logique métier pour la création d'une tâche
 func CreateTaskService(taskDTO *DTOs.TaskDTO) (*DTOs.TaskResponse, error) {
-	//Vérification des champs obligatoire
-	if taskDTO.Name == "" || taskDTO.Description == "" || taskDTO.StartDate.IsZero() || taskDTO.EndDate.IsZero() {
-		return nil, errors.New("des champs obligatoires sont manquants")
-	}
 
 	// Mapper le body vers le modèle Task
 	task := &DAOs.Task{
@@ -27,11 +40,8 @@ func CreateTaskService(taskDTO *DTOs.TaskDTO) (*DTOs.TaskResponse, error) {
 		CategoryId:  taskDTO.CategoryId,
 	}
 
-	if task.State == "" {
-		task.State = "à faire"
-	}
-
-	if err := repositories.CreateTask(task); err != nil {
+	err := repositories.CreateTask(task)
+	if err != nil {
 		return nil, err
 	}
 

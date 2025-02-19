@@ -24,7 +24,6 @@ func Connect() {
 
 	// Lire les variables d'environnement
 	env := os.Getenv("ENV")
-	println(env)
 	user := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASSWORD")
 	port := os.Getenv("DB_PORT")
