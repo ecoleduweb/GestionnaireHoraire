@@ -60,7 +60,7 @@ jobs:
             git pull origin main
             cd LLIO2025
             echo "Installing dependencies..."
-            npm ci
+            npm install
             echo "Building application..."
             npm run build
             echo "Starting frontend service..."
