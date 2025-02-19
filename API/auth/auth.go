@@ -1,23 +1,18 @@
 package auth
 
 import (
-	"os"
 	"log"
 	"net/http"
+	"os"
+	"llio-api/useful"
 	"github.com/gorilla/sessions"
-	"github.com/joho/godotenv"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/azureadv2"
 )
 
 func NewAuth() {
-
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Erreur lors du chargement des variables d'environnement")
-	}
-
+	useful.loadEnv()
 	authenticationConfig := struct {
 		AureAdClientID  string
 		AzureAdSecret   string
@@ -28,24 +23,23 @@ func NewAuth() {
 		AzureAdCallback: os.Getenv("AZUREAD_CALLBACK_URL"),
 	}
 	if authenticationConfig.AureAdClientID == "" || authenticationConfig.AzureAdSecret == "" || authenticationConfig.AzureAdCallback == "" {
-		log.Fatal("Les variables d'environnement AzureAD ne sont pas définies")
+		log.Printf("Les variables d'environnement AzureAD ne sont pas définies")
 	}
 
 	sessionsConfig := struct {
-		SessionKey string
+		SessionKey    string
 		SessionMaxAge int
-		HttpOnly bool
-		IsProduction bool
+		HttpOnly      bool
+		IsProduction  bool
 	}{
-		SessionKey: os.Getenv("SESSION_SECRET"),
-		SessionMaxAge: 86400 * 30,
-		HttpOnly: true,
-		IsProduction: false,
+		SessionKey:    os.Getenv("SESSION_SECRET"),
+		SessionMaxAge: useful.getEnvInt("SESSION_MAX_AGE", 86400),
+		HttpOnly:      true,
+		IsProduction:  useful.getEnvBool("ENV", false),
 	}
 	if sessionsConfig.SessionKey == "" {
-		log.Fatal("La variable d'environnement SESSION_SECRET n'est pas définie")
+		log.Printf("La variable d'environnement SESSION_SECRET n'est pas définie")
 	}
-
 
 	// Configuration de la session
 	store := sessions.NewCookieStore([]byte(sessionsConfig.SessionKey))
@@ -56,7 +50,6 @@ func NewAuth() {
 	store.Options.SameSite = http.SameSiteLaxMode
 
 	gothic.Store = store
-
 
 	goth.UseProviders(
 		azureadv2.New(

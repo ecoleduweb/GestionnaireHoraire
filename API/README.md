@@ -50,6 +50,7 @@ API/
     AZUREAD_CLIENT_SECRET=client_secret_azuread
     AZUREAD_CALLBACK_URL=http://localhost:8080/auth/azureadv2/callback
     SESSION_SECRET=secret
+    SESSION_MAX_AGE=86400
    ```
 # Test
 ## Installation de la librairie de test pour du golang : testify
