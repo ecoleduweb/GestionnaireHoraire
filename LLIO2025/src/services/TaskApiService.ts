@@ -3,13 +3,18 @@ import { GET, POST, PUT, DELETE } from "../ts/server";
 
 let tasks: Task[];
 
-const transformTasksDates = (task: any): Task => ({
+interface RawTask extends Omit<Task, 'startDateTime' | 'endDateTime'> {
+    startDateTime: string | Date;
+    endDateTime: string | Date;
+}
+
+const transformTasksDates = (task: RawTask): Task => ({
     ...task,
     startDateTime: new Date(task.startDateTime),
     endDateTime: new Date(task.endDateTime)
 });
 
-const transformTasksArray = (tasks: any[]): Task[] => 
+const transformTasksArray = (tasks: Task[]): Task[] => 
     tasks.map(transformTasksDates);
 
 const getTaskData = async (): Promise<Task[]> => {
