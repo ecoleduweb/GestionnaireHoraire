@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -27,20 +28,25 @@ func changeCurrentDiretory() {
 	}
 	fmt.Println("Répertoire courant actuel :", currentDir)
 
-	// Remonter d'un niveau dans l'arborescence des répertoires pour trouver le .env
-	err = os.Chdir("..")
-	if err != nil {
-		log.Fatalf("Erreur lors du changement de répertoire :%v", err)
-		return
-	}
+	// Vérifier si le répertoire courant contient déjà le dossier "API"
+	if !strings.HasSuffix(currentDir, "API") {
+		// Remonter d'un niveau dans l'arborescence des répertoires pour trouver le .env
+		err = os.Chdir("..")
+		if err != nil {
+			log.Fatalf("Erreur lors du changement de répertoire :%v", err)
+			return
+		}
 
-	// Vérifier le nouveau répertoire courant
-	updatedDir, err := os.Getwd()
-	if err != nil {
-		fmt.Println("Erreur lors de la récupération du répertoire courant :", err)
-		return
+		// Vérifier le nouveau répertoire courant
+		updatedDir, err := os.Getwd()
+		if err != nil {
+			fmt.Println("Erreur lors de la récupération du répertoire courant :", err)
+			return
+		}
+		fmt.Println("Nouveau répertoire courant :", updatedDir)
+	} else {
+		fmt.Println("Déjà dans le répertoire API.")
 	}
-	fmt.Println("Nouveau répertoire courant :", updatedDir)
 }
 
 // setupTestRouter initialise un routeur de test et un enregistreur de réponse

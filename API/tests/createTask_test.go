@@ -22,7 +22,6 @@ func TestCreateTask(t *testing.T) {
 	task := DTOs.TaskDTO{
 		Name:        "Test tâche",
 		Description: "Test automatique de la création de tâche",
-		State:       "à faire",
 		Billable:    true,
 		StartDate:   time.Now(),
 		EndDate:     time.Now().Add(24 * time.Hour),
@@ -44,7 +43,6 @@ func TestCreateTask(t *testing.T) {
 	assert.Equal(t, "La tâche a bien été ajoutée à la base de données.", responseBody.Reponse)
 	assert.Equal(t, task.Name, responseBody.Task.Name)
 	assert.Equal(t, task.Description, responseBody.Task.Description)
-	assert.Equal(t, task.State, responseBody.Task.State)
 	assert.Equal(t, task.Billable, responseBody.Task.Billable)
 
 	// Vérification que la tâche est bien ajoutée dans la base de données
@@ -62,7 +60,6 @@ func TestDoNotCreateTaskWithEndDateBeforeStartDate(t *testing.T) {
 	task := DTOs.TaskDTO{
 		Name:        "Test tâche",
 		Description: "Test automatique de la création de tâche",
-		State:       "à faire",
 		Billable:    true,
 		StartDate:   time.Now(),
 		EndDate:     time.Now().Add(-24 * time.Hour),
@@ -87,7 +84,6 @@ func TestDoNotCreateTaskWithoutNameAndDescription(t *testing.T) {
 	task := DTOs.TaskDTO{
 		Name:        "",
 		Description: "",
-		State:       "à faire",
 		Billable:    true,
 		StartDate:   time.Now(),
 		EndDate:     time.Now().Add(24 * time.Hour),
@@ -114,7 +110,6 @@ func TestDoNotCreateTaskWithLenghtNameOver50(t *testing.T) {
 		//Sitation dans le film Astérix et Obélix : mission Cléopâtre
 		Name:        "Vous savez, moi je ne crois pas qu’il y ait de bonne ou de mauvaise situation. Moi, si je devais résumer ma vie aujourd’hui avec vous, je dirais que c’est d’abord des rencontres...",
 		Description: "Test automatique de la création de tâche",
-		State:       "à faire",
 		Billable:    true,
 		StartDate:   time.Now(),
 		EndDate:     time.Now().Add(24 * time.Hour),
@@ -138,7 +133,6 @@ func TestDoNotCreateTaskWithoutDates(t *testing.T) {
 	task := DTOs.TaskDTO{
 		Name:        "Test tâche",
 		Description: "Test automatique de la création de tâche",
-		State:       "à faire",
 		Billable:    true,
 		UserId:      1,
 		ProjectId:   1,
@@ -162,7 +156,6 @@ func TestDoNotCreateTaskWithInvalidStartDate(t *testing.T) {
 	task := DTOs.TaskDTO{
 		Name:        "Test tâche",
 		Description: "Test automatique de la création de tâche",
-		State:       "à faire",
 		Billable:    true,
 		StartDate:   time.Time{},
 		EndDate:     time.Now().Add(24 * time.Hour),
@@ -187,7 +180,6 @@ func TestDoNotCreateTaskWithInvalidEndDate(t *testing.T) {
 	task := DTOs.TaskDTO{
 		Name:        "Test tâche",
 		Description: "Test automatique de la création de tâche",
-		State:       "à faire",
 		Billable:    true,
 		StartDate:   time.Now(),
 		EndDate:     time.Time{},

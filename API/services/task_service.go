@@ -9,10 +9,6 @@ import (
 func VerifyCreateTaskJSON(taskDTO *DTOs.TaskDTO) []DTOs.FieldErrorDTO {
 	var errors []DTOs.FieldErrorDTO
 
-	if taskDTO.State == "" {
-		taskDTO.State = "à faire"
-	}
-
 	// Vérifier que StartDate est avant EndDate
 	if taskDTO.StartDate.After(taskDTO.EndDate) {
 		errors = append(errors, DTOs.FieldErrorDTO{
@@ -31,7 +27,6 @@ func CreateTaskService(taskDTO *DTOs.TaskDTO) (*DTOs.TaskResponse, error) {
 	task := &DAOs.Task{
 		Name:        taskDTO.Name,
 		Description: taskDTO.Description,
-		State:       taskDTO.State,
 		Billable:    taskDTO.Billable,
 		StartDate:   taskDTO.StartDate,
 		EndDate:     taskDTO.EndDate,
@@ -48,7 +43,6 @@ func CreateTaskService(taskDTO *DTOs.TaskDTO) (*DTOs.TaskResponse, error) {
 	taskResponse := &DTOs.TaskResponse{
 		Name:        task.Name,
 		Description: task.Description,
-		State:       task.State,
 		Billable:    task.Billable,
 		StartDate:   task.StartDate,
 		EndDate:     task.EndDate,
