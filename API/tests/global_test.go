@@ -46,7 +46,7 @@ func changeCurrentDiretory() {
 // setupTestRouter initialise un routeur de test et un enregistreur de réponse
 func setupTestRouter() (*gin.Engine, *httptest.ResponseRecorder) {
 	changeCurrentDiretory()
-	os.Setenv("ENV", "DEV")
+	os.Setenv("ENV", "TEST")
 	database.Connect()
 
 	router := gin.Default()

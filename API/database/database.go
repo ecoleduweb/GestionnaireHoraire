@@ -3,13 +3,12 @@ package database
 import (
 	"fmt"
 	"llio-api/models/DAOs"
+	"llio-api/useful"
 	"log"
 	"os"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-
-	"github.com/joho/godotenv"
 )
 
 var DB *gorm.DB
@@ -17,10 +16,7 @@ var DB *gorm.DB
 func Connect() {
 
 	// Charger les variables d'environnement
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Erreur lors du chargement du fichier .env : %v", err)
-	}
+	useful.LoadEnv()
 
 	// Lire les variables d'environnement
 	env := os.Getenv("ENV")
