@@ -11,8 +11,8 @@ import (
 
 // Fonction qui permet de valider la structure et le contenu du JSON attendu
 // Traite les erreurs de validation de champs, de parsing de date et autres erreurs
-func VerifyJSON(c *gin.Context, taskDTO *DTOs.TaskDTO) []DTOs.FieldError {
-	var fieldErrors []DTOs.FieldError
+func VerifyJSON(c *gin.Context, taskDTO *DTOs.TaskDTO) []DTOs.FieldErrorDTO {
+	var fieldErrors []DTOs.FieldErrorDTO
 	if err := c.ShouldBindJSON(taskDTO); err != nil {
 		// Toutes les listes d'erreurs possibles
 		var validationErrors validator.ValidationErrors
@@ -31,7 +31,7 @@ func VerifyJSON(c *gin.Context, taskDTO *DTOs.TaskDTO) []DTOs.FieldError {
 
 		// traitement des erreurs de validation
 		for _, err := range validationErrors {
-			fieldErrors = append(fieldErrors, DTOs.FieldError{
+			fieldErrors = append(fieldErrors, DTOs.FieldErrorDTO{
 				Field:   err.Field(),
 				Message: fmt.Sprintf("Le champ %s est invalide ou manquant", err.Field()),
 			})
@@ -39,7 +39,7 @@ func VerifyJSON(c *gin.Context, taskDTO *DTOs.TaskDTO) []DTOs.FieldError {
 
 		// Traitement des erreurs de parsing de date
 		for _, err := range parseErrors {
-			fieldErrors = append(fieldErrors, DTOs.FieldError{
+			fieldErrors = append(fieldErrors, DTOs.FieldErrorDTO{
 				Field:   "date",
 				Message: fmt.Sprintf("Erreur de parsing de la date : %s", err.Error()),
 			})
@@ -47,7 +47,7 @@ func VerifyJSON(c *gin.Context, taskDTO *DTOs.TaskDTO) []DTOs.FieldError {
 
 		// Traitement des autres erreurs
 		for _, err := range otherErrors {
-			fieldErrors = append(fieldErrors, DTOs.FieldError{
+			fieldErrors = append(fieldErrors, DTOs.FieldErrorDTO{
 				Field:   "unknown",
 				Message: fmt.Sprintf("Erreur inconnue : %s", err.Error()),
 			})

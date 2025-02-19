@@ -6,8 +6,8 @@ import (
 	"llio-api/repositories"
 )
 
-func VerifyCreateTaskJSON(taskDTO *DTOs.TaskDTO) []DTOs.FieldError {
-	var errors []DTOs.FieldError
+func VerifyCreateTaskJSON(taskDTO *DTOs.TaskDTO) []DTOs.FieldErrorDTO {
+	var errors []DTOs.FieldErrorDTO
 
 	if taskDTO.State == "" {
 		taskDTO.State = "à faire"
@@ -15,7 +15,7 @@ func VerifyCreateTaskJSON(taskDTO *DTOs.TaskDTO) []DTOs.FieldError {
 
 	// Vérifier que StartDate est avant EndDate
 	if taskDTO.StartDate.After(taskDTO.EndDate) {
-		errors = append(errors, DTOs.FieldError{
+		errors = append(errors, DTOs.FieldErrorDTO{
 			Field:   "start_date",
 			Message: "La date de début doit être avant la date de fin",
 		})
