@@ -2,6 +2,7 @@ package main
 
 import (
 	"llio-api/database"
+	"llio-api/handlers"
 	"llio-api/routes"
 	"llio-api/useful"
 	"os"
@@ -21,6 +22,7 @@ func main() {
 	r := gin.Default()
 
 	routes.RegisterRoutes(r)
+	handlers.ApiStatus(r)
 
 	port := os.Getenv("PORT")
 	if port == "" {
