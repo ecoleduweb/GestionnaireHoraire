@@ -9,7 +9,8 @@ import (
 )
 
 func LoadEnv() {
-	if err := godotenv.Load(); err != nil {
+	err := godotenv.Load()
+	if err != nil {
 		log.Fatal("Aucun fichier .env trouvé, utilisation des variables d'environnement système")
 	}
 }

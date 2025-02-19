@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 
+	"llio-api/auth"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -13,6 +15,7 @@ import (
 // Chercher à améliorer et sécuriser
 // Version fonctionnel mais inspirer de ChatGPT sans vérification de sécurité et efficacité
 func main() {
+	auth.NewAuth()
 
 	if err := godotenv.Load(); err != nil {
 		log.Println("Aucun fichier .env trouvé, utilisation des variables d'environnement système")
@@ -24,6 +27,7 @@ func main() {
 	r := gin.Default()
 
 	routes.RegisterRoutes(r)
+	routes.AuthRoutes(r)
 
 	port := os.Getenv("PORT")
 	if port == "" {
