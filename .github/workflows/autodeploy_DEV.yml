@@ -35,9 +35,8 @@ jobs:
             ENV=${{ secrets.ENV }}
             EOF
             echo "Setting up Go environment..."
-            export PATH=$PATH:/usr/local/go/bin
             echo "Running go mod tidy..."
-            /usr/local/go/bin/go mod tidy  # Utilisation du chemin complet
+            /usr/local/go/bin/go mod tidy 
             echo "Starting API service..."
             sudo systemctl start llio-api
             echo 'API deployment successful'
