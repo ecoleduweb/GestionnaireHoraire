@@ -3,13 +3,12 @@ package main
 import (
 	"llio-api/database"
 	"llio-api/routes"
-	"log"
+	"llio-api/useful"
 	"os"
 
 	"llio-api/auth"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
 // Chercher à améliorer et sécuriser
@@ -17,9 +16,7 @@ import (
 func main() {
 	auth.NewAuth()
 
-	if err := godotenv.Load(); err != nil {
-		log.Println("Aucun fichier .env trouvé, utilisation des variables d'environnement système")
-	}
+	useful.LoadEnv()
 	if os.Getenv("ENV") == "PROD" {
 		gin.SetMode(gin.ReleaseMode) // Désactive les logs de débogage en production
 	}

@@ -21,3 +21,6 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Ajouté car des dépendances windows sont installées avec sveltekit https://github.com/vitejs/vite/discussions/15532
+package-lock.json
