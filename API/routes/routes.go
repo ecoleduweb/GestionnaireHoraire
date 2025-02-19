@@ -18,7 +18,7 @@ func RegisterRoutes(r *gin.Engine) {
 	// Groupe de routes pour les tâches(event/task)
 	taskGroup := r.Group("/tasks")
 	{
-		taskGroup.POST("/create", controllers.CreateTask)
+		taskGroup.POST("", controllers.CreateTask)
 	}
 
 }

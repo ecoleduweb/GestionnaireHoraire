@@ -7,7 +7,7 @@ import (
 )
 
 // Exemple de données
-var users = []string{"Alice", "Bob", "Charlie"}
+var users = []string{"Alice", "Bob", "Charlie", "David"}
 
 // Récupérer tous les utilisateurs
 func GetUsers(c *gin.Context) {
