@@ -46,6 +46,7 @@ API/
     DB_NAME_RUN=nom_bd
     DB_NAME_TEST=nom_bd_test
     ENV=DEV ou TEST ou PROD
+    PORT = port_de_l'application
    ```
 # Test
 ## Installation de la librairie de test pour du golang : testify
