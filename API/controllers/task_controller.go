@@ -14,9 +14,15 @@ func CreateTask(c *gin.Context) {
 	var taskDTO DTOs.TaskDTO
 
 	//Validation des données entrantes
-	if err := c.ShouldBindJSON(&taskDTO); err != nil {
-		println(err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Une ou plusieurs données sont invalides ou manquantes."})
+	messageErrsJSON := services.VerifyJSON(c, &taskDTO)
+	if len(messageErrsJSON) > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": messageErrsJSON})
+		return
+	}
+
+	messageErrs := services.VerifyCreateTaskJSON(&taskDTO)
+	if len(messageErrs) > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": messageErrs})
 		return
 	}
 

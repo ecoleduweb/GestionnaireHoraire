@@ -1,38 +1,62 @@
-# sv
+# Application WEB LLIO
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Une application WEB de gestion de calendrier développée avec SvelteKit et TypeScript, intégrant FullCalendar.
 
-## Creating a project
+---
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Technologies utilisées
+- **Framework** : SvelteKit
+- **Langage** : TypeScript
+- **Bibliothèque calendrier** : FullCalendar
+- **Bundler** : Vite
 
-```bash
-# create a new project in the current directory
-npx sv create
+## Structure du projet
 
-# create a new project in my-app
-npx sv create my-app
+```plaintext
+LLIO2025/
+├── .svelte-kit/      # Fichiers générés par SvelteKit
+├── .vscode/          # Configuration VS Code
+├── node_modules/     # Dépendances du projet
+├── src/
+│   ├── Components/   # Composants réutilisables
+│   │   └── Calendar/ # Composants liés au calendrier
+│   ├── forms/        # Formulaires et validations
+│   │   └── task/     # Formulaires liés aux tâches
+│   ├── lib/          # Bibliothèques et utilitaires partagés
+│   ├── Models/       # Types et interfaces TypeScript
+│   ├── routes/       # Pages et routage de l'application
+│   │   ├── login/    # Gestion de l'authentification
+│   ├── services/     # Services pour la logique métier et API
+│   ├── style/        # Fichiers CSS et styles globaux
+│   ├── ts/           # Configuration et types TypeScript
+│   ├── utils/        # Fonctions utilitaires (dates, formatage, etc.)
+└── static/           # Ressources statiques (images, fonts, etc.)
 ```
 
-## Developing
+## Prérequis
+- Node.js (version 16 ou supérieur)
+- npm (gestionnaire de paquets Node.js)
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Installation
+1. Cloner le projet
+```bash
+git clone [URL_DU_REPO]
+cd LLIO2025
+```
+2. Installer les dépendances
+```bash
+npm install
+```
+3. Installer les dépendances FullCalendar
+```bash
+npm install @fullcalendar/core @fullcalendar/daygrid @fullcalendar/timegrid @fullcalendar/interaction
+```
 
+## Développement
+Lancer le serveur de développement :
 ```bash
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
+L'application sera disponible à l'adresse afficher dans le terminal
 
-## Building
 
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.

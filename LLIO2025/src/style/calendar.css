@@ -1,0 +1,106 @@
+/* Base calendar styles */
+.fc {
+    background: white;
+    color: #333;
+    font-family: "Segoe UI", sans-serif;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+/* Header toolbar */
+.fc-header-toolbar {
+    background: #1a1a1a;
+    padding: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.fc-toolbar-title {
+    color: white;
+    font-size: 1.2rem !important;
+    font-weight: 500;
+}
+
+/* Navigation buttons */
+.fc-button {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    padding: 0.5rem 1rem !important;
+    font-weight: normal !important;
+    text-transform: none !important;
+}
+
+.fc-button:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.fc-button-active {
+    background: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Grid styles */
+.fc-scrollgrid {
+    border: none !important;
+}
+
+.fc-scrollgrid td,
+.fc-scrollgrid th {
+    border: 1px solid #e0e0e0 !important;
+}
+
+/* Day headers */
+.fc-col-header-cell {
+    background: #f9f9f9;
+    padding: 1rem !important;
+}
+
+.fc-col-header-cell-cushion {
+    color: #333;
+    font-weight: 500;
+}
+
+/* Time grid */
+.fc-timegrid-slot-label-cushion,
+.fc-timegrid-axis-cushion {
+    color: #333 !important;
+}
+
+/* Events */
+.fc-event-main,
+.fc-event-title,
+.fc-event-time {
+    color: #333 !important;
+}
+
+.fc-timegrid-event .fc-event-main,
+.fc-timegrid-event .fc-event-title,
+.fc-timegrid-event .fc-event-time {
+    color: #333 !important;
+}
+
+.fc-event {
+    background: #e3f2fd !important;
+    border: 1px solid #90caf9 !important;
+    padding: 2px 4px;
+    border-radius: 3px;
+    margin: 1px 0;
+}
+
+.fc-event:hover {
+    background: #bbdefb !important;
+}
+
+/* Today highlighting */
+.fc-day-today {
+    background: #fafafa !important;
+}
+
+/* Time slots styling */
+.fc-timegrid-slot {
+    height: 40px !important;
+}
+
+/* Event content */
+.fc-event-title-container {
+    padding: 2px 4px;
+}
