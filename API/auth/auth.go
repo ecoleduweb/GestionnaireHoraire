@@ -12,7 +12,7 @@ import (
 )
 
 func NewAuth() {
-	useful.loadEnv()
+	useful.LoadEnv()
 	authenticationConfig := struct {
 		AureAdClientID  string
 		AzureAdSecret   string
@@ -23,7 +23,7 @@ func NewAuth() {
 		AzureAdCallback: os.Getenv("AZUREAD_CALLBACK_URL"),
 	}
 	if authenticationConfig.AureAdClientID == "" || authenticationConfig.AzureAdSecret == "" || authenticationConfig.AzureAdCallback == "" {
-		log.Printf("Les variables d'environnement AzureAD ne sont pas définies")
+		log.Fatal("Les variables d'environnement AzureAD ne sont pas définies")
 	}
 
 	sessionsConfig := struct {
@@ -33,12 +33,9 @@ func NewAuth() {
 		IsProduction  bool
 	}{
 		SessionKey:    os.Getenv("SESSION_SECRET"),
-		SessionMaxAge: useful.getEnvInt("SESSION_MAX_AGE", 86400),
+		SessionMaxAge: useful.GetEnvInt("SESSION_MAX_AGE", 86400),
 		HttpOnly:      true,
-		IsProduction:  useful.getEnvBool("ENV", false),
-	}
-	if sessionsConfig.SessionKey == "" {
-		log.Printf("La variable d'environnement SESSION_SECRET n'est pas définie")
+		IsProduction:  useful.GetEnvBool("ENV", false),
 	}
 
 	// Configuration de la session
