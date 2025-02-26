@@ -23,9 +23,14 @@ func main() {
 
 	r := gin.Default()
 
+	frontendAddress := os.Getenv("FRONT_ADDRESS")
+	if frontendAddress == "" {
+		frontendAddress = "http://localhost:5173" // Port par défaut
+	}
+
 	// Configuration CORS
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{os.Getenv("FRONT_ADDRESS")},
+		AllowOrigins:     []string{frontendAddress},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
