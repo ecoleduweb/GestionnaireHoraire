@@ -36,7 +36,7 @@ jobs:
             AZUREAD_CLIENT_ID=${{ secrets.AZUREAD_CLIENT_ID }}
             AZUREAD_CLIENT_SECRET=${{ secrets.AZUREAD_CLIENT_SECRET }}
             AZUREAD_CALLBACK_URL=${{ secrets.AZUREAD_CALLBACK_URL }}
-            SESSION_MAX_AGES=${{ secrets.SESSION_MAX_AGES }}
+            SESSION_MAX_AGE=${{ secrets.SESSION_MAX_AGE }}
             SESSION_SECRET=${{ secrets.SESSION_SECRET }}
             EOF
             echo "Running go mod tidy..."
