@@ -20,3 +20,7 @@ Liste à cocher pour t'aider à faire une revue de code efficace.
 
 - [ ] On gère toutes les erreurs. Ex: (pas de `catch` vide ou de `return;` en cas d'erreur)
 - [ ] On utilise le logger pour journaliser les erreurs
+
+## Quand tu as terminé
+
+lancer coderabbitai en ajoutant `@Coderabbitai` dans ta revue de code. 

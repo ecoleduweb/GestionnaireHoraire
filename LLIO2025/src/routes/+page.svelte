@@ -9,7 +9,7 @@
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
   let showModal = $state(false);
-  let selectedDate: any = null;
+  let selectedDate: { start: Date; end: Date } | null = null;
   let editMode = $state(false);
   let editTask = $state(null);
 
@@ -17,21 +17,21 @@
   const projects = [];
   const categories = [];
 
-  async function loadTasks() {
-    try {
-      const tasks = await TaskApiService.getTasks();
-      tasks.forEach((task) => {
-        calendarService?.addEvent({
-          title: task.name,
-          start: task.startDateTime,
-          end: task.endDateTime,
-          extendedProps: { ...task },
-        });
-      });
-    } catch (error) {
-      console.error('Error loading tasks', error);
-    }
-  }
+  // async function loadTasks() {
+  //   try {
+  //     const tasks = await TaskApiService.getTasks();
+  //     tasks.forEach((task) => {
+  //       calendarService?.addEvent({
+  //         title: task.name,
+  //         start: task.startDateTime,
+  //         end: task.endDateTime,
+  //         extendedProps: { ...task },
+  //       });
+  //     });
+  //   } catch (error) {
+  //     console.error('Error loading tasks', error);
+  //   }
+  // }
 
   onMount(() => {
     if (calendarEl) {
@@ -67,22 +67,23 @@
 
       calendarService.initialize(calendarEl);
       calendarService.render();
-      loadTasks();
+      // loadTasks();
     }
   });
 
   async function handleTaskSubmit(taskData: Task) {
-    if (!calendarService) {
-      console.error('Service du calendrier non initialisé');
-      return;
-    }
+    if (!calendarService) return;
     try {
+      // 1. Créer la tâche via l'API
+      const newTask = await TaskApiService.createTask(taskData);
+
+      // 2. Mettre à jour le calendrier
       calendarService.addEvent({
-        id: taskData.id.toString(),
-        title: taskData.name,
-        start: taskData.startDateTime,
-        end: taskData.endDateTime,
-        extendedProps: { ...taskData },
+        id: newTask.id.toString(),
+        title: newTask.name,
+        start: newTask.startDateTime,
+        end: newTask.endDateTime,
+        extendedProps: { ...newTask },
       });
     } catch (error) {
       console.error("Erreur lors d'ajout de tâche", error);
@@ -91,12 +92,13 @@
   }
 
   async function handleTaskUpdate(task: Task) {
-    if (!calendarService?.calendar) {
-      console.error('Service du calendrier non initialisé');
-      return;
-    }
+    if (!calendarService?.calendar) return;
     try {
-      calendarService.updateEvent(task);
+      // 1. Mettre à jour via l'API
+      const updatedTask = await TaskApiService.updateTask(task);
+
+      // 2. Mettre à jour le calendrier
+      calendarService.updateEvent(updatedTask);
     } catch (error) {
       console.error('Erreur lors de la mise à jour de la tâche', error);
       throw error;
@@ -104,11 +106,12 @@
   }
 
   async function handleTaskDelete(task: Task) {
-    if (!calendarService?.calendar || !task.id) {
-      console.error('Service du calendrier non initialisé');
-      return;
-    }
+    if (!calendarService?.calendar || !task.id) return;
     try {
+      // 1. Supprimer via l'API
+      await TaskApiService.deleteTask(task.id);
+
+      // 2. Mettre à jour le calendrier
       calendarService.deleteTask(task.id.toString());
     } catch (error) {
       console.error('Erreur lors de la suppression de la tâche', error);
@@ -139,5 +142,3 @@
     }}
   />
 {/if}
-
-<div class="calendar-container" bind:this={calendarEl}></div>
