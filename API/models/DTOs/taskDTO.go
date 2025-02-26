@@ -16,6 +16,7 @@ type TaskDTO struct {
 }
 
 type TaskResponse struct {
+	Id          int       `json:"id" binding:"required"`
 	Name        string    `json:"name" binding:"required"`
 	Description string    `json:"description" binding:"required"`
 	Billable    bool      `json:"billable"`

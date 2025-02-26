@@ -3,6 +3,7 @@ package controllers
 import (
 	"llio-api/models/DTOs"
 	"llio-api/services"
+	"strconv"
 
 	"net/http"
 
@@ -69,12 +70,32 @@ func GetTaskById(c *gin.Context) {
 
 // UpdateTask permet de mettre à jour une tâche
 func UpdateTask(c *gin.Context) {
-	var taskDTO DTOs.TaskDTO
+	var updateTaskDTO DTOs.TaskResponse
 
 	//Validation des données entrantes
-	messageErrsJSON := services.VerifyJSON(c, &taskDTO)
+	messageErrsJSON := services.VerifyJSON(c, &updateTaskDTO)
 	if len(messageErrsJSON) > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"errors": messageErrsJSON})
 		return
 	}
+
+	id := strconv.Itoa(updateTaskDTO.Id)
+	task, err := services.GetTaskByIdService(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+	if task == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Impossible de récupérer la tâche."})
+		return
+	}
+
+	updatedTaskDTO, err := services.UpdateTaskService()
+	if err != nil {
+		c.JSON(http.StatusNotModified, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"updated_task": updatedTaskDTO})
+
 }
