@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +12,7 @@ var startTime = time.Now()
 
 func ApiStatus(r *gin.Engine) {
 	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"status": "Pong",
 		})
 	})
@@ -31,7 +32,7 @@ func ApiStatus(r *gin.Engine) {
 		// Créer une chaîne formatée
 		formattedUptime := fmt.Sprintf("%02d:%02d:%02d", hours, minutes, seconds)
 
-		c.JSON(200, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"status": "Healthy",
 			"uptime": formattedUptime,
 		})
