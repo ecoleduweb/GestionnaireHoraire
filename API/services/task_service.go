@@ -49,3 +49,30 @@ func CreateTaskService(taskDTO *DTOs.TaskDTO) (*DTOs.TaskResponse, error) {
 	}
 	return taskResponse, nil
 }
+
+// Fonction qui retourne toutes les tâches
+// Convertion des tâches DAOs en tâches DTOs
+func GetAllTasksService() ([]*DTOs.TaskDTO, error) {
+	tasks, err := repositories.GetAllTasks()
+	if err != nil {
+		return nil, err
+	}
+
+	var tasksDTOs []*DTOs.TaskDTO
+	for _, task := range tasks {
+		taskDTO := &DTOs.TaskDTO{
+			Id:          task.Id,
+			Name:        task.Name,
+			Description: task.Description,
+			Billable:    task.Billable,
+			StartDate:   task.StartDate,
+			EndDate:     task.EndDate,
+			UserId:      task.UserId,
+			ProjectId:   task.ProjectId,
+			CategoryId:  task.CategoryId,
+		}
+		tasksDTOs = append(tasksDTOs, taskDTO)
+	}
+
+	return tasksDTOs, nil
+}

@@ -3,6 +3,7 @@ package controllers
 import (
 	"llio-api/models/DTOs"
 	"llio-api/services"
+	"log"
 
 	"net/http"
 
@@ -36,4 +37,20 @@ func CreateTask(c *gin.Context) {
 		"reponse": "La tâche a bien été ajoutée à la base de données.",
 		"task":    taskAded,
 	})
+}
+
+// GetAllTasks récupère toutes les tâches
+func GetAllTasks(c *gin.Context) {
+
+	tasks, err := services.GetAllTasksService()
+	if err != nil {
+		log.Fatal(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer les tâches."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"tasks": tasks})
+}
+
+func GetTaskById(c *gin.Context) {
 }
