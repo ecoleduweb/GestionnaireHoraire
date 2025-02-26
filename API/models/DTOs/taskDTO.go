@@ -16,10 +16,9 @@ type TaskDTO struct {
 }
 
 type TaskResponse struct {
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	State       string    `json:"state"`
+	Name        string    `json:"name" binding:"required"`
+	Description string    `json:"description" binding:"required"`
 	Billable    bool      `json:"billable"`
-	StartDate   time.Time `json:"start_date"`
-	EndDate     time.Time `json:"end_date"`
+	StartDate   time.Time `json:"start_date" binding:"required"`
+	EndDate     time.Time `json:"end_date" binding:"required"`
 }

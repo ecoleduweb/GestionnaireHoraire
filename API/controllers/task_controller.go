@@ -66,3 +66,15 @@ func GetTaskById(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"task": task})
 }
+
+// UpdateTask permet de mettre à jour une tâche
+func UpdateTask(c *gin.Context) {
+	var taskDTO DTOs.TaskDTO
+
+	//Validation des données entrantes
+	messageErrsJSON := services.VerifyJSON(c, &taskDTO)
+	if len(messageErrsJSON) > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": messageErrsJSON})
+		return
+	}
+}
