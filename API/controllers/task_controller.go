@@ -39,6 +39,7 @@ func CreateTask(c *gin.Context) {
 	})
 }
 
+<<<<<<< Updated upstream
 // GetAllTasks récupère toutes les tâches
 func GetAllTasks(c *gin.Context) {
 
@@ -74,11 +75,19 @@ func UpdateTask(c *gin.Context) {
 
 	//Validation des données entrantes
 	messageErrsJSON := services.VerifyJSON(c, &updateTaskDTO)
+=======
+func UpdateTask(c *gin.Context) {
+	var taskDTO DTOs.TaskDTO
+
+	//Validation des données entrantes
+	messageErrsJSON := services.VerifyJSON(c, &taskDTO)
+>>>>>>> Stashed changes
 	if len(messageErrsJSON) > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"errors": messageErrsJSON})
 		return
 	}
 
+<<<<<<< Updated upstream
 	id := strconv.Itoa(updateTaskDTO.Id)
 	task, err := services.GetTaskByIdService(id)
 	if err != nil {
@@ -108,4 +117,22 @@ func UpdateTask(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"updated_task": updatedTaskDTO})
 
+=======
+	messageErrs := services.VerifyCreateTaskJSON(&taskDTO)
+	if len(messageErrs) > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": messageErrs})
+		return
+	}
+
+	taskUpdated, err := services.UpdateTaskService(&taskDTO)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"reponse": "La tâche a bien été mise à jour dans la base de données.",
+		"task":    taskUpdated,
+	})
+>>>>>>> Stashed changes
 }
