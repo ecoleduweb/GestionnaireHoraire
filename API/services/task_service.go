@@ -83,6 +83,8 @@ func GetTaskByIdService(id string) (*DTOs.TaskDTO, error) {
 	task, err := repositories.GetTaskById(id)
 	if err != nil {
 		return nil, err
+	} else if task == nil {
+		return nil, nil
 	}
 
 	taskDTO := &DTOs.TaskDTO{

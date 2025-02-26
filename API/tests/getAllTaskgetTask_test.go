@@ -26,10 +26,10 @@ func TestGetTask(t *testing.T) {
 	assert.NotNil(t, w.Body)
 }
 
-// func TestGetNonExistentTask(t *testing.T) {
-// 	connectDB()
-// 	router := setupTestRouter(http.MethodGet, "/tasks/:id", controllers.GetTaskById)
-// 	w := sendRequest(router, "GET", "/tasks/-1", nil)
-// 	assertResponse(t, w, http.StatusNotFound, nil)
-// 	assert.JSONEq(t, `{"error": "Impossible de récupérer la tâche."}`, w.Body.String())
-// }
+func TestGetNonExistentTask(t *testing.T) {
+	connectDB()
+	router := setupTestRouter(http.MethodGet, "/tasks/:id", controllers.GetTaskById)
+	w := sendRequest(router, "GET", "/tasks/-1", nil)
+	assertResponse(t, w, http.StatusNotFound, nil)
+	assert.JSONEq(t, `{"error": "Impossible de récupérer la tâche."}`, w.Body.String())
+}

@@ -1,8 +1,11 @@
 package repositories
 
 import (
+	"errors"
 	"llio-api/database"
 	"llio-api/models/DAOs"
+
+	"gorm.io/gorm"
 )
 
 // CreatTask insère une nouvelle tâche dans la BD
@@ -20,6 +23,14 @@ func GetAllTasks() ([]*DAOs.Task, error) {
 // GetTaskById retourne une tâche par son id
 func GetTaskById(id string) (*DAOs.Task, error) {
 	var task DAOs.Task
+
 	err := database.DB.First(&task, id).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		// Une autre erreur s'est produite
+		return nil, err
+	}
 	return &task, err
 }
