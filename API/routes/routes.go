@@ -22,3 +22,10 @@ func RegisterRoutes(r *gin.Engine) {
 	}
 
 }
+
+// Routes pour l'authentification
+func AuthRoutes(r *gin.Engine) {
+	r.GET("/auth/:provider/callback", controllers.GetAuthCallback)
+	r.GET("/logout/:provider", controllers.Logout)
+	r.GET("/auth/:provider", controllers.Auth)
+}
