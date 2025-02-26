@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"llio-api/controllers"
 	"llio-api/database"
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
@@ -16,7 +17,8 @@ import (
 // TestCreateTask est la fonction de test pour le contrôleur CreateTask.
 func TestCreateTask(t *testing.T) {
 
-	router, w := setupTestRouter()
+	connectDB()
+	router, w := setupTestRouter(http.MethodPost, "/tasks", controllers.CreateTask)
 
 	// Création d'une tâche à envoyer dans la requête
 	task := DTOs.TaskDTO{
@@ -54,7 +56,8 @@ func TestCreateTask(t *testing.T) {
 
 func TestDoNotCreateTaskWithEndDateBeforeStartDate(t *testing.T) {
 
-	router, w := setupTestRouter()
+	connectDB()
+	router, w := setupTestRouter(http.MethodPost, "/tasks", controllers.CreateTask)
 
 	// Création d'une tâche à envoyer dans la requête
 	task := DTOs.TaskDTO{
@@ -78,7 +81,8 @@ func TestDoNotCreateTaskWithEndDateBeforeStartDate(t *testing.T) {
 
 func TestDoNotCreateTaskWithoutNameAndDescription(t *testing.T) {
 
-	router, w := setupTestRouter()
+	connectDB()
+	router, w := setupTestRouter(http.MethodPost, "/tasks", controllers.CreateTask)
 
 	// Création d'une tâche à envoyer dans la requête
 	task := DTOs.TaskDTO{
@@ -103,7 +107,8 @@ func TestDoNotCreateTaskWithoutNameAndDescription(t *testing.T) {
 
 func TestDoNotCreateTaskWithLenghtNameOver50(t *testing.T) {
 
-	router, w := setupTestRouter()
+	connectDB()
+	router, w := setupTestRouter(http.MethodPost, "/tasks", controllers.CreateTask)
 
 	// Création d'une tâche à envoyer dans la requête
 	task := DTOs.TaskDTO{
@@ -127,7 +132,8 @@ func TestDoNotCreateTaskWithLenghtNameOver50(t *testing.T) {
 
 func TestDoNotCreateTaskWithoutDates(t *testing.T) {
 
-	router, w := setupTestRouter()
+	connectDB()
+	router, w := setupTestRouter(http.MethodPost, "/tasks", controllers.CreateTask)
 
 	// Création d'une tâche à envoyer dans la requête
 	task := DTOs.TaskDTO{
@@ -150,7 +156,8 @@ func TestDoNotCreateTaskWithoutDates(t *testing.T) {
 
 func TestDoNotCreateTaskWithInvalidStartDate(t *testing.T) {
 
-	router, w := setupTestRouter()
+	connectDB()
+	router, w := setupTestRouter(http.MethodPost, "/tasks", controllers.CreateTask)
 
 	// Création d'une tâche à envoyer dans la requête
 	task := DTOs.TaskDTO{
@@ -174,7 +181,8 @@ func TestDoNotCreateTaskWithInvalidStartDate(t *testing.T) {
 
 func TestDoNotCreateTaskWithInvalidEndDate(t *testing.T) {
 
-	router, w := setupTestRouter()
+	connectDB()
+	router, w := setupTestRouter(http.MethodPost, "/tasks", controllers.CreateTask)
 
 	// Création d'une tâche à envoyer dans la requête
 	task := DTOs.TaskDTO{

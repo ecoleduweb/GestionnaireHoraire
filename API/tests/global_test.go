@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"llio-api/controllers"
 	"llio-api/database"
 	"llio-api/models/DTOs"
 	"log"
@@ -50,15 +49,31 @@ func changeCurrentDiretory() {
 }
 
 // setupTestRouter initialise un routeur de test et un enregistreur de réponse
-func setupTestRouter() (*gin.Engine, *httptest.ResponseRecorder) {
+func setupTestRouter(method, route string, controller gin.HandlerFunc) (*gin.Engine, *httptest.ResponseRecorder) {
+	router := gin.Default()
+
+	switch method {
+	case http.MethodGet:
+		router.GET(route, controller)
+	case http.MethodPost:
+		router.POST(route, controller)
+	case http.MethodPut:
+		router.PUT(route, controller)
+	case http.MethodDelete:
+		router.DELETE(route, controller)
+	// Ajoutez d'autres méthodes HTTP si nécessaire
+	default:
+		panic("Méthode HTTP non supportée")
+	}
+
+	return router, httptest.NewRecorder()
+}
+
+// connectDB se connecte à la base de données
+func connectDB() {
 	changeCurrentDiretory()
 	os.Setenv("ENV", "TEST")
 	database.Connect()
-
-	router := gin.Default()
-	router.POST("/tasks", controllers.CreateTask)
-
-	return router, httptest.NewRecorder()
 }
 
 // sendRequest envoie une requête HTTP au routeur de test
