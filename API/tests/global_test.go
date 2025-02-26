@@ -49,7 +49,7 @@ func changeCurrentDiretory() {
 }
 
 // setupTestRouter initialise un routeur de test et un enregistreur de réponse
-func setupTestRouter(method, route string, controller gin.HandlerFunc) (*gin.Engine, *httptest.ResponseRecorder) {
+func setupTestRouter(method, route string, controller gin.HandlerFunc) *gin.Engine {
 	router := gin.Default()
 
 	switch method {
@@ -66,7 +66,7 @@ func setupTestRouter(method, route string, controller gin.HandlerFunc) (*gin.Eng
 		panic("Méthode HTTP non supportée")
 	}
 
-	return router, httptest.NewRecorder()
+	return router
 }
 
 // connectDB se connecte à la base de données
