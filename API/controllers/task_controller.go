@@ -52,5 +52,16 @@ func GetAllTasks(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"tasks": tasks})
 }
 
+// GetTaskById récupère une tâche par son id
 func GetTaskById(c *gin.Context) {
+	// Récupérer l'id de la tâche
+	id := c.Param("id")
+	task, err := services.GetTaskByIdService(id)
+	if err != nil {
+		log.Fatal(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la tâche."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"task": task})
 }

@@ -16,3 +16,10 @@ func GetAllTasks() ([]*DAOs.Task, error) {
 	err := database.DB.Find(&tasks).Error
 	return tasks, err
 }
+
+// GetTaskById retourne une tâche par son id
+func GetTaskById(id string) (*DAOs.Task, error) {
+	var task DAOs.Task
+	err := database.DB.First(&task, id).Error
+	return &task, err
+}

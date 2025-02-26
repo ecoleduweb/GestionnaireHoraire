@@ -76,3 +76,26 @@ func GetAllTasksService() ([]*DTOs.TaskDTO, error) {
 
 	return tasksDTOs, nil
 }
+
+// Fonction qui retourne une tâche par son id
+// Convertion de la tâche DAOs en tâche DTOs
+func GetTaskByIdService(id string) (*DTOs.TaskDTO, error) {
+	task, err := repositories.GetTaskById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	taskDTO := &DTOs.TaskDTO{
+		Id:          task.Id,
+		Name:        task.Name,
+		Description: task.Description,
+		Billable:    task.Billable,
+		StartDate:   task.StartDate,
+		EndDate:     task.EndDate,
+		UserId:      task.UserId,
+		ProjectId:   task.ProjectId,
+		CategoryId:  task.CategoryId,
+	}
+
+	return taskDTO, nil
+}
