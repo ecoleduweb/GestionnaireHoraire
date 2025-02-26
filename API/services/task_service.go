@@ -101,3 +101,16 @@ func GetTaskByIdService(id string) (*DTOs.TaskDTO, error) {
 
 	return taskDTO, nil
 }
+
+func UpdateTaskService(taskDTO *DTOs.TaskResponse) error {
+
+	taskDAO := &DAOs.Task{
+		Id:          taskDTO.Id,
+		Name:        taskDTO.Name,
+		Description: taskDTO.Description,
+		Billable:    taskDTO.Billable,
+		StartDate:   taskDTO.StartDate,
+		EndDate:     taskDTO.EndDate,
+	}
+	return repositories.UpdateTask(taskDAO)
+}

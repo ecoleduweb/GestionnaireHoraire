@@ -90,9 +90,19 @@ func UpdateTask(c *gin.Context) {
 		return
 	}
 
-	updatedTaskDTO, err := services.UpdateTaskService()
+	err = services.UpdateTaskService(&updateTaskDTO)
 	if err != nil {
 		c.JSON(http.StatusNotModified, gin.H{"error": err})
+		return
+	}
+
+	updatedTaskDTO, err := services.GetTaskByIdService(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+	if updatedTaskDTO == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Impossible de récupérer la tâche."})
 		return
 	}
 
