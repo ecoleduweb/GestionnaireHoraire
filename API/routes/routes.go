@@ -21,7 +21,6 @@ func RegisterRoutes(r *gin.Engine) {
 		// Route pour la création d'une tâche
 		taskGroup.POST("", controllers.CreateTask)
 
-<<<<<<< Updated upstream
 		//Route pour la récupération de toutes les tâches
 		taskGroup.GET("", controllers.GetAllTasks)
 
@@ -31,10 +30,6 @@ func RegisterRoutes(r *gin.Engine) {
 		//Route pour mettre à jour une tâche
 		taskGroup.PUT("", controllers.UpdateTask)
 
-=======
-		// Route pour mettre à jour une tâche
-		taskGroup.PUT("/:id", controllers.UpdateTask)
->>>>>>> Stashed changes
 	}
 
 }
