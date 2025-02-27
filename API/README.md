@@ -59,6 +59,7 @@ API/
     SESSION_SECRET=secret
     SESSION_MAX_AGE=86400
     PORT = port_de_l'application
+    FRONT_ADDRESS = http://localhost:xxxx
    ```
 # Test
 ## Installation de la librairie de test pour du golang : testify

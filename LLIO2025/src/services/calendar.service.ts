@@ -5,6 +5,14 @@ import interactionPlugin from '@fullcalendar/interaction';
 import type { EventClickArg, DateSelectArg } from '@fullcalendar/core/index.js';
 import type { Task } from '../Models';
 
+interface CalendarEvent {
+    id?: string;
+    title: string;
+    start: Date;
+    end: Date;
+    extendedProps?: Task;
+}
+
 export class CalendarService {
     calendar: Calendar | null = null;
     onDateSelect?: (info: DateSelectArg) => void;
@@ -32,7 +40,7 @@ export class CalendarService {
     this.calendar?.render();
   }
 
-    addEvent(event: any) {
+    addEvent(event: CalendarEvent) {
         this.calendar?.addEvent(event);
     }
 

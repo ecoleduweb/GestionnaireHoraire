@@ -1,14 +1,16 @@
 package main
 
 import (
+	"llio-api/auth"
 	"llio-api/database"
 	"llio-api/handlers"
 	"llio-api/routes"
 	"llio-api/useful"
 	"os"
 
-	"llio-api/auth"
 
+	"llio-api/auth"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,6 +25,21 @@ func main() {
 	}
 
 	r := gin.Default()
+
+	frontendAddress := os.Getenv("FRONT_ADDRESS")
+	if frontendAddress == "" {
+		frontendAddress = "http://localhost:5173" // Port par défaut
+	}
+
+	// Configuration CORS
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{frontendAddress},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * 3600, // Durée de mise en cache de la requête preflight (en secondes)
+	}))
 
 	routes.RegisterRoutes(r)
   handlers.ApiStatus(r)
