@@ -3,6 +3,7 @@ package controllers
 import (
 	"llio-api/models/DTOs"
 	"llio-api/services"
+	"log"
 
 	"net/http"
 
@@ -56,11 +57,12 @@ func GetTaskById(c *gin.Context) {
 	id := c.Param("id")
 	task, err := services.GetTaskByIdService(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		log.Printf("Impossible de récupérer les tâches:%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la tâche."})
 		return
 	}
 	if task == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Impossible de récupérer la tâche."})
+		c.JSON(http.StatusNotFound, gin.H{"error": "La tâche est introuvable."})
 		return
 	}
 
