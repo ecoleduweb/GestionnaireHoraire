@@ -30,6 +30,8 @@ func RegisterRoutes(r *gin.Engine) {
 		//Route pour mettre à jour une tâche
 		taskGroup.PUT("", controllers.UpdateTask)
 
+		// Route pour supprimer une tâche
+		taskGroup.DELETE("", controllers.DeleteTask)
 	}
 
 }
