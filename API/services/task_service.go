@@ -114,3 +114,7 @@ func UpdateTaskService(taskDTO *DTOs.TaskResponse) error {
 	}
 	return repositories.UpdateTask(taskDAO)
 }
+
+func DeleteTaskService(id string) error {
+	return repositories.DeleteTask(id)
+}

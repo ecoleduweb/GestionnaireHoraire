@@ -39,3 +39,8 @@ func GetTaskById(id string) (*DAOs.Task, error) {
 func UpdateTask(taskDAO *DAOs.Task) error {
 	return database.DB.Updates(taskDAO).Error
 }
+
+// Fonction qui permet la suppression de la tâche dans la BD
+func DeleteTask(id string) error {
+	return database.DB.Delete(&DAOs.Task{}, id).Error
+}

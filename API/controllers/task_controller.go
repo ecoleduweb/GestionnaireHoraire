@@ -3,6 +3,7 @@ package controllers
 import (
 	"llio-api/models/DTOs"
 	"llio-api/services"
+	"log"
 	"strconv"
 
 	"net/http"
@@ -115,28 +116,19 @@ func DeleteTask(c *gin.Context) {
 	id := c.Param("id")
 	task, err := services.GetTaskByIdService(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		log.Printf("Erreur lors de la récupération de la tâche. : %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur lors de la récupération de la tâche."})
 		return
 	}
 	if task == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Impossible de récupérer la tâche à supprimer."})
+		c.JSON(http.StatusNotFound, gin.H{"error": "La tâche à supprimer n'existe pas."})
 		return
 	}
 
-	err := services.DeleteTaskService(id)
+	err = services.DeleteTaskService(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
-
-	task, err = services.GetTaskByIdService(id)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
-	// Contient toujours la tâche dans la BD
-	if task != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "La tâche n'a pas été supprimer."})
+		log.Printf("Impossible de supprimer la tâche.: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de supprimer la tâche."})
 		return
 	}
 
