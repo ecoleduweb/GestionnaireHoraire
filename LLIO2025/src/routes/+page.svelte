@@ -3,7 +3,7 @@
 </script>
 
 <div
-  class="w-full h-screen flex items-center justify-center bg-[url('/bg.png')] bg-cover bg-center relative"
+  class="w-full h-screen flex items-center justify-center bg-[url('/grungy-painted-wall-textured-background.jpg')] bg-cover bg-center relative"
 >
   <div
     class="w-[90%] max-w-sm md:max-w-md lg:max-w-md p-5 bg-gray-50 flex-col flex items-center gap-3 rounded-xl shadow-slate-500 shadow-lg"
