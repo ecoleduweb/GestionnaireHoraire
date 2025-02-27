@@ -1,67 +1,111 @@
+// services/calendar.service.ts
 import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import type { EventClickArg, DateSelectArg } from '@fullcalendar/core/index.js';
-import type { Task } from '../Models';
-
-interface CalendarEvent {
-    id?: string;
-    title: string;
-    start: Date;
-    end: Date;
-    extendedProps?: Task;
-}
+import frLocale from '@fullcalendar/core/locales/fr';
 
 export class CalendarService {
-    calendar: Calendar | null = null;
-    onDateSelect?: (info: DateSelectArg) => void;
-    onEventClick?: (info: EventClickArg) => void;
-    onViewChange?: (view: string) => void;
+  calendar: Calendar | null = null;
+  onDateSelect: ((info: any) => void) | null = null;
+  onEventClick: ((info: any) => void) | null = null;
 
-    initialize(element: HTMLElement) {
-        this.calendar = new Calendar(element, {
-            plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-            initialView: 'dayGridMonth',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            },
-            editable: true,
-            selectable: true,
-            select: (info) => this.onDateSelect?.(info),
-            eventClick: (info) => this.onEventClick?.(info),
-            viewDidMount: (info) => this.onViewChange?.(info.view.type)
-        });
-    }
+  initialize(element: HTMLElement, customOptions = {}) {
+    // Options par défaut
+    const defaultOptions = {
+      plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+      initialView: 'timeGridWeek',
+      selectable: true,
+      editable: true,
+      locale: frLocale,
+      headerToolbar: false, // Désactivé car nous avons un en-tête personnalisé
+      firstDay: 1, // Lundi comme premier jour
+      slotDuration: '00:30:00',
+      nowIndicator: true,
+      allDaySlot: false,
+      height: 'auto',
+      expandRows: true,
+      businessHours: {
+        daysOfWeek: [1, 2, 3, 4, 5], // Lundi - Vendredi
+        startTime: '08:00',
+        endTime: '18:00',
+      },
+      dayHeaderFormat: { weekday: 'short', month: 'numeric', day: 'numeric', omitCommas: true },
+      eventTimeFormat: {
+        hour: '2-digit',
+        minute: '2-digit',
+        meridiem: false,
+        hour12: false,
+      },
+      slotLabelFormat: {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      },
+      // Gestionnaires d'événements
+      select: (info: any) => {
+        if (this.onDateSelect) {
+          this.onDateSelect(info);
+        }
+      },
+      eventClick: (info: any) => {
+        if (this.onEventClick) {
+          this.onEventClick(info);
+        }
+      },
+    };
+
+    // Fusionner les options par défaut avec les options personnalisées
+    const options = { ...defaultOptions, ...customOptions };
+
+    // Initialiser le calendrier avec les options
+    this.calendar = new Calendar(element, options);
+  }
 
   render() {
     this.calendar?.render();
   }
 
-    addEvent(event: CalendarEvent) {
-        this.calendar?.addEvent(event);
-    }
+  addEvent(eventData: any) {
+    this.calendar?.addEvent(eventData);
+  }
 
-    updateEvent(task: Task) {
-        const existingEvent = this.calendar?.getEventById(task.id.toString());
-        if (existingEvent) {
-            existingEvent.remove();
-            this.addEvent({
-                id: task.id.toString(),
-                title: task.name,
-                start: task.startDateTime,
-                end: task.endDateTime,
-                extendedProps: { ...task },
-            });
-        }
+  updateEvent(task: any) {
+    // Trouver l'événement existant
+    const event = this.calendar?.getEventById(task.id.toString());
+    if (event) {
+      // Mettre à jour les propriétés de l'événement
+      event.setProp('title', task.name);
+      event.setStart(task.startDateTime);
+      event.setEnd(task.endDateTime);
+      event.setExtendedProp('description', task.description);
+      event.setExtendedProp('billable', task.billable);
+      event.setExtendedProp('userId', task.userId);
+      event.setExtendedProp('projectId', task.projectId);
+      event.setExtendedProp('categoryId', task.categoryId);
     }
+  }
 
-    deleteTask(eventId: string) {
-        const event = this.calendar?.getEventById(eventId);
-        if (event) {
-            event.remove();
-        }
+  deleteTask(taskId: string) {
+    const event = this.calendar?.getEventById(taskId);
+    if (event) {
+      event.remove();
     }
+  }
+
+  setView(viewName: string) {
+    this.calendar?.changeView(viewName);
+  }
+
+  next() {
+    this.calendar?.next();
+  }
+
+  prev() {
+    this.calendar?.prev();
+  }
+
+  today() {
+    this.calendar?.today();
+  }
 }
