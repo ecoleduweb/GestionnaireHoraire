@@ -79,7 +79,6 @@ export class CalendarService {
       event.setStart(task.startDateTime);
       event.setEnd(task.endDateTime);
       event.setExtendedProp('description', task.description);
-      event.setExtendedProp('state', task.state);
       event.setExtendedProp('billable', task.billable);
       event.setExtendedProp('userId', task.userId);
       event.setExtendedProp('projectId', task.projectId);

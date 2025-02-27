@@ -126,19 +126,6 @@
         </div>
 
         <div class="flex gap-4 mb-6">
-          <div class="flex-1">
-            <label for="task-state" class="block text-gray-600 mb-2">État*</label>
-            <select 
-              id="task-state" 
-              bind:value={task.state} 
-              required
-              class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
-            >
-              {#each states as state}
-                <option value={state}>{state}</option>
-              {/each}
-            </select>
-          </div>
 
           <div class="flex items-center">
             <label class="flex items-center gap-2 text-gray-600">
