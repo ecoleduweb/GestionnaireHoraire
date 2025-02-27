@@ -3,6 +3,7 @@ package controllers
 import (
 	"llio-api/models/DTOs"
 	"llio-api/services"
+	"log"
 	"strconv"
 
 	"net/http"
@@ -82,27 +83,30 @@ func UpdateTask(c *gin.Context) {
 	id := strconv.Itoa(updateTaskDTO.Id)
 	task, err := services.GetTaskByIdService(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		log.Printf("Impossible de récupérer la tâche:%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la tâche."})
 		return
 	}
 	if task == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Impossible de récupérer la tâche."})
+		c.JSON(http.StatusNotFound, gin.H{"error": "La tâche est introuvable."})
 		return
 	}
 
 	err = services.UpdateTaskService(&updateTaskDTO)
 	if err != nil {
-		c.JSON(http.StatusNotModified, gin.H{"error": err})
+		log.Printf("La tâche n'a pas été modifiée : %v", err)
+		c.JSON(http.StatusNotModified, gin.H{"error": "La tâche n'a pas été modifiée."})
 		return
 	}
 
 	updatedTaskDTO, err := services.GetTaskByIdService(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		log.Printf("Impossible de récupérer la tâche:%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la tâche."})
 		return
 	}
 	if updatedTaskDTO == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Impossible de récupérer la tâche."})
+		c.JSON(http.StatusNotFound, gin.H{"error": "La tâche est introuvable."})
 		return
 	}
 
