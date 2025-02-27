@@ -107,5 +107,38 @@ func UpdateTask(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"updated_task": updatedTaskDTO})
+}
 
+// DeleteTask permet de supprimer la tâche
+func DeleteTask(c *gin.Context) {
+	// Récupérer l'id de la tâche
+	id := c.Param("id")
+	task, err := services.GetTaskByIdService(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+	if task == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Impossible de récupérer la tâche à supprimer."})
+		return
+	}
+
+	err := services.DeleteTaskService(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	task, err = services.GetTaskByIdService(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+	// Contient toujours la tâche dans la BD
+	if task != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "La tâche n'a pas été supprimer."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "La suppression de la tâche est un succès."})
 }
