@@ -10,16 +10,7 @@ type TaskDTO struct {
 	Billable    bool      `json:"billable"`
 	StartDate   time.Time `json:"start_date" binding:"required"`
 	EndDate     time.Time `json:"end_date" binding:"required"`
-	UserId      int       `json:"user_id" binding:"required"`
-	ProjectId   int       `json:"project_id" binding:"required"`
-	CategoryId  int       `json:"category_id" binding:"required"`
-}
-
-type TaskResponse struct {
-	Id          int       `json:"id" binding:"required"`
-	Name        string    `json:"name" binding:"required"`
-	Description string    `json:"description" binding:"required"`
-	Billable    bool      `json:"billable"`
-	StartDate   time.Time `json:"start_date" binding:"required"`
-	EndDate     time.Time `json:"end_date" binding:"required"`
+	UserId      int       `json:"user_id" `
+	ProjectId   int       `json:"project_id" `
+	CategoryId  int       `json:"category_id" `
 }

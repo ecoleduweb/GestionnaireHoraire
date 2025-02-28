@@ -28,7 +28,7 @@ func CreateTask(c *gin.Context) {
 		return
 	}
 
-	taskAded, err := services.CreateTaskService(&taskDTO)
+	taskDTOAded, err := services.CreateTask(&taskDTO)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -36,14 +36,14 @@ func CreateTask(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"reponse": "La tâche a bien été ajoutée à la base de données.",
-		"task":    taskAded,
+		"task":    taskDTOAded,
 	})
 }
 
 // GetAllTasks récupère toutes les tâches
 func GetAllTasks(c *gin.Context) {
 
-	tasks, err := services.GetAllTasksService()
+	tasks, err := services.GetAllTasks()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer les tâches."})
 		return
@@ -56,13 +56,14 @@ func GetAllTasks(c *gin.Context) {
 func GetTaskById(c *gin.Context) {
 	// Récupérer l'id de la tâche
 	id := c.Param("id")
-	task, err := services.GetTaskByIdService(id)
+	task, err := services.GetTaskById(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		log.Printf("Impossible de récupérer les tâches:%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la tâche."})
 		return
 	}
 	if task == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Impossible de récupérer la tâche."})
+		c.JSON(http.StatusNotFound, gin.H{"error": "La tâche est introuvable."})
 		return
 	}
 
@@ -71,7 +72,7 @@ func GetTaskById(c *gin.Context) {
 
 // UpdateTask permet de mettre à jour une tâche
 func UpdateTask(c *gin.Context) {
-	var updateTaskDTO DTOs.TaskResponse
+	var updateTaskDTO DTOs.TaskDTO
 
 	//Validation des données entrantes
 	messageErrsJSON := services.VerifyJSON(c, &updateTaskDTO)
@@ -81,29 +82,21 @@ func UpdateTask(c *gin.Context) {
 	}
 
 	id := strconv.Itoa(updateTaskDTO.Id)
-	task, err := services.GetTaskByIdService(id)
+	task, err := services.GetTaskById(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		log.Printf("Impossible de récupérer la tâche:%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la tâche."})
 		return
 	}
 	if task == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Impossible de récupérer la tâche."})
+		c.JSON(http.StatusNotFound, gin.H{"error": "La tâche est introuvable."})
 		return
 	}
 
-	err = services.UpdateTaskService(&updateTaskDTO)
+	updatedTaskDTO, err := services.UpdateTaskService(&updateTaskDTO)
 	if err != nil {
-		c.JSON(http.StatusNotModified, gin.H{"error": err})
-		return
-	}
-
-	updatedTaskDTO, err := services.GetTaskByIdService(id)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
-	if updatedTaskDTO == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Impossible de récupérer la tâche."})
+		log.Printf("La tâche n'a pas été modifiée : %v", err)
+		c.JSON(http.StatusNotModified, gin.H{"error": "La tâche n'a pas été modifiée."})
 		return
 	}
 

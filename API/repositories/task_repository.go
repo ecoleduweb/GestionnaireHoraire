@@ -9,8 +9,12 @@ import (
 )
 
 // CreatTask insère une nouvelle tâche dans la BD
-func CreateTask(task *DAOs.Task) error {
-	return database.DB.Create(task).Error
+func CreateTask(task *DAOs.Task) (*DAOs.Task, error) {
+	err := database.DB.Create(task).Error
+	if err != nil {
+		return nil, err
+	}
+	return task, nil
 }
 
 // GetAllTasks retourne toutes les tâches de la BD
@@ -36,8 +40,12 @@ func GetTaskById(id string) (*DAOs.Task, error) {
 }
 
 // Fonction qui permet de mettre à jour une tâche
-func UpdateTask(taskDAO *DAOs.Task) error {
-	return database.DB.Updates(taskDAO).Error
+func UpdateTask(taskDAO *DAOs.Task) (*DAOs.Task, error) {
+	err := database.DB.Updates(taskDAO).Error
+	if err != nil {
+		return nil, err
+	}
+	return taskDAO, nil
 }
 
 // Fonction qui permet la suppression de la tâche dans la BD
