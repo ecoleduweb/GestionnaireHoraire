@@ -18,7 +18,20 @@ func RegisterRoutes(r *gin.Engine) {
 	// Groupe de routes pour les tâches(event/task)
 	taskGroup := r.Group("/tasks")
 	{
+		// Route pour la création d'une tâche
 		taskGroup.POST("", controllers.CreateTask)
+
+		//Route pour la récupération de toutes les tâches
+		taskGroup.GET("", controllers.GetAllTasks)
+
+		//Route pour la récupération d'une tâche par son id
+		taskGroup.GET("/:id", controllers.GetTaskById)
+
+		//Route pour mettre à jour une tâche
+		taskGroup.PUT("", controllers.UpdateTask)
+
+		// Route pour supprimer une tâche
+		taskGroup.DELETE("/:id", controllers.DeleteTask)
 	}
 
 }
