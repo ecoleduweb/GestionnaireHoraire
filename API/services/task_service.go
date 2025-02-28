@@ -108,7 +108,7 @@ func GetTaskById(id string) (*DTOs.TaskDTO, error) {
 	return taskDTO, nil
 }
 
-func UpdateTaskService(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
+func UpdateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 
 	taskDAO := &DAOs.Task{}
 	err := copier.Copy(taskDAO, taskDTO)

@@ -93,7 +93,7 @@ func UpdateTask(c *gin.Context) {
 		return
 	}
 
-	updatedTaskDTO, err := services.UpdateTaskService(&updateTaskDTO)
+	updatedTaskDTO, err := services.UpdateTask(&updateTaskDTO)
 	if err != nil {
 		log.Printf("La tâche n'a pas été modifiée : %v", err)
 		c.JSON(http.StatusNotModified, gin.H{"error": "La tâche n'a pas été modifiée."})
