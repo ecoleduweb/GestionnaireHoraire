@@ -130,6 +130,6 @@ func UpdateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 	return taskDTOResponse, nil
 }
 
-func DeleteTaskService(id string) error {
+func DeleteTask(id string) error {
 	return repositories.DeleteTask(id)
 }

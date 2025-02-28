@@ -107,7 +107,7 @@ func UpdateTask(c *gin.Context) {
 func DeleteTask(c *gin.Context) {
 	// Récupérer l'id de la tâche
 	id := c.Param("id")
-	task, err := services.GetTaskByIdService(id)
+	task, err := services.GetTaskById(id)
 	if err != nil {
 		log.Printf("Erreur lors de la récupération de la tâche. : %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur lors de la récupération de la tâche."})
@@ -118,7 +118,7 @@ func DeleteTask(c *gin.Context) {
 		return
 	}
 
-	err = services.DeleteTaskService(id)
+	err = services.DeleteTask(id)
 	if err != nil {
 		log.Printf("Impossible de supprimer la tâche.: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de supprimer la tâche."})
