@@ -12,6 +12,24 @@ import (
 func VerifyCreateTaskJSON(taskDTO *DTOs.TaskDTO) []DTOs.FieldErrorDTO {
 	var errors []DTOs.FieldErrorDTO
 
+	if taskDTO.UserId == 0 {
+		errors = append(errors, DTOs.FieldErrorDTO{
+			Field:   "user_id",
+			Message: "Le champ UserId est invalide ou manquant",
+		})
+	}
+	if taskDTO.ProjectId == 0 {
+		errors = append(errors, DTOs.FieldErrorDTO{
+			Field:   "project_id",
+			Message: "Le champ ProjectId est invalide ou manquant",
+		})
+	}
+	if taskDTO.CategoryId == 0 {
+		errors = append(errors, DTOs.FieldErrorDTO{
+			Field:   "category_id",
+			Message: "Le champ CategoryId est invalide ou manquant",
+		})
+	}
 	// Vérifier que StartDate est avant EndDate
 	if taskDTO.StartDate.After(taskDTO.EndDate) {
 		errors = append(errors, DTOs.FieldErrorDTO{
@@ -90,15 +108,24 @@ func GetTaskById(id string) (*DTOs.TaskDTO, error) {
 	return taskDTO, nil
 }
 
-func UpdateTaskService(taskDTO *DTOs.TaskResponse) error {
+func UpdateTaskService(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 
-	taskDAO := &DAOs.Task{
-		Id:          taskDTO.Id,
-		Name:        taskDTO.Name,
-		Description: taskDTO.Description,
-		Billable:    taskDTO.Billable,
-		StartDate:   taskDTO.StartDate,
-		EndDate:     taskDTO.EndDate,
+	taskDAO := &DAOs.Task{}
+	err := copier.Copy(taskDAO, taskDTO)
+	if err != nil {
+		log.Printf("Erreur lors de la copie des champs: %v", err)
 	}
-	return repositories.UpdateTask(taskDAO)
+
+	taskDAOUpdated, err := repositories.UpdateTask(taskDAO)
+	if err != nil {
+		return nil, err
+	}
+
+	taskDTOResponse := &DTOs.TaskDTO{}
+	err = copier.Copy(taskDTOResponse, taskDAOUpdated)
+	if err != nil {
+		log.Printf("Erreur lors de la copie des champs: %v", err)
+		return nil, err
+	}
+	return taskDTOResponse, nil
 }
