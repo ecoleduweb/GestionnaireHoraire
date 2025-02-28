@@ -4,6 +4,9 @@ import (
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
 	"llio-api/repositories"
+	"log"
+
+	"github.com/jinzhu/copier"
 )
 
 func VerifyCreateTaskJSON(taskDTO *DTOs.TaskDTO) []DTOs.FieldErrorDTO {
@@ -24,28 +27,24 @@ func VerifyCreateTaskJSON(taskDTO *DTOs.TaskDTO) []DTOs.FieldErrorDTO {
 func CreateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskResponse, error) {
 
 	// Mapper le body vers le modèle Task
-	task := &DAOs.Task{
-		Name:        taskDTO.Name,
-		Description: taskDTO.Description,
-		Billable:    taskDTO.Billable,
-		StartDate:   taskDTO.StartDate,
-		EndDate:     taskDTO.EndDate,
-		UserId:      taskDTO.UserId,
-		ProjectId:   taskDTO.ProjectId,
-		CategoryId:  taskDTO.CategoryId,
+
+	task := &DAOs.Task{}
+	err := copier.Copy(task, taskDTO)
+	if err != nil {
+		log.Printf("Erreur lors de la copie des champs: %v", err)
+		return nil, err
 	}
 
-	err := repositories.CreateTask(task)
+	err = repositories.CreateTask(task)
 	if err != nil {
 		return nil, err
 	}
 
-	taskResponse := &DTOs.TaskResponse{
-		Name:        task.Name,
-		Description: task.Description,
-		Billable:    task.Billable,
-		StartDate:   task.StartDate,
-		EndDate:     task.EndDate,
+	taskResponse := &DTOs.TaskResponse{}
+	err = copier.Copy(taskResponse, task)
+	if err != nil {
+		log.Printf("Erreur lors de la copie des champs: %v", err)
+		return nil, err
 	}
 	return taskResponse, nil
 }
@@ -60,16 +59,11 @@ func GetAllTasks() ([]*DTOs.TaskDTO, error) {
 
 	var tasksDTOs []*DTOs.TaskDTO
 	for _, task := range tasks {
-		taskDTO := &DTOs.TaskDTO{
-			Id:          task.Id,
-			Name:        task.Name,
-			Description: task.Description,
-			Billable:    task.Billable,
-			StartDate:   task.StartDate,
-			EndDate:     task.EndDate,
-			UserId:      task.UserId,
-			ProjectId:   task.ProjectId,
-			CategoryId:  task.CategoryId,
+		taskDTO := &DTOs.TaskDTO{}
+		err = copier.Copy(taskDTO, task)
+		if err != nil {
+			log.Printf("Erreur lors de la copie des champs: %v", err)
+			continue
 		}
 		tasksDTOs = append(tasksDTOs, taskDTO)
 	}
@@ -87,16 +81,10 @@ func GetTaskById(id string) (*DTOs.TaskDTO, error) {
 		return nil, nil
 	}
 
-	taskDTO := &DTOs.TaskDTO{
-		Id:          task.Id,
-		Name:        task.Name,
-		Description: task.Description,
-		Billable:    task.Billable,
-		StartDate:   task.StartDate,
-		EndDate:     task.EndDate,
-		UserId:      task.UserId,
-		ProjectId:   task.ProjectId,
-		CategoryId:  task.CategoryId,
+	taskDTO := &DTOs.TaskDTO{}
+	err = copier.Copy(taskDTO, task)
+	if err != nil {
+		log.Printf("Erreur lors de la copie des champs: %v", err)
 	}
 
 	return taskDTO, nil
