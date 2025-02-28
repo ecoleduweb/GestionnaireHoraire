@@ -17,10 +17,10 @@ const transformTasksDates = (task: RawTask): Task => ({
 const transformTasksArray = (tasks: Task[]): Task[] => 
     tasks.map(transformTasksDates);
 
-const getTaskData = async (): Promise<Task[]> => {
-    const response = await GET<Task[]>("/task/all");
-    return transformTasksArray(response);
-};
+// const getTaskData = async (): Promise<Task[]> => {
+//     const response = await GET<Task[]>("/task/all");
+//     return transformTasksArray(response);
+// };
 
 const createTask = async (task: Task): Promise<Task> => {
     const response = await POST<Task, Task>("/task", task);
@@ -36,56 +36,56 @@ const deleteTask = async (id: number): Promise<void> => {
     await DELETE(`/task/${id}`);
 };
 
-export const fetchTasks = async () => {
-    let savedData: string | null = null;
-    let taskData: Task[];
+// export const fetchTasks = async () => {
+//     let savedData: string | null = null;
+//     let taskData: Task[];
 
-    try {
-        savedData = localStorage.getItem("Task");
-    } catch (error) {
-        console.error(`Erreur lors de l'accès au localStorage: ${error.message}`);
-    }
+//     try {
+//         savedData = localStorage.getItem("Task");
+//     } catch (error) {
+//         console.error(`Erreur lors de l'accès au localStorage: ${error.message}`);
+//     }
 
-    try {
-        if (tasks?.length) {
-            taskData = tasks;
-        } else if (savedData) {
-            try {
-                const parsedData = JSON.parse(savedData);
-                if (Array.isArray(parsedData)) {
-                    taskData = transformTasksArray(parsedData);
-                } else {
-                    throw new Error("Données invalides");
-                }
-            } catch (error) {
-                console.error("Erreur lors de la lecture des données sauvegardées", error);
-                taskData = await getTaskData();
-            }
-        } else {
-            taskData = await getTaskData();
-            tasks = taskData;
-            try {
-                localStorage.setItem("Task", JSON.stringify(taskData));
-            } catch (error) {
-                console.error(`Erreur lors de la sauvegarde des données: ${error.message}`);
-            }
-        }
-    } catch (error) {
-        console.error("Erreur lors de la réccupération des tâches", error);
-        taskData = await getTaskData();
-        tasks = taskData;
-        try {
-            localStorage.setItem("Task", JSON.stringify(taskData));
-        } catch (storageError) {
-            console.error("Erreur lors de la sauvegarde des données:", storageError);
-        }
-    } 
+//     try {
+//         if (tasks?.length) {
+//             taskData = tasks;
+//         } else if (savedData) {
+//             try {
+//                 const parsedData = JSON.parse(savedData);
+//                 if (Array.isArray(parsedData)) {
+//                     taskData = transformTasksArray(parsedData);
+//                 } else {
+//                     throw new Error("Données invalides");
+//                 }
+//             } catch (error) {
+//                 console.error("Erreur lors de la lecture des données sauvegardées", error);
+//                 taskData = await getTaskData();
+//             }
+//         } else {
+//             taskData = await getTaskData();
+//             tasks = taskData;
+//             try {
+//                 localStorage.setItem("Task", JSON.stringify(taskData));
+//             } catch (error) {
+//                 console.error(`Erreur lors de la sauvegarde des données: ${error.message}`);
+//             }
+//         }
+//     } catch (error) {
+//         console.error("Erreur lors de la réccupération des tâches", error);
+//         taskData = await getTaskData();
+//         tasks = taskData;
+//         try {
+//             localStorage.setItem("Task", JSON.stringify(taskData));
+//         } catch (storageError) {
+//             console.error("Erreur lors de la sauvegarde des données:", storageError);
+//         }
+//     } 
 
-    return taskData;
-};
+//     return taskData;
+// };
 
 export const TaskApiService = {
-    getTasks: () => fetchTasks(),
+    // getTasks: () => fetchTasks(),
     createTask,
     updateTask,
     deleteTask
