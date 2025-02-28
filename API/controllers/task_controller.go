@@ -27,7 +27,7 @@ func CreateTask(c *gin.Context) {
 		return
 	}
 
-	taskAded, err := services.CreateTaskService(&taskDTO)
+	taskAded, err := services.CreateTask(&taskDTO)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -42,7 +42,7 @@ func CreateTask(c *gin.Context) {
 // GetAllTasks récupère toutes les tâches
 func GetAllTasks(c *gin.Context) {
 
-	tasks, err := services.GetAllTasksService()
+	tasks, err := services.GetAllTasks()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer les tâches."})
 		return
@@ -55,7 +55,7 @@ func GetAllTasks(c *gin.Context) {
 func GetTaskById(c *gin.Context) {
 	// Récupérer l'id de la tâche
 	id := c.Param("id")
-	task, err := services.GetTaskByIdService(id)
+	task, err := services.GetTaskById(id)
 	if err != nil {
 		log.Printf("Impossible de récupérer les tâches:%v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la tâche."})
