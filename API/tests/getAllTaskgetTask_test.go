@@ -31,5 +31,5 @@ func TestGetNonExistentTask(t *testing.T) {
 	router := setupTestRouter(http.MethodGet, "/tasks/:id", controllers.GetTaskById)
 	w := sendRequest(router, "GET", "/tasks/-1", nil)
 	assertResponse(t, w, http.StatusNotFound, nil)
-	assert.JSONEq(t, `{"error": "Impossible de récupérer la tâche."}`, w.Body.String())
+	assert.JSONEq(t, `{"error": "La tâche est introuvable."}`, w.Body.String())
 }

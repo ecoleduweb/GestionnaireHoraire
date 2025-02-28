@@ -9,8 +9,12 @@ import (
 )
 
 // CreatTask insère une nouvelle tâche dans la BD
-func CreateTask(task *DAOs.Task) error {
-	return database.DB.Create(task).Error
+func CreateTask(task *DAOs.Task) (*DAOs.Task, error) {
+	err := database.DB.Create(task).Error
+	if err != nil {
+		return nil, err
+	}
+	return task, nil
 }
 
 // GetAllTasks retourne toutes les tâches de la BD

@@ -4,6 +4,9 @@ import (
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
 	"llio-api/repositories"
+	"log"
+
+	"github.com/jinzhu/copier"
 )
 
 func VerifyCreateTaskJSON(taskDTO *DTOs.TaskDTO) []DTOs.FieldErrorDTO {
@@ -20,39 +23,35 @@ func VerifyCreateTaskJSON(taskDTO *DTOs.TaskDTO) []DTOs.FieldErrorDTO {
 	return errors
 }
 
-// CreateTaskService encapsule la logique métier pour la création d'une tâche
-func CreateTaskService(taskDTO *DTOs.TaskDTO) (*DTOs.TaskResponse, error) {
+// CreateTask encapsule la logique métier pour la création d'une tâche
+func CreateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 
 	// Mapper le body vers le modèle Task
-	task := &DAOs.Task{
-		Name:        taskDTO.Name,
-		Description: taskDTO.Description,
-		Billable:    taskDTO.Billable,
-		StartDate:   taskDTO.StartDate,
-		EndDate:     taskDTO.EndDate,
-		UserId:      taskDTO.UserId,
-		ProjectId:   taskDTO.ProjectId,
-		CategoryId:  taskDTO.CategoryId,
+
+	task := &DAOs.Task{}
+	err := copier.Copy(task, taskDTO)
+	if err != nil {
+		log.Printf("Erreur lors de la copie des champs: %v", err)
+		return nil, err
 	}
 
-	err := repositories.CreateTask(task)
+	taskDAOAded, err := repositories.CreateTask(task)
 	if err != nil {
 		return nil, err
 	}
 
-	taskResponse := &DTOs.TaskResponse{
-		Name:        task.Name,
-		Description: task.Description,
-		Billable:    task.Billable,
-		StartDate:   task.StartDate,
-		EndDate:     task.EndDate,
+	taskDTOResponse := &DTOs.TaskDTO{}
+	err = copier.Copy(taskDTOResponse, taskDAOAded)
+	if err != nil {
+		log.Printf("Erreur lors de la copie des champs: %v", err)
+		return nil, err
 	}
-	return taskResponse, nil
+	return taskDTOResponse, nil
 }
 
 // Fonction qui retourne toutes les tâches
 // Convertion des tâches DAOs en tâches DTOs
-func GetAllTasksService() ([]*DTOs.TaskDTO, error) {
+func GetAllTasks() ([]*DTOs.TaskDTO, error) {
 	tasks, err := repositories.GetAllTasks()
 	if err != nil {
 		return nil, err
@@ -60,16 +59,11 @@ func GetAllTasksService() ([]*DTOs.TaskDTO, error) {
 
 	var tasksDTOs []*DTOs.TaskDTO
 	for _, task := range tasks {
-		taskDTO := &DTOs.TaskDTO{
-			Id:          task.Id,
-			Name:        task.Name,
-			Description: task.Description,
-			Billable:    task.Billable,
-			StartDate:   task.StartDate,
-			EndDate:     task.EndDate,
-			UserId:      task.UserId,
-			ProjectId:   task.ProjectId,
-			CategoryId:  task.CategoryId,
+		taskDTO := &DTOs.TaskDTO{}
+		err = copier.Copy(taskDTO, task)
+		if err != nil {
+			log.Printf("Erreur lors de la copie des champs: %v", err)
+			continue
 		}
 		tasksDTOs = append(tasksDTOs, taskDTO)
 	}
@@ -79,7 +73,7 @@ func GetAllTasksService() ([]*DTOs.TaskDTO, error) {
 
 // Fonction qui retourne une tâche par son id
 // Convertion de la tâche DAOs en tâche DTOs
-func GetTaskByIdService(id string) (*DTOs.TaskDTO, error) {
+func GetTaskById(id string) (*DTOs.TaskDTO, error) {
 	task, err := repositories.GetTaskById(id)
 	if err != nil {
 		return nil, err
@@ -87,16 +81,10 @@ func GetTaskByIdService(id string) (*DTOs.TaskDTO, error) {
 		return nil, nil
 	}
 
-	taskDTO := &DTOs.TaskDTO{
-		Id:          task.Id,
-		Name:        task.Name,
-		Description: task.Description,
-		Billable:    task.Billable,
-		StartDate:   task.StartDate,
-		EndDate:     task.EndDate,
-		UserId:      task.UserId,
-		ProjectId:   task.ProjectId,
-		CategoryId:  task.CategoryId,
+	taskDTO := &DTOs.TaskDTO{}
+	err = copier.Copy(taskDTO, task)
+	if err != nil {
+		log.Printf("Erreur lors de la copie des champs: %v", err)
 	}
 
 	return taskDTO, nil
