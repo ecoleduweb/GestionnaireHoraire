@@ -27,7 +27,7 @@ func CreateTask(c *gin.Context) {
 		return
 	}
 
-	taskDTOAded, err := services.CreateTask(&taskDTO)
+	task, err := services.CreateTask(&taskDTO)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -35,7 +35,7 @@ func CreateTask(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"reponse": "La tâche a bien été ajoutée à la base de données.",
-		"task":    taskDTOAded,
+		"task":    task,
 	})
 }
 
