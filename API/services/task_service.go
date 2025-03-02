@@ -4,7 +4,6 @@ import (
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
 	"llio-api/repositories"
-	"log"
 
 	"github.com/jinzhu/copier"
 )
@@ -29,10 +28,6 @@ func CreateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 
 	task := &DAOs.Task{}
 	err := copier.Copy(task, taskDTO)
-	if err != nil {
-		log.Printf("Erreur lors de la copie des champs: %v", err)
-		return nil, err
-	}
 
 	taskDAOAded, err := repositories.CreateTask(task)
 	if err != nil {
@@ -41,11 +36,7 @@ func CreateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 
 	taskDTOResponse := &DTOs.TaskDTO{}
 	err = copier.Copy(taskDTOResponse, taskDAOAded)
-	if err != nil {
-		log.Printf("Erreur lors de la copie des champs: %v", err)
-		return nil, err
-	}
-	return taskDTOResponse, nil
+	return taskDTOResponse, err
 }
 
 func GetAllTasks() ([]*DTOs.TaskDTO, error) {
@@ -58,14 +49,10 @@ func GetAllTasks() ([]*DTOs.TaskDTO, error) {
 	for _, task := range tasks {
 		taskDTO := &DTOs.TaskDTO{}
 		err = copier.Copy(taskDTO, task)
-		if err != nil {
-			log.Printf("Erreur lors de la copie des champs: %v", err)
-			continue
-		}
 		tasksDTOs = append(tasksDTOs, taskDTO)
 	}
 
-	return tasksDTOs, nil
+	return tasksDTOs, err
 }
 
 func GetTaskById(id string) (*DTOs.TaskDTO, error) {
@@ -78,9 +65,6 @@ func GetTaskById(id string) (*DTOs.TaskDTO, error) {
 
 	taskDTO := &DTOs.TaskDTO{}
 	err = copier.Copy(taskDTO, task)
-	if err != nil {
-		log.Printf("Erreur lors de la copie des champs: %v", err)
-	}
 
-	return taskDTO, nil
+	return taskDTO, err
 }
