@@ -28,6 +28,9 @@ func CreateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 
 	task := &DAOs.Task{}
 	err := copier.Copy(task, taskDTO)
+	if err != nil {
+		return nil, err
+	}
 
 	taskDAOAded, err := repositories.CreateTask(task)
 	if err != nil {
