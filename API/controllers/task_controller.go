@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"llio-api/models/DTOs"
 	"llio-api/services"
 	"log"
@@ -8,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func CreateTask(c *gin.Context) {
@@ -55,12 +57,12 @@ func GetTaskById(c *gin.Context) {
 	id := c.Param("id")
 	task, err := services.GetTaskById(id)
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "La tâche est introuvable."})
+			return
+		}
 		log.Printf("Impossible de récupérer les tâches:%v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la tâche."})
-		return
-	}
-	if task == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "La tâche est introuvable."})
 		return
 	}
 
