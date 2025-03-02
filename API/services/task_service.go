@@ -23,7 +23,6 @@ func VerifyCreateTaskJSON(taskDTO *DTOs.TaskDTO) []DTOs.FieldErrorDTO {
 	return errors
 }
 
-// CreateTask encapsule la logique métier pour la création d'une tâche
 func CreateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 
 	// Mapper le body vers le modèle Task
@@ -49,8 +48,6 @@ func CreateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 	return taskDTOResponse, nil
 }
 
-// Fonction qui retourne toutes les tâches
-// Convertion des tâches DAOs en tâches DTOs
 func GetAllTasks() ([]*DTOs.TaskDTO, error) {
 	tasks, err := repositories.GetAllTasks()
 	if err != nil {
@@ -71,8 +68,6 @@ func GetAllTasks() ([]*DTOs.TaskDTO, error) {
 	return tasksDTOs, nil
 }
 
-// Fonction qui retourne une tâche par son id
-// Convertion de la tâche DAOs en tâche DTOs
 func GetTaskById(id string) (*DTOs.TaskDTO, error) {
 	task, err := repositories.GetTaskById(id)
 	if err != nil {
