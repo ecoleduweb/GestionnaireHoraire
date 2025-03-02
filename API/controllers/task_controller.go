@@ -19,7 +19,7 @@ func CreateTask(c *gin.Context) {
 	//Validation des données entrantes
 	messageErrsJSON := services.VerifyJSON(c, &taskDTO)
 	if len(messageErrsJSON) > 0 {
-		log.Printf("Une ou plusieurs erreurs de format JSON sont survenues:%v", err)
+		log.Printf("Une ou plusieurs erreurs de format JSON sont survenues:%v", messageErrsJSON)
 		c.JSON(http.StatusBadRequest, gin.H{"errors": messageErrsJSON})
 		return
 	}
