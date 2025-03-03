@@ -18,18 +18,18 @@ export class TaskService {
         }
     }
 
-    static updateTask = async (task: Task) => {
-        try {
-            const taskToUpdate = {
-                ...task,
-                startDateTime: new Date(task.startDateTime),
-                endDateTime: new Date(task.endDateTime)
-            };
-            return await TaskApiService.updateTask(taskToUpdate);
-        } catch (error) {
-            const errorMessage = `Erreur lors de la modification d'une tâche: ${error.message}`;
-            console.error(errorMessage)
-            throw error;
-        }
-    }
+    // static updateTask = async (task: Task) => {
+    //     try {
+    //         const taskToUpdate = {
+    //             ...task,
+    //             startDateTime: new Date(task.startDateTime),
+    //             endDateTime: new Date(task.endDateTime)
+    //         };
+    //         return await TaskApiService.updateTask(taskToUpdate);
+    //     } catch (error) {
+    //         const errorMessage = `Erreur lors de la modification d'une tâche: ${error.message}`;
+    //         console.error(errorMessage)
+    //         throw error;
+    //     }
+    // }
 }

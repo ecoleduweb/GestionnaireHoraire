@@ -4,7 +4,6 @@ import (
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
 	"llio-api/repositories"
-	"log"
 
 	"github.com/jinzhu/copier"
 )
@@ -41,7 +40,6 @@ func VerifyCreateTaskJSON(taskDTO *DTOs.TaskDTO) []DTOs.FieldErrorDTO {
 	return errors
 }
 
-// CreateTask encapsule la logique métier pour la création d'une tâche
 func CreateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 
 	// Mapper le body vers le modèle Task
@@ -49,7 +47,6 @@ func CreateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 	task := &DAOs.Task{}
 	err := copier.Copy(task, taskDTO)
 	if err != nil {
-		log.Printf("Erreur lors de la copie des champs: %v", err)
 		return nil, err
 	}
 
@@ -60,15 +57,9 @@ func CreateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 
 	taskDTOResponse := &DTOs.TaskDTO{}
 	err = copier.Copy(taskDTOResponse, taskDAOAded)
-	if err != nil {
-		log.Printf("Erreur lors de la copie des champs: %v", err)
-		return nil, err
-	}
-	return taskDTOResponse, nil
+	return taskDTOResponse, err
 }
 
-// Fonction qui retourne toutes les tâches
-// Convertion des tâches DAOs en tâches DTOs
 func GetAllTasks() ([]*DTOs.TaskDTO, error) {
 	tasks, err := repositories.GetAllTasks()
 	if err != nil {
@@ -79,33 +70,22 @@ func GetAllTasks() ([]*DTOs.TaskDTO, error) {
 	for _, task := range tasks {
 		taskDTO := &DTOs.TaskDTO{}
 		err = copier.Copy(taskDTO, task)
-		if err != nil {
-			log.Printf("Erreur lors de la copie des champs: %v", err)
-			continue
-		}
 		tasksDTOs = append(tasksDTOs, taskDTO)
 	}
 
-	return tasksDTOs, nil
+	return tasksDTOs, err
 }
 
-// Fonction qui retourne une tâche par son id
-// Convertion de la tâche DAOs en tâche DTOs
 func GetTaskById(id string) (*DTOs.TaskDTO, error) {
 	task, err := repositories.GetTaskById(id)
 	if err != nil {
 		return nil, err
-	} else if task == nil {
-		return nil, nil
 	}
 
 	taskDTO := &DTOs.TaskDTO{}
 	err = copier.Copy(taskDTO, task)
-	if err != nil {
-		log.Printf("Erreur lors de la copie des champs: %v", err)
-	}
 
-	return taskDTO, nil
+	return taskDTO, err
 }
 
 func UpdateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {

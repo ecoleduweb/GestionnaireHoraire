@@ -53,7 +53,13 @@ API/
     DB_NAME_RUN=nom_bd
     DB_NAME_TEST=nom_bd_test
     ENV=DEV ou TEST ou PROD
+    AZUREAD_CLIENT_ID=client_id_azure
+    AZUREAD_CLIENT_SECRET=client_secret_azuread
+    AZUREAD_CALLBACK_URL=http://localhost:8080/auth/azureadv2/callback
+    SESSION_SECRET=secret
+    SESSION_MAX_AGE=86400
     PORT = port_de_l'application
+    FRONT_ADDRESS = http://localhost:xxxx
    ```
 # Test
 ## Installation de la librairie de test pour du golang : testify
