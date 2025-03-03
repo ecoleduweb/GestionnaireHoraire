@@ -4,6 +4,8 @@ import (
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
 	"llio-api/repositories"
+
+	"github.com/jinzhu/copier"
 )
 
 func VerifyCreateTaskJSON(taskDTO *DTOs.TaskDTO) []DTOs.FieldErrorDTO {
@@ -20,32 +22,50 @@ func VerifyCreateTaskJSON(taskDTO *DTOs.TaskDTO) []DTOs.FieldErrorDTO {
 	return errors
 }
 
-// CreateTaskService encapsule la logique métier pour la création d'une tâche
-func CreateTaskService(taskDTO *DTOs.TaskDTO) (*DTOs.TaskResponse, error) {
+func CreateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 
 	// Mapper le body vers le modèle Task
-	task := &DAOs.Task{
-		Name:        taskDTO.Name,
-		Description: taskDTO.Description,
-		Billable:    taskDTO.Billable,
-		StartDate:   taskDTO.StartDate,
-		EndDate:     taskDTO.EndDate,
-		UserId:      taskDTO.UserId,
-		ProjectId:   taskDTO.ProjectId,
-		CategoryId:  taskDTO.CategoryId,
-	}
 
-	err := repositories.CreateTask(task)
+	task := &DAOs.Task{}
+	err := copier.Copy(task, taskDTO)
 	if err != nil {
 		return nil, err
 	}
 
-	taskResponse := &DTOs.TaskResponse{
-		Name:        task.Name,
-		Description: task.Description,
-		Billable:    task.Billable,
-		StartDate:   task.StartDate,
-		EndDate:     task.EndDate,
+	taskDAOAded, err := repositories.CreateTask(task)
+	if err != nil {
+		return nil, err
 	}
-	return taskResponse, nil
+
+	taskDTOResponse := &DTOs.TaskDTO{}
+	err = copier.Copy(taskDTOResponse, taskDAOAded)
+	return taskDTOResponse, err
+}
+
+func GetAllTasks() ([]*DTOs.TaskDTO, error) {
+	tasks, err := repositories.GetAllTasks()
+	if err != nil {
+		return nil, err
+	}
+
+	var tasksDTOs []*DTOs.TaskDTO
+	for _, task := range tasks {
+		taskDTO := &DTOs.TaskDTO{}
+		err = copier.Copy(taskDTO, task)
+		tasksDTOs = append(tasksDTOs, taskDTO)
+	}
+
+	return tasksDTOs, err
+}
+
+func GetTaskById(id string) (*DTOs.TaskDTO, error) {
+	task, err := repositories.GetTaskById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	taskDTO := &DTOs.TaskDTO{}
+	err = copier.Copy(taskDTO, task)
+
+	return taskDTO, err
 }

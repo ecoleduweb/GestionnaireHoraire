@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"llio-api/controllers"
 	"llio-api/database"
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
@@ -16,7 +17,8 @@ import (
 // TestCreateTask est la fonction de test pour le contrôleur CreateTask.
 func TestCreateTask(t *testing.T) {
 
-	router, w := setupTestRouter()
+	connectDB()
+	router := setupTestRouter(http.MethodPost, "/tasks", controllers.CreateTask)
 
 	// Création d'une tâche à envoyer dans la requête
 	task := DTOs.TaskDTO{
@@ -30,7 +32,7 @@ func TestCreateTask(t *testing.T) {
 		CategoryId:  1,
 	}
 
-	w = sendRequest(router, "POST", "/tasks", task)
+	w := sendRequest(router, "POST", "/tasks", task)
 	assertResponse(t, w, http.StatusCreated, nil)
 
 	// Vérification du corps de la réponse
@@ -54,7 +56,8 @@ func TestCreateTask(t *testing.T) {
 
 func TestDoNotCreateTaskWithEndDateBeforeStartDate(t *testing.T) {
 
-	router, w := setupTestRouter()
+	connectDB()
+	router := setupTestRouter(http.MethodPost, "/tasks", controllers.CreateTask)
 
 	// Création d'une tâche à envoyer dans la requête
 	task := DTOs.TaskDTO{
@@ -68,7 +71,7 @@ func TestDoNotCreateTaskWithEndDateBeforeStartDate(t *testing.T) {
 		CategoryId:  1,
 	}
 
-	w = sendRequest(router, "POST", "/tasks", task)
+	w := sendRequest(router, "POST", "/tasks", task)
 
 	expectedErrors := []DTOs.FieldErrorDTO{
 		{Field: "start_date", Message: "La date de début doit être avant la date de fin"},
@@ -78,7 +81,8 @@ func TestDoNotCreateTaskWithEndDateBeforeStartDate(t *testing.T) {
 
 func TestDoNotCreateTaskWithoutNameAndDescription(t *testing.T) {
 
-	router, w := setupTestRouter()
+	connectDB()
+	router := setupTestRouter(http.MethodPost, "/tasks", controllers.CreateTask)
 
 	// Création d'une tâche à envoyer dans la requête
 	task := DTOs.TaskDTO{
@@ -92,7 +96,7 @@ func TestDoNotCreateTaskWithoutNameAndDescription(t *testing.T) {
 		CategoryId:  1,
 	}
 
-	w = sendRequest(router, "POST", "/tasks", task)
+	w := sendRequest(router, "POST", "/tasks", task)
 
 	expectedErrors := []DTOs.FieldErrorDTO{
 		{Field: "Name", Message: "Le champ Name est invalide ou manquant"},
@@ -103,7 +107,8 @@ func TestDoNotCreateTaskWithoutNameAndDescription(t *testing.T) {
 
 func TestDoNotCreateTaskWithLenghtNameOver50(t *testing.T) {
 
-	router, w := setupTestRouter()
+	connectDB()
+	router := setupTestRouter(http.MethodPost, "/tasks", controllers.CreateTask)
 
 	// Création d'une tâche à envoyer dans la requête
 	task := DTOs.TaskDTO{
@@ -117,7 +122,7 @@ func TestDoNotCreateTaskWithLenghtNameOver50(t *testing.T) {
 		ProjectId:   1,
 		CategoryId:  1,
 	}
-	w = sendRequest(router, "POST", "/tasks", task)
+	w := sendRequest(router, "POST", "/tasks", task)
 
 	expectedErrors := []DTOs.FieldErrorDTO{
 		{Field: "Name", Message: "Le champ Name est invalide ou manquant"},
@@ -127,7 +132,8 @@ func TestDoNotCreateTaskWithLenghtNameOver50(t *testing.T) {
 
 func TestDoNotCreateTaskWithoutDates(t *testing.T) {
 
-	router, w := setupTestRouter()
+	connectDB()
+	router := setupTestRouter(http.MethodPost, "/tasks", controllers.CreateTask)
 
 	// Création d'une tâche à envoyer dans la requête
 	task := DTOs.TaskDTO{
@@ -139,7 +145,7 @@ func TestDoNotCreateTaskWithoutDates(t *testing.T) {
 		CategoryId:  1,
 	}
 
-	w = sendRequest(router, "POST", "/tasks", task)
+	w := sendRequest(router, "POST", "/tasks", task)
 
 	expectedErrors := []DTOs.FieldErrorDTO{
 		{Field: "StartDate", Message: "Le champ StartDate est invalide ou manquant"},
@@ -150,7 +156,8 @@ func TestDoNotCreateTaskWithoutDates(t *testing.T) {
 
 func TestDoNotCreateTaskWithInvalidStartDate(t *testing.T) {
 
-	router, w := setupTestRouter()
+	connectDB()
+	router := setupTestRouter(http.MethodPost, "/tasks", controllers.CreateTask)
 
 	// Création d'une tâche à envoyer dans la requête
 	task := DTOs.TaskDTO{
@@ -164,7 +171,7 @@ func TestDoNotCreateTaskWithInvalidStartDate(t *testing.T) {
 		CategoryId:  1,
 	}
 
-	w = sendRequest(router, "POST", "/tasks", task)
+	w := sendRequest(router, "POST", "/tasks", task)
 
 	expectedErrors := []DTOs.FieldErrorDTO{
 		{Field: "StartDate", Message: "Le champ StartDate est invalide ou manquant"},
@@ -174,7 +181,8 @@ func TestDoNotCreateTaskWithInvalidStartDate(t *testing.T) {
 
 func TestDoNotCreateTaskWithInvalidEndDate(t *testing.T) {
 
-	router, w := setupTestRouter()
+	connectDB()
+	router := setupTestRouter(http.MethodPost, "/tasks", controllers.CreateTask)
 
 	// Création d'une tâche à envoyer dans la requête
 	task := DTOs.TaskDTO{
@@ -188,7 +196,7 @@ func TestDoNotCreateTaskWithInvalidEndDate(t *testing.T) {
 		CategoryId:  1,
 	}
 
-	w = sendRequest(router, "POST", "/tasks", task)
+	w := sendRequest(router, "POST", "/tasks", task)
 
 	expectedErrors := []DTOs.FieldErrorDTO{
 		{Field: "EndDate", Message: "Le champ EndDate est invalide ou manquant"},
