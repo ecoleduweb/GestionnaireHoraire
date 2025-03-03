@@ -8,8 +8,6 @@ import (
 	"llio-api/useful"
 	"os"
 
-	"llio-api/auth"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
