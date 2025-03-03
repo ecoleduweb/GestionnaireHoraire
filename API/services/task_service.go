@@ -93,7 +93,7 @@ func UpdateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 	taskDAO := &DAOs.Task{}
 	err := copier.Copy(taskDAO, taskDTO)
 	if err != nil {
-		log.Printf("Erreur lors de la copie des champs: %v", err)
+		return nil, err
 	}
 
 	taskDAOUpdated, err := repositories.UpdateTask(taskDAO)
@@ -103,9 +103,5 @@ func UpdateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 
 	taskDTOResponse := &DTOs.TaskDTO{}
 	err = copier.Copy(taskDTOResponse, taskDAOUpdated)
-	if err != nil {
-		log.Printf("Erreur lors de la copie des champs: %v", err)
-		return nil, err
-	}
-	return taskDTOResponse, nil
+	return taskDTOResponse, err
 }

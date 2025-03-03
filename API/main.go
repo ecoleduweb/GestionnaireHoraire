@@ -8,8 +8,8 @@ import (
 	"llio-api/useful"
 	"os"
 
-
 	"llio-api/auth"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -42,7 +42,7 @@ func main() {
 	}))
 
 	routes.RegisterRoutes(r)
-  handlers.ApiStatus(r)
+	handlers.ApiStatus(r)
 	routes.AuthRoutes(r)
 
 	port := os.Getenv("PORT")
