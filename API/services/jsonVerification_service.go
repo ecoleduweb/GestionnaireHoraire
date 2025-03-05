@@ -3,6 +3,7 @@ package services
 import (
 	"fmt"
 	"llio-api/models/DTOs"
+	"llio-api/useful"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -31,9 +32,11 @@ func VerifyJSON(c *gin.Context, dto interface{}) []DTOs.FieldErrorDTO {
 
 		// traitement des erreurs de validation
 		for _, err := range validationErrors {
+			fielName := err.Field()
+			camelCaseFieldName := useful.ToCamelCase(fielName)
 			fieldErrors = append(fieldErrors, DTOs.FieldErrorDTO{
-				Field:   err.Field(),
-				Message: fmt.Sprintf("Le champ %s est invalide ou manquant", err.Field()),
+				Field:   camelCaseFieldName,
+				Message: fmt.Sprintf("Le champ %s est invalide ou manquant", camelCaseFieldName),
 			})
 		}
 

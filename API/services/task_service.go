@@ -13,26 +13,26 @@ func VerifyCreateTaskJSON(taskDTO *DTOs.TaskDTO) []DTOs.FieldErrorDTO {
 
 	if taskDTO.UserId == 0 {
 		errors = append(errors, DTOs.FieldErrorDTO{
-			Field:   "user_id",
-			Message: "Le champ UserId est invalide ou manquant",
+			Field:   "userId",
+			Message: "Le champ userId est invalide ou manquant",
 		})
 	}
 	if taskDTO.ProjectId == 0 {
 		errors = append(errors, DTOs.FieldErrorDTO{
-			Field:   "project_id",
-			Message: "Le champ ProjectId est invalide ou manquant",
+			Field:   "projectId",
+			Message: "Le champ projectId est invalide ou manquant",
 		})
 	}
 	if taskDTO.CategoryId == 0 {
 		errors = append(errors, DTOs.FieldErrorDTO{
-			Field:   "category_id",
-			Message: "Le champ CategoryId est invalide ou manquant",
+			Field:   "categoryId",
+			Message: "Le champ categoryId est invalide ou manquant",
 		})
 	}
 	// Vérifier que StartDate est avant EndDate
 	if taskDTO.StartDate.After(taskDTO.EndDate) {
 		errors = append(errors, DTOs.FieldErrorDTO{
-			Field:   "start_date",
+			Field:   "startDate",
 			Message: "La date de début doit être avant la date de fin",
 		})
 	}
