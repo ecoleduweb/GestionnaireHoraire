@@ -26,6 +26,9 @@ func RegisterRoutes(r *gin.Engine) {
 
 		taskGroup.GET("/:id", controllers.GetTaskById)
 
+		//Route pour mettre à jour une tâche
+		taskGroup.PUT("", controllers.UpdateTask)
+
 	}
 
 }

@@ -8,9 +8,9 @@ type TaskDTO struct {
 	Name        string    `json:"name" binding:"required,max=50"`
 	Description string    `json:"description" binding:"required"`
 	Billable    bool      `json:"billable"`
-	StartDate   time.Time `json:"start_date" binding:"required"`
-	EndDate     time.Time `json:"end_date" binding:"required"`
-	UserId      int       `json:"user_id" binding:"required"`
-	ProjectId   int       `json:"project_id" binding:"required"`
-	CategoryId  int       `json:"category_id" binding:"required"`
+	StartDate   time.Time `json:"startDate" binding:"required"`
+	EndDate     time.Time `json:"endDate" binding:"required"`
+	UserId      int       `json:"userId" `
+	ProjectId   int       `json:"projectId" `
+	CategoryId  int       `json:"categoryId" `
 }

@@ -22,3 +22,8 @@ func GetTaskById(id string) (*DAOs.Task, error) {
 	err := database.DB.First(&task, id).Error
 	return &task, err
 }
+
+func UpdateTask(taskDAO *DAOs.Task) (*DAOs.Task, error) {
+	err := database.DB.Updates(taskDAO).Error
+	return taskDAO, err
+}

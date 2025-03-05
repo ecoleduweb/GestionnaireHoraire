@@ -5,6 +5,7 @@ import (
 	"llio-api/models/DTOs"
 	"llio-api/services"
 	"log"
+	"strconv"
 
 	"net/http"
 
@@ -66,10 +67,45 @@ func GetTaskById(c *gin.Context) {
 			c.JSON(http.StatusNotFound, gin.H{"error": "La tâche est introuvable."})
 			return
 		}
-		log.Printf("Impossible de récupérer les tâches:%v", err)
+		log.Printf("Impossible de récupérer la tâche:%v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la tâche."})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"task": task})
+}
+
+func UpdateTask(c *gin.Context) {
+	var updateTaskDTO DTOs.TaskDTO
+
+	//Validation des données entrantes
+	messageErrsJSON := services.VerifyJSON(c, &updateTaskDTO)
+	if len(messageErrsJSON) > 0 {
+		log.Printf("Une ou plusieurs erreurs de format JSON sont survenues:%v", messageErrsJSON)
+		c.JSON(http.StatusBadRequest, gin.H{"errors": messageErrsJSON})
+		return
+	}
+
+	id := strconv.Itoa(updateTaskDTO.Id)
+	_, err := services.GetTaskById(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			log.Printf("La tâche à mettre à jour est introuvable:%v", err)
+			c.JSON(http.StatusNotFound, gin.H{"error": "La tâche est introuvable."})
+			return
+		}
+		log.Printf("Impossible de récupérer la tâche à mettre à jour:%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la tâche à mettre à jour."})
+		return
+	}
+
+	updatedTaskDTO, err := services.UpdateTask(&updateTaskDTO)
+	if err != nil {
+		log.Printf("La tâche n'a pas été modifiée : %v", err)
+		c.JSON(http.StatusNotModified, gin.H{"error": "La tâche n'a pas été modifiée."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"updated_task": updatedTaskDTO})
+
 }
