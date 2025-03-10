@@ -1,21 +1,24 @@
+import { initializeTaskDates } from "../utils/date";
 import type { Task } from "../Models";
 
 export const taskTemplate = {
-    generate: (): Task => ({
-        name: "",
-        description: "",
-        state: "à faire",
-        billable: false,
-        userId: 0,
-        projectId: 0,
-        categoryId: 0,
-        startDateTime: new Date(),
-        endDateTime: new Date(),
-    }),
+  generate: (): Task => {
+    const { startDate, endDate } = initializeTaskDates();
+    
+    return {
+      name: "",
+      description: "",
+      billable: false,
+      userId: 0,
+      projectId: 0,
+      categoryId: 0,
+      startDate,
+      endDate
+    };
+  },
 
-    states: ["à faire", "en cours", "terminée"],
-    time: {
-        hours: Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, "0")),
-        minutes: ["00", "15", "30", "45"]
-    }
+  time: {
+    hours: Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, "0")),
+    minutes: ["00", "15", "30", "45"]
+  }
 } as const;
