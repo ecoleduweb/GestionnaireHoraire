@@ -40,7 +40,7 @@ export const initializeTaskDates = (targetDate?: Date): { startDate: Date, endDa
 };
 
 // Valider que l'heure de fin est après l'heure de début
-export const validateEndTime = (
+export const applyEndTime = (
   startHours: string, 
   startMinutes: string, 
   endHours: string, 

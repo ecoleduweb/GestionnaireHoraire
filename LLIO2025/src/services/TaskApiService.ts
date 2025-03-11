@@ -4,96 +4,70 @@ import { GET, POST, PUT, DELETE } from "../ts/server";
 
 let tasks: Task[];
 
-interface RawTask extends Omit<Task, 'startDate' | 'endDate'> {
-    startDate: string | Date;
-    endDate: string | Date;
+interface RawTask extends Omit<Task, 'startDate' | 'endDate'| 'userId' | 'projectId' | 'categoryId'> {
+    start_date: string | Date;
+    end_date: string | Date;
+    user_id: number;
+    project_id: number;
+    category_id: number;
 }
 
 const transformTasksDates = (task: RawTask): Task => ({
     ...task,
-    startDate: new Date(task.startDate),
-    endDate: new Date(task.endDate)
+    startDate: new Date(task.start_date),
+    endDate: new Date(task.end_date),
+    userId: task.user_id,
+    projectId: task.project_id,
+    categoryId: task.category_id
 });
 
-const transformTasksArray = (tasks: RawTask[]): Task[] => 
-    tasks.map(transformTasksDates);
-
-const getTaskData = async (): Promise<Task[]> => {
-    const response = await GET<RawTask[]>("/tasks");
-    return transformTasksArray(response);
-};
-
 const createTask = async (task: Task): Promise<Task> => {
-    // Vérifier que les dates sont valides
-    const startDate = task.startDate instanceof Date && !isNaN(task.startDate.getTime())
-      ? task.startDate
-      : new Date();
-      
-    const endDate = task.endDate instanceof Date && !isNaN(task.endDate.getTime())
-      ? task.endDate
-      : new Date(startDate.getTime() + 60 * 60 * 1000);
-    
+        
     // Préparation des données pour l'API
-    const taskForApi = {
+    const taskForApi: RawTask = {
       name: task.name,
       description: task.description || "",
       billable: task.billable || false,
-      start_date: startDate.toISOString(),
-      end_date: endDate.toISOString(),
+      start_date: task.startDate.toISOString(),
+      end_date: task.endDate.toISOString(),
       user_id: task.userId || 1,
       project_id: task.projectId || 1,
       category_id: task.categoryId || 1,
     };
     
     try {
-        const response = await POST<typeof taskForApi, { reponse: string, task: any }>("/tasks", taskForApi);
+        const response = await POST<typeof taskForApi, {task: RawTask}>("/tasks", taskForApi);
         
-        // Extraire l'objet task de la réponse
-        let taskData: any;
+        // Conversion directe de l'objet task
+        const taskData = response.task;
         
-        if (response && response.task) {
-            taskData = response.task;
-        } else if (response && typeof response === 'object') {
-            // Si la réponse est un objet, utiliser directement
-            taskData = response;
-        } else {
-            // Remplacé par console.error qui peut être utile pour le débogage
-            // mais peut aussi être supprimé si vous voulez éliminer tous les messages
-            console.error('Format de réponse inattendu:', response);
-            // Utiliser les données envoyées comme fallback
-            taskData = {
-                ...taskForApi,
-                id: Date.now() // ID temporaire
-            };
-        }
-        
-        // Conversion du format snake_case vers camelCase si nécessaire
-        const newTask: Task = {
-            id: taskData.id || undefined,
+        return {
+            id: taskData.id,
             name: taskData.name,
-            description: taskData.description || "",
-            billable: taskData.billable || false,
-            startDate: new Date(taskData.start_date || taskData.startDate),
-            endDate: new Date(taskData.end_date || taskData.endDate),
-            userId: task.userId || 1,
-            projectId: task.projectId || 1,
-            categoryId: task.categoryId || 1
+            description: taskData.description,
+            billable: taskData.billable,
+            startDate: new Date(taskData.start_date || taskData.start_date),
+            endDate: new Date(taskData.end_date || taskData.end_date),
+            userId: taskData.user_id || taskData.user_id,
+            projectId: taskData.project_id || taskData.project_id,
+            categoryId: taskData.category_id || taskData.category_id
         };
-        
-        return newTask;
     } catch (error) {
         throw error;
     }
 };
 
 const updateTask = async (task: Task): Promise<Task> => {
-    const taskForApi = {
+    const taskForApi: RawTask = {
         ...task,
-        startDate: task.startDate.toISOString(),
-        endDate: task.endDate.toISOString()
+        start_date: task.startDate.toISOString(),
+        end_date: task.endDate.toISOString(),
+        user_id: task.userId,
+        project_id: task.projectId,
+        category_id: task.categoryId
     };
 
-    const response = await PUT<typeof taskForApi, RawTask>(`/tasks/${task.id}`, taskForApi);
+    const response = await PUT<RawTask, RawTask>(`/tasks/${task.id}`, taskForApi);
     return transformTasksDates(response);
 };
 
@@ -101,9 +75,10 @@ const deleteTask = async (id: number): Promise<void> => {
     await DELETE(`/tasks/${id}`);
 };
 
-export const fetchTasks = async () => {
+const fetchTasks = async () => {
     try {
-        const taskData = await getTaskData();
+        const response = await GET<RawTask[]>("/tasks");
+        const taskData = response.map(transformTasksDates);
         tasks = taskData;
         return taskData;
     } catch (error) {

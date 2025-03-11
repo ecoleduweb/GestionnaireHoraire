@@ -7,7 +7,7 @@
     getMinutesFromDate,
     createDateWithTime,
     initializeTaskDates,
-    validateEndTime as validateEndTimeUtil,
+    applyEndTime as applyEndTimeUtil,
   } from '../../utils/date';
   import '../../style/app.css';
 
@@ -68,8 +68,8 @@
     time: { hours, minutes },
   } = taskTemplate;
 
-  const validateEndTime = () => {
-    const result = validateEndTimeUtil(
+  const applyEndTime = () => {
+    const result = applyEndTimeUtil(
       time.startHours,
       time.startMinutes,
       time.endHours,
@@ -203,7 +203,7 @@
             <div class="flex gap-2">
               <select
                 bind:value={time.endHours}
-                on:change={validateEndTime}
+                on:change={applyEndTime}
                 class="p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
               >
                 {#each hours as hour}
@@ -212,7 +212,7 @@
               </select>
               <select
                 bind:value={time.endMinutes}
-                on:change={validateEndTime}
+                on:change={applyEndTime}
                 class="p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
               >
                 {#each minutes as minute}
