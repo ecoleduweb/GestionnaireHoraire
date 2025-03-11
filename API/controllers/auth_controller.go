@@ -51,6 +51,5 @@ func Logout(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.Writer.Header().Set("Location", "/")
 	http.Redirect(c.Writer, c.Request, frontendURL, http.StatusFound)
 }
