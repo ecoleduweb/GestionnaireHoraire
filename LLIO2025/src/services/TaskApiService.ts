@@ -77,14 +77,11 @@ const createTask = async (task: Task): Promise<Task> => {
             endDate: new Date(taskData.end_date || taskData.endDate),
             userId: task.userId || 1,
             projectId: task.projectId || 1,
-            categoryId: task.categoryId || 1,
-            // state: taskData.state || "à faire"
+            categoryId: task.categoryId || 1
         };
         
         return newTask;
     } catch (error) {
-        // Gardé pour le débogage, mais peut être supprimé si nécessaire
-        console.error('Erreur lors de l\'appel API:', error);
         throw error;
     }
 };
