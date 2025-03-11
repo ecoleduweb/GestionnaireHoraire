@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"llio-api/useful"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/markbates/goth/gothic"
@@ -24,6 +26,8 @@ func Auth(c *gin.Context) {
 }
 
 func GetAuthCallback(c *gin.Context) {
+	useful.LoadEnv()
+	frontendURL := os.Getenv("FRONTEND_URL")
 	provider := c.Param("provider")
 	log.Printf("callback authentification avec le provider %s", provider)
 	q := c.Request.URL.Query()
@@ -36,15 +40,16 @@ func GetAuthCallback(c *gin.Context) {
 		return
 	}
 	log.Printf("Utilisateur authentifié: %s", user.Email)
-	c.JSON(http.StatusOK, gin.H{"user": user})
+	http.Redirect(c.Writer, c.Request, frontendURL+"/calendar", http.StatusFound)
 }
 
 func Logout(c *gin.Context) {
+	useful.LoadEnv()
+	frontendURL := os.Getenv("FRONTEND_URL")
 	if err := gothic.Logout(c.Writer, c.Request); err != nil {
 		log.Printf("Erreur lors de la déconnexion: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.Writer.Header().Set("Location", "/")
-	c.Writer.WriteHeader(http.StatusTemporaryRedirect)
+	http.Redirect(c.Writer, c.Request, frontendURL, http.StatusFound)
 }
