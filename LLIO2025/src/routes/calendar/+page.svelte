@@ -165,18 +165,13 @@
   }
 
   async function handleTaskSubmit(taskData: Task) {
-    if (!calendarService) return;
-    try {
-      calendarService.addEvent({
-        id: taskData.id.toString(),
-        title: taskData.name,
-        start: taskData.startDate,
-        end: taskData.endDate,
-        extendedProps: { ...taskData },
-      });
-    } catch (error) {
-      console.error("Erreur lors d'ajout de tâche au calendrier", error);
-    }
+    calendarService.addEvent({
+      id: taskData.id.toString(),
+      title: taskData.name,
+      start: taskData.startDate,
+      end: taskData.endDate,
+      extendedProps: { ...taskData },
+    });
   }
 
   async function handleTaskUpdate(task: Task) {
