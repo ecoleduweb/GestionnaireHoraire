@@ -10,6 +10,7 @@ Une API développée en Go avec le framework Gin-Gonic.
 API/
 ├── controllers/   # Logique des routes
 ├── database/      # Connexion et configuration de la base de données
+|__ auth/          # Configuration de l'authentification 
 ├── main.go        # Point d'entrée de l'application
 ├── middleware/    # Middlewares
 ├── models/        # Modèles de données
@@ -39,6 +40,17 @@ API/
 
 2. Créer une base de données SQL
 
+# Authentification
+1. Installation des modules d'authentification et de session
+   go get github.com/markbates/goth
+   go get github.com/gorilla/sessions
+
+2. Import du provider pour l'authentification avec azuread
+   import (
+      "github.com/markbates/goth/providers/azureadv2"
+   )
+
+
 # Variables d'environnement
 1. Installation du module qui nous permet d'utiliser les variables d'environnement
    go get github.com/joho/godotenv
@@ -53,7 +65,13 @@ API/
     DB_NAME_RUN=nom_bd
     DB_NAME_TEST=nom_bd_test
     ENV=DEV ou TEST ou PROD
+    AZUREAD_CLIENT_ID=client_id_azure
+    AZUREAD_CLIENT_SECRET=client_secret_azuread
+    AZUREAD_CALLBACK_URL=http://localhost:8080/auth/azureadv2/callback
+    SESSION_SECRET=secret
+    SESSION_MAX_AGE=86400
     PORT = port_de_l'application
+    FRONTEND_URL = http://localhost:xxxx
    ```
 # Test
 ## Installation de la librairie de test pour du golang : testify

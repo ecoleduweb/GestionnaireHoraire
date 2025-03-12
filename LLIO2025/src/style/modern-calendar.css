@@ -1,0 +1,220 @@
+/* styles/modern-calendar.css */
+
+/* Base styles */
+.fc {
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  background-color: white;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Header toolbar - désactivé car nous utilisons un en-tête personnalisé */
+.fc .fc-toolbar.fc-header-toolbar {
+  display: none;
+}
+
+/* Day header */
+.fc .fc-col-header-cell {
+  padding: 0.5rem;
+  border-color: #e5e7eb;
+}
+
+.fc .fc-col-header-cell-cushion {
+  color: #111827;
+  font-weight: 500;
+  font-size: 0.875rem;
+  text-decoration: none;
+  padding: 0.375rem;
+}
+
+/* Today highlighting */
+.fc .fc-day-today {
+  background-color: transparent !important;
+}
+
+.fc .fc-day-today .fc-col-header-cell-cushion {
+  color: #015e61; /* Couleur principale */
+}
+
+/* Ligne indicatrice de l'heure actuelle */
+.fc .fc-timegrid-now-indicator-line {
+  border-color: #015e61; /* Couleur principale */
+}
+
+.fc .fc-timegrid-now-indicator-arrow {
+  border-color: #015e61; /* Couleur principale */
+  background-color: #015e61; /* Couleur principale */
+}
+
+/* Grid */
+.fc-theme-standard td,
+.fc-theme-standard th,
+.fc-theme-standard .fc-scrollgrid {
+  border-color: #e5e7eb;
+}
+
+.fc .fc-scrollgrid-section-header > *,
+.fc .fc-scrollgrid-section-footer > * {
+  border-right-width: 0;
+}
+
+/* Time grid - Rendre plus compact */
+.fc .fc-timegrid-slot {
+  height: 25px !important;
+  border-color: #e5e7eb;
+}
+
+.fc .fc-timegrid-slot-minor {
+  border-top-style: none;
+}
+
+.fc .fc-timegrid-slot-label {
+  color: #6b7280;
+  font-size: 0.75rem;
+  font-weight: 600;
+  vertical-align: top;
+}
+
+.fc .fc-timegrid-axis {
+  padding: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.fc .fc-timegrid-slot-label-cushion {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  padding: 0 0.25rem;
+}
+
+/* Events */
+.fc-event {
+  border-radius: 0.25rem !important;
+  border-left-width: 2px !important;
+  padding: 0.25rem !important;
+  margin: 0.125rem !important;
+  background-color: #fff !important;
+  border-top: 1px solid #e5e7eb !important;
+  border-right: 1px solid #e5e7eb !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  min-height: 20px !important;
+}
+
+/* Event types avec la nouvelle couleur principale */
+.fc-event.event-blue {
+  border-left-color: #015e61 !important; /* Couleur principale */
+  background-color: #e6f7f7 !important; /* Version claire de la couleur principale */
+}
+
+.fc-event.event-green {
+  border-left-color: #027e7a !important; /* Variante de la couleur principale */
+  background-color: #e6f7f6 !important;
+}
+
+.fc-event.event-teal {
+  border-left-color: #015e61 !important; /* Couleur principale */
+  background-color: #e6f7f7 !important;
+}
+
+.fc-event.event-dark-teal {
+  border-left-color: #014446 !important; /* Version foncée de la couleur principale */
+  background-color: #e6f3f3 !important;
+}
+
+.fc-event.event-light-teal {
+  border-left-color: #03898d !important; /* Version claire de la couleur principale */
+  background-color: #e6f9fa !important;
+}
+
+/* Event content */
+.fc-event-title {
+  font-size: 0.75rem !important;
+  font-weight: 400 !important;
+  color: #111827 !important;
+  margin-bottom: 0.125rem !important;
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 1 !important;
+  -webkit-box-orient: vertical !important;
+}
+
+.fc-event-time {
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  color: inherit !important;
+}
+
+.fc-event.event-blue .fc-event-time {
+  color: #015e61 !important; /* Couleur principale */
+}
+
+.fc-event.event-green .fc-event-time {
+  color: #027e7a !important; /* Variante de la couleur principale */
+}
+
+.fc-event.event-teal .fc-event-time {
+  color: #015e61 !important; /* Couleur principale */
+}
+
+.fc-event.event-dark-teal .fc-event-time {
+  color: #014446 !important; /* Version foncée */
+}
+
+.fc-event.event-light-teal .fc-event-time {
+  color: #03898d !important; /* Version claire */
+}
+
+/* Month view */
+.fc .fc-daygrid-day-top {
+  justify-content: center;
+  padding-top: 0.25rem;
+}
+
+.fc .fc-daygrid-day-number {
+  font-size: 0.875rem;
+  padding: 0.25rem;
+}
+
+/* Réduire les marges et paddings */
+.fc .fc-daygrid-day-frame {
+  padding: 2px !important;
+}
+
+.fc .fc-daygrid-day-events {
+  margin-bottom: 0;
+}
+
+.fc .fc-daygrid-body {
+  min-height: auto !important;
+}
+
+/* More link */
+.fc .fc-daygrid-more-link {
+  font-size: 0.75rem;
+  color: #015e61; /* Couleur principale */
+  margin-top: 0.125rem;
+}
+
+/* Mobile adjustments */
+@media (max-width: 639px) {
+  .fc .fc-timegrid-slot {
+    height: 20px !important;
+  }
+
+  .fc-event-title {
+    font-size: 0.7rem !important;
+  }
+
+  .fc-event-time {
+    font-size: 0.7rem !important;
+  }
+}
