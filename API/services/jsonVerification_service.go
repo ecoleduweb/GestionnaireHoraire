@@ -32,8 +32,8 @@ func VerifyJSON(c *gin.Context, dto interface{}) []DTOs.FieldErrorDTO {
 
 		// traitement des erreurs de validation
 		for _, err := range validationErrors {
-			fielName := err.Field()
-			camelCaseFieldName := useful.ToCamelCase(fielName)
+			fiedlName := err.Field()
+			camelCaseFieldName := useful.ToCamelCase(fiedlName)
 			fieldErrors = append(fieldErrors, DTOs.FieldErrorDTO{
 				Field:   camelCaseFieldName,
 				Message: fmt.Sprintf("Le champ %s est invalide ou manquant", camelCaseFieldName),

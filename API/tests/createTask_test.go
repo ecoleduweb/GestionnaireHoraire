@@ -203,26 +203,3 @@ func TestDoNotCreateTaskWithInvalidEndDate(t *testing.T) {
 	}
 	assertResponse(t, w, http.StatusBadRequest, expectedErrors)
 }
-
-/*
-if taskDTO.UserId == 0 {
-		errors = append(errors, DTOs.FieldErrorDTO{
-			Field:   "userId",
-			Message: "Le champ userId est invalide ou manquant",
-		})
-	}
-	if taskDTO.ProjectId == 0 {
-		errors = append(errors, DTOs.FieldErrorDTO{
-			Field:   "projectId",
-			Message: "Le champ projectId est invalide ou manquant",
-		})
-	}
-	if taskDTO.CategoryId == 0 {
-		errors = append(errors, DTOs.FieldErrorDTO{
-			Field:   "categoryId",
-			Message: "Le champ categoryId est invalide ou manquant",
-		})
-	}
-
-	VERIFIER CES CONDITIONS DANS DES TESTS, A FAIRE PENDANT L'AMELIORATION DES TESTS
-*/
