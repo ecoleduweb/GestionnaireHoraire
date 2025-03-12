@@ -23,13 +23,9 @@ func GetTaskById(id string) (*DAOs.Task, error) {
 	return &task, err
 }
 
-// Fonction qui permet de mettre à jour une tâche
 func UpdateTask(taskDAO *DAOs.Task) (*DAOs.Task, error) {
 	err := database.DB.Updates(taskDAO).Error
-	if err != nil {
-		return nil, err
-	}
-	return taskDAO, nil
+	return taskDAO, err
 }
 
 // Fonction qui permet la suppression de la tâche dans la BD

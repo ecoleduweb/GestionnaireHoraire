@@ -67,7 +67,7 @@ func GetTaskById(c *gin.Context) {
 			c.JSON(http.StatusNotFound, gin.H{"error": "La tâche est introuvable."})
 			return
 		}
-		log.Printf("Impossible de récupérer les tâches:%v", err)
+		log.Printf("Impossible de récupérer la tâche:%v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la tâche."})
 		return
 	}
@@ -75,26 +75,27 @@ func GetTaskById(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"task": task})
 }
 
-// UpdateTask permet de mettre à jour une tâche
 func UpdateTask(c *gin.Context) {
 	var updateTaskDTO DTOs.TaskDTO
 
 	//Validation des données entrantes
 	messageErrsJSON := services.VerifyJSON(c, &updateTaskDTO)
 	if len(messageErrsJSON) > 0 {
+		log.Printf("Une ou plusieurs erreurs de format JSON sont survenues:%v", messageErrsJSON)
 		c.JSON(http.StatusBadRequest, gin.H{"errors": messageErrsJSON})
 		return
 	}
 
 	id := strconv.Itoa(updateTaskDTO.Id)
-	task, err := services.GetTaskById(id)
+	_, err := services.GetTaskById(id)
 	if err != nil {
-		log.Printf("Impossible de récupérer la tâche:%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la tâche."})
-		return
-	}
-	if task == nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "La tâche est introuvable."})
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			log.Printf("La tâche à mettre à jour est introuvable:%v", err)
+			c.JSON(http.StatusNotFound, gin.H{"error": "La tâche est introuvable."})
+			return
+		}
+		log.Printf("Impossible de récupérer la tâche à mettre à jour:%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la tâche à mettre à jour."})
 		return
 	}
 
