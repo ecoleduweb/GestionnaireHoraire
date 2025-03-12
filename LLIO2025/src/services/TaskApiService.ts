@@ -4,70 +4,52 @@ import { GET, POST, PUT, DELETE } from "../ts/server";
 
 let tasks: Task[];
 
-interface RawTask extends Omit<Task, 'startDate' | 'endDate'| 'userId' | 'projectId' | 'categoryId'> {
-    start_date: string | Date;
-    end_date: string | Date;
-    user_id: number;
-    project_id: number;
-    category_id: number;
+interface FormTask extends Omit<Task, 'startDate' | 'endDate'> {
+    startDate: string;
+    endDate: string;
 }
 
-const transformTasksDates = (task: RawTask): Task => ({
+const transformTasksDates = (task: FormTask): Task => ({
     ...task,
-    startDate: new Date(task.start_date),
-    endDate: new Date(task.end_date),
-    userId: task.user_id,
-    projectId: task.project_id,
-    categoryId: task.category_id
+    startDate: new Date(task.startDate),
+    endDate: new Date(task.endDate)
 });
 
 const createTask = async (task: Task): Promise<Task> => {
         
     // Préparation des données pour l'API
-    const taskForApi: RawTask = {
-      name: task.name,
-      description: task.description || "",
-      billable: task.billable || false,
-      start_date: task.startDate.toISOString(),
-      end_date: task.endDate.toISOString(),
-      user_id: task.userId || 1,
-      project_id: task.projectId || 1,
-      category_id: task.categoryId || 1,
+    const taskForApi = {
+        name: task.name,
+        description: task.description || "",
+        billable: task.billable || false,
+        startDate: task.startDate.toISOString(),
+        endDate: task.endDate.toISOString(),
+        userId: task.userId || 1,
+        projectId: task.projectId || 1,
+        categoryId: task.categoryId || 1
     };
     
     try {
-        const response = await POST<typeof taskForApi, {task: RawTask}>("/tasks", taskForApi);
-        
-        // Conversion directe de l'objet task
-        const taskData = response.task;
-        
+        const response = await POST<typeof taskForApi, {task: Task}>("/tasks", taskForApi);
         return {
-            id: taskData.id,
-            name: taskData.name,
-            description: taskData.description,
-            billable: taskData.billable,
-            startDate: new Date(taskData.start_date || taskData.start_date),
-            endDate: new Date(taskData.end_date || taskData.end_date),
-            userId: taskData.user_id || taskData.user_id,
-            projectId: taskData.project_id || taskData.project_id,
-            categoryId: taskData.category_id || taskData.category_id
+            ...response.task,
+            startDate: new Date(response.task.startDate),
+            endDate: new Date(response.task.endDate)
         };
     } catch (error) {
+        console.error("Erreur lors de la création de tâche:", error);
         throw error;
     }
 };
 
 const updateTask = async (task: Task): Promise<Task> => {
-    const taskForApi: RawTask = {
+    const taskForApi: FormTask = {
         ...task,
-        start_date: task.startDate.toISOString(),
-        end_date: task.endDate.toISOString(),
-        user_id: task.userId,
-        project_id: task.projectId,
-        category_id: task.categoryId
+        startDate: task.startDate.toISOString(),
+        endDate: task.endDate.toISOString()
     };
 
-    const response = await PUT<RawTask, RawTask>(`/tasks/${task.id}`, taskForApi);
+    const response = await PUT<FormTask, FormTask>(`/tasks/${task.id}`, taskForApi);
     return transformTasksDates(response);
 };
 
@@ -75,9 +57,9 @@ const deleteTask = async (id: number): Promise<void> => {
     await DELETE(`/tasks/${id}`);
 };
 
-const fetchTasks = async () => {
+const getTasks = async () => {
     try {
-        const response = await GET<RawTask[]>("/tasks");
+        const response = await GET<FormTask[]>("/tasks");
         const taskData = response.map(transformTasksDates);
         tasks = taskData;
         return taskData;
@@ -89,7 +71,7 @@ const fetchTasks = async () => {
 };
 
 export const TaskApiService = {
-    getTasks: fetchTasks,
+    getTasks,
     createTask,
     updateTask,
     deleteTask
