@@ -2,10 +2,9 @@ export interface Task {
     id?: number;
     name: string;
     description: string;
-    state: "à faire" | "en cours" | "terminé";
     billable: boolean;
-    startDateTime: Date;
-    endDateTime: Date;
+    startDate: Date;
+    endDate: Date;
     userId: number;
     projectId: number;
     categoryId: number;
