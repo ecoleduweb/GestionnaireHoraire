@@ -167,17 +167,15 @@
   async function handleTaskSubmit(taskData: Task) {
     if (!calendarService) return;
     try {
-      const newTask = await TaskApiService.createTask(taskData);
       calendarService.addEvent({
-        id: newTask.id.toString(),
-        title: newTask.name,
-        start: newTask.startDate,
-        end: newTask.endDate,
-        extendedProps: { ...newTask },
+        id: taskData.id.toString(),
+        title: taskData.name,
+        start: taskData.startDate,
+        end: taskData.endDate,
+        extendedProps: { ...taskData },
       });
     } catch (error) {
-      console.error("Erreur lors d'ajout de tâche", error);
-      throw error;
+      console.error("Erreur lors d'ajout de tâche au calendrier", error);
     }
   }
 

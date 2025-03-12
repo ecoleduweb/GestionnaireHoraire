@@ -41,6 +41,8 @@
 
   let initialTask = taskTemplate.generate();
 
+  let isSubmitting = false;
+
   if (selectedDate && selectedDate.start) {
     const { startDate, endDate } = initializeTaskDates(selectedDate.start);
     initialTask.startDate = startDate;
@@ -80,6 +82,9 @@
   };
 
   const handleSubmit = async () => {
+    if (isSubmitting) return; // Empêche les soumissions multiples
+    isSubmitting = true;
+
     if (task.name && task.userId && task.projectId && task.categoryId) {
       try {
         // Créer une nouvelle date de début basée sur la tâche existante et les heures/minutes sélectionnées
@@ -110,9 +115,12 @@
         onClose();
       } catch (error) {
         console.error('Erreur', error);
+      } finally {
+        isSubmitting = false;
       }
     } else {
       alert('Veuillez remplir tous les champs obligatoires');
+      isSubmitting = false;
     }
   };
 
@@ -288,9 +296,12 @@
           {:else}
             <button
               type="submit"
-              class="py-3 px-6 bg-gray-900 text-white rounded-md hover:bg-gray-700"
+              class="py-3 px-6 bg-gray-900 text-white rounded-md hover:bg-gray-700 {isSubmitting
+                ? 'opacity-50 cursor-not-allowed'
+                : ''}"
+              disabled={isSubmitting}
             >
-              Créer
+              {isSubmitting ? 'En cours...' : 'Créer'}
             </button>
           {/if}
           <button
