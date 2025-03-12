@@ -109,9 +109,8 @@ func UpdateTask(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"updated_task": updatedTaskDTO})
 }
 
-// DeleteTask permet de supprimer la tâche
 func DeleteTask(c *gin.Context) {
-	// Récupérer l'id de la tâche
+
 	id := c.Param("id")
 	task, err := services.GetTaskById(id)
 	if err != nil {
@@ -120,6 +119,7 @@ func DeleteTask(c *gin.Context) {
 		return
 	}
 	if task == nil {
+		log.Printf("La tâche à supprimer n'existe pas. : %v", err)
 		c.JSON(http.StatusNotFound, gin.H{"error": "La tâche à supprimer n'existe pas."})
 		return
 	}
