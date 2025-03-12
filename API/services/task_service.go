@@ -105,3 +105,7 @@ func UpdateTask(taskDTO *DTOs.TaskDTO) (*DTOs.TaskDTO, error) {
 	err = copier.Copy(taskDTOResponse, taskDAOUpdated)
 	return taskDTOResponse, err
 }
+
+func DeleteTask(id string) error {
+	return repositories.DeleteTask(id)
+}

@@ -27,3 +27,7 @@ func UpdateTask(taskDAO *DAOs.Task) (*DAOs.Task, error) {
 	err := database.DB.Updates(taskDAO).Error
 	return taskDAO, err
 }
+
+func DeleteTask(id string) error {
+	return database.DB.Delete(&DAOs.Task{}, id).Error
+}
