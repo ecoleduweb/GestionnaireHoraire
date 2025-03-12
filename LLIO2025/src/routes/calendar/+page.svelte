@@ -8,6 +8,8 @@
 
   // Importez le fichier CSS
   import '../../style/modern-calendar.css';
+  // Importer FullCalendar en français
+  import frLocale from '@fullcalendar/core/locales/fr';
 
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
@@ -54,12 +56,19 @@
           year: 'numeric',
         });
       } else if (view.type === 'timeGridWeek') {
-        // Format pour la vue semaine: "24 févr. – 2 mars 2025"
-        const endDate = new Date(dateAPI);
-        endDate.setDate(dateAPI.getDate() + 6);
+        // Format pour la vue semaine: "10 mars – 16 mars 2025"
+        // Trouver le lundi de la semaine
+        const startDate = new Date(dateAPI);
+        const day = startDate.getDay();
+        const diff = startDate.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
+        startDate.setDate(diff);
+        
+        // Le dimanche est le 6ème jour après le lundi
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 6);
 
-        const startFormatted = dateAPI.getDate();
-        const startMonth = dateAPI.toLocaleDateString('fr-FR', { month: 'short' });
+        const startFormatted = startDate.getDate();
+        const startMonth = startDate.toLocaleDateString('fr-FR', { month: 'short' });
 
         const endFormatted = endDate.getDate();
         const endMonth = endDate.toLocaleDateString('fr-FR', { month: 'long' });
@@ -85,11 +94,13 @@
       // Configuration personnalisée pour FullCalendar
       const calendarOptions = {
         initialView: activeView,
+        locale: frLocale, // Utiliser la locale française
+        firstDay: 1, // 1 = lundi (standard français)
         buttonText: {
-          today: 'today',
-          month: 'Month',
-          week: 'Week',
-          day: 'Day',
+          today: "Aujourd'hui",
+          month: 'Mois',
+          week: 'Semaine',
+          day: 'Jour',
         },
         slotDuration: '00:30:00', // Durée de chaque intervalle de temps
         allDaySlot: false,
@@ -111,7 +122,7 @@
         slotLabelFormat: {
           hour: 'numeric',
           minute: '2-digit',
-          hour12: true,
+          hour12: false,
         },
         datesSet: () => {
           // Appelé à chaque changement de dates ou de vue
@@ -285,7 +296,7 @@
             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
           ></path>
         </svg>
-        <h1 class="text-xl font-semibold text-gray-800">Today, {formattedDate}</h1>
+        <h1 class="text-xl font-semibold text-gray-800">Aujourd'hui, {formattedDate}</h1>
       </div>
 
       <!-- Boutons de vue alignés au centre -->
@@ -296,7 +307,7 @@
             : 'text-gray-500 hover:bg-white hover:text-[#015e61]'}"
           on:click={() => setView('timeGridDay')}
         >
-          Day
+          Jour
         </button>
         <button
           class="px-5 py-2 rounded-lg transition-colors {activeView === 'timeGridWeek'
@@ -304,7 +315,7 @@
             : 'text-gray-500 hover:bg-white hover:text-[#015e61]'}"
           on:click={() => setView('timeGridWeek')}
         >
-          Week
+          Semaine
         </button>
         <button
           class="px-5 py-2 rounded-lg transition-colors {activeView === 'dayGridMonth'
@@ -312,7 +323,7 @@
             : 'text-gray-500 hover:bg-white hover:text-[#015e61]'}"
           on:click={() => setView('dayGridMonth')}
         >
-          Month
+          Mois
         </button>
       </div>
 
@@ -333,7 +344,7 @@
             clip-rule="evenodd"
           ></path>
         </svg>
-        New Activity
+        Nouvelle activité
       </button>
     </div>
 
@@ -366,7 +377,7 @@
           on:click={goToday}
           class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
         >
-          today
+          Aujourd'hui
         </button>
       </div>
       <div class="text-lg font-medium text-gray-700">
