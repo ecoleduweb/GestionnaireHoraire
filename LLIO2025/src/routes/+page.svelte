@@ -1,5 +1,8 @@
 <script>
   import '../style/app.css';
+
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
 </script>
 
 <div
@@ -13,15 +16,15 @@
       decoding="async"
       width="1024"
       height="383"
-      src="https://llio.quebec/wp-content/uploads/2022/01/signification-llio.gif"
+      src="llio.gif"
       class="attachment-large size-large wp-image-930"
       alt="Animation du logo du LLio pour expliquer que LLio signifie Le Laboratoire en innovation ouverte"
     />
     <p class="text-center text-lg">Bienvenue, connectez-vous à votre compte.</p>
-    <button class="w-full bg-[#005f61] hover:bg-[#00968f] text-white font-bold py-2 px-4 rounded">
-      <img src="microsoft.svg" alt="Logo de Microsoft" class="w-6 h-6 inline" />
-      Se connecter avec Microsoft
-    </button>
+    <a href={apiBaseUrl + '/auth/azureadv2'} class="w-full bg-[#005f61] hover:bg-[#00968f] text-white font-bold py-2 px-4 rounded flex items-center justify-center">
+        <img src="microsoft.svg" alt="Logo de Microsoft" class="w-6 h-6 inline mr-2" />
+        <span>Se connecter avec Microsoft</span>
+    </a>
   </div>
   <img
     src="cegep+llio.png"
