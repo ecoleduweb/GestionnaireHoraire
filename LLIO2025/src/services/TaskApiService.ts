@@ -1,4 +1,3 @@
-import { PUBLIC_BASE_URL } from "$env/static/public";
 import type { Task } from "../Models/index";
 import { GET, POST, PUT, DELETE } from "../ts/server";
 
