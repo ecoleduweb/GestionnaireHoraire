@@ -85,7 +85,7 @@
 
     if (activity.name && activity.userId && activity.projectId && activity.categoryId) {
       try {
-        // Créer une nouvelle date de début basée sur la tâche existante et les heures/minutes sélectionnées
+        // Créer une nouvelle date de début basée sur l'activité existante et les heures/minutes sélectionnées
         const updatedStartDate = createDateWithTime(
           activity.startDate,
           time.startHours,
@@ -147,7 +147,7 @@
       on:click|stopPropagation
     >
       <h2 class="text-2xl text-gray-800 font-medium mb-6">
-        {editMode ? 'Modifier la tâche' : 'Nouvelle tâche'}
+        {editMode ? 'Modifier l'activité' : 'Nouvelle tâche'}
       </h2>
       <form on:submit|preventDefault={handleSubmit}>
         <div class="mb-6">
@@ -156,7 +156,7 @@
             id="activity-name"
             type="text"
             bind:value={activity.name}
-            placeholder="Nom de la tâche..."
+            placeholder="Nom de l'activité..."
             required
             autofocus
             class="w-full py-3 px-3 border border-gray-300 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-gray-500"

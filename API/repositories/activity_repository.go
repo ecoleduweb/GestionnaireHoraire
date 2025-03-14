@@ -5,8 +5,9 @@ import (
 	"llio-api/models/DAOs"
 )
 
-func CreateActivity(activities *DAOs.Activity) error {
-	return database.DB.Create(activities).Error
+func CreateActivity(activity *DAOs.Activity) (*DAOs.Activity, error) {
+	err := database.DB.Create(activity).Error
+	return activity, err
 }
 
 func GetAllActivities() ([]*DAOs.Activity, error) {

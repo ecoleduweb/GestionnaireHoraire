@@ -32,7 +32,7 @@ export const initializeActivityDates = (targetDate?: Date): { startDate: Date, e
   
   // Créer des copies pour éviter les références partagées
   const startDate = new Date(date);
-  // Par défaut, la tâche dure 1 heure
+  // Par défaut, l'activité dure 1 heure
   const endDate = new Date(date);
   endDate.setHours(endDate.getHours() + 1);
   

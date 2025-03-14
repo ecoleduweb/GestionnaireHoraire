@@ -8,6 +8,7 @@ require (
 	github.com/go-playground/validator/v10 v10.24.0
 	github.com/golang-migrate/migrate/v4 v4.18.2
 	github.com/gorilla/sessions v1.4.0
+	github.com/jinzhu/copier v0.4.0
 	github.com/joho/godotenv v1.5.1
 	github.com/markbates/goth v1.80.0
 	github.com/spf13/cobra v1.9.1
@@ -30,8 +31,6 @@ require (
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/gorilla/mux v1.7.4 // indirect
-	github.com/jinzhu/copier v0.4.0 // indirect
-	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect

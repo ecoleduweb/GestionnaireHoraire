@@ -27,12 +27,12 @@ func CreateActivity(c *gin.Context) {
 
 	messageErrs := services.VerifyCreateActivityJSON(&activityDTO)
 	if len(messageErrs) > 0 {
-		log.Printf("Une ou plusieurs erreurs de verification du format de la tâche sont survenues:%v", messageErrs)
+		log.Printf("Une ou plusieurs erreurs de verification du format de l'activité sont survenues:%v", messageErrs)
 		c.JSON(http.StatusBadRequest, gin.H{"errors": messageErrs})
 		return
 	}
 
-	activityAded, err := services.CreateActivityService(&activityDTO)
+	activityAded, err := services.CreateActivity(&activityDTO)
 	if err != nil {
 		log.Printf("Erreur critique du server:%v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -49,8 +49,8 @@ func GetAllActivities(c *gin.Context) {
 
 	activities, err := services.GetAllActivities()
 	if err != nil {
-		log.Printf("Impossible de récupérer les tâches:%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer les tâches."})
+		log.Printf("Impossible de récupérer les activités:%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer les activités."})
 		return
 	}
 
@@ -58,17 +58,17 @@ func GetAllActivities(c *gin.Context) {
 }
 
 func GetActivityById(c *gin.Context) {
-	// Récupérer l'id de la tâche
+	// Récupérer l'id de l'activité
 	id := c.Param("id")
 	activity, err := services.GetActivityById(id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			log.Printf("La tâche est introuvable:%v", err)
-			c.JSON(http.StatusNotFound, gin.H{"error": "La tâche est introuvable."})
+			log.Printf("L'activités est introuvable:%v", err)
+			c.JSON(http.StatusNotFound, gin.H{"error": "L'activités est introuvable."})
 			return
 		}
-		log.Printf("Impossible de récupérer la tâche:%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la tâche."})
+		log.Printf("Impossible de récupérer l'activité:%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer l'activité."})
 		return
 	}
 
@@ -90,19 +90,19 @@ func UpdateActivity(c *gin.Context) {
 	_, err := services.GetActivityById(id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			log.Printf("La tâche à mettre à jour est introuvable:%v", err)
-			c.JSON(http.StatusNotFound, gin.H{"error": "La tâche est introuvable."})
+			log.Printf("L'activités à mettre à jour est introuvable:%v", err)
+			c.JSON(http.StatusNotFound, gin.H{"error": "L'activités est introuvable."})
 			return
 		}
-		log.Printf("Impossible de récupérer la tâche à mettre à jour:%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la tâche à mettre à jour."})
+		log.Printf("Impossible de récupérer l'activité à mettre à jour:%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer l'activité à mettre à jour."})
 		return
 	}
 
 	updatedActivityDTO, err := services.UpdateActivity(&updateActivityDTO)
 	if err != nil {
-		log.Printf("La tâche n'a pas été modifiée : %v", err)
-		c.JSON(http.StatusNotModified, gin.H{"error": "La tâche n'a pas été modifiée."})
+		log.Printf("L'activités n'a pas été modifiée : %v", err)
+		c.JSON(http.StatusNotModified, gin.H{"error": "L'activités n'a pas été modifiée."})
 		return
 	}
 

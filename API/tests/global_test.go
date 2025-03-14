@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"llio-api/database"
+	"llio-api/handlers"
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
+	"llio-api/routes"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -26,6 +28,7 @@ var (
 	doNotDeleteUser     DAOs.User
 	doNotDeleteCategory DAOs.Project
 	doNotDeleteProject  DAOs.Category
+	doNotDeleteActivity DAOs.Activity
 )
 
 // agit comme un gros before each
@@ -72,6 +75,18 @@ func prepareTestData() {
 	}
 	database.DB.Create(&testCategory)
 	doNotDeleteProject = testCategory
+
+	testActivity := DAOs.Activity{
+		Name:        "Test Category",
+		StartDate:   time.Now(),
+		EndDate:     time.Now().Add(time.Hour),
+		Description: "test description",
+		UserId:      doNotDeleteUser.Id,
+		ProjectId:   doNotDeleteProject.Id,
+		CategoryId:  doNotDeleteCategory.Id,
+	}
+	database.DB.Create(&testActivity)
+	doNotDeleteActivity = testActivity
 }
 
 // Change de répertoir pour trouver le .env
@@ -106,42 +121,33 @@ func changeCurrentDiretory() {
 }
 
 // setupTestRouter initialise un routeur de test et un enregistreur de réponse
-func setupTestRouter(method, route string, controller gin.HandlerFunc) *gin.Engine {
-	router := gin.Default()
-
-	switch method {
-	case http.MethodGet:
-		router.GET(route, controller)
-	case http.MethodPost:
-		router.POST(route, controller)
-	case http.MethodPut:
-		router.PUT(route, controller)
-	case http.MethodDelete:
-		router.DELETE(route, controller)
-	// Ajoutez d'autres méthodes HTTP si nécessaire
-	default:
-		panic("Méthode HTTP non supportée")
-	}
-
-	return router
-}
-
-// connectDB se connecte à la base de données
-func connectDB() {
+func setupTestRouter() (*gin.Engine, *httptest.ResponseRecorder) {
 	changeCurrentDiretory()
 	os.Setenv("ENV", "TEST")
 	database.Connect()
 
 	router := gin.Default()
-	router.POST("/activity", controllers.CreateActivity)
+	// used for the api routes
+	routes.RegisterRoutes(router)
+	// used for the health check
+	handlers.ApiStatus(router)
 
 	return router, httptest.NewRecorder()
 }
 
 // sendRequest envoie une requête HTTP au routeur de test
 func sendRequest(router *gin.Engine, method, url string, body interface{}) *httptest.ResponseRecorder {
-	jsonValue, _ := json.Marshal(body)
-	req, _ := http.NewRequest(method, url, bytes.NewBuffer(jsonValue))
+	var req *http.Request
+
+	if method == "GET" || body == nil {
+		// Pour GET ou body nil, ne pas inclure de corps
+		req, _ = http.NewRequest(method, url, nil)
+	} else {
+		// Pour les autres méthodes avec body non-nil
+		jsonValue, _ := json.Marshal(body)
+		req, _ = http.NewRequest(method, url, bytes.NewBuffer(jsonValue))
+	}
+
 	req.Header.Set("Content-Type", "application/json")
 
 	w := httptest.NewRecorder()

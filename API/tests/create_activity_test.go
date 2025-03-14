@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"llio-api/controllers"
 	"llio-api/database"
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
@@ -36,11 +35,11 @@ func TestCreateActivity(t *testing.T) {
 	}
 	err := json.Unmarshal(w.Body.Bytes(), &responseBody)
 	assert.NoError(t, err)
-	assert.Equal(t, "La tâche a bien été ajoutée à la base de données.", responseBody.Reponse)
+	assert.Equal(t, "L'activité a bien été ajoutée à la base de données.", responseBody.Reponse)
 	assert.Equal(t, activity.Name, responseBody.Activity.Name)
 	assert.Equal(t, activity.Description, responseBody.Activity.Description)
 
-	// Vérification que la tâche est bien ajoutée dans la base de données
+	// Vérification que l'activité est bien ajoutée dans la base de données
 	var createdActivity DAOs.Activity
 	errDB := database.DB.Where("name = ?", activity.Name).First(&createdActivity).Error
 	assert.NoError(t, errDB)
@@ -49,7 +48,7 @@ func TestCreateActivity(t *testing.T) {
 
 func TestDoNotCreateActivityWithEndDateBeforeStartDate(t *testing.T) {
 
-	// Création d'une tâche à envoyer dans la requête
+	// Création d'une activités à envoyer dans la requête
 	activity := DTOs.ActivityDTO{
 		Name:        "Test tâche",
 		Description: "Test automatique de la création de tâche",
