@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"llio-api/controllers"
 	"llio-api/database"
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
@@ -62,7 +63,7 @@ func TestDoNotCreateActivityWithEndDateBeforeStartDate(t *testing.T) {
 	w = sendRequest(router, "POST", "/activity", activity)
 
 	expectedErrors := []DTOs.FieldErrorDTO{
-		{Field: "start_date", Message: "La date de début doit être avant la date de fin"},
+		{Field: "startDate", Message: "La date de début doit être avant la date de fin"},
 	}
 	assertResponse(t, w, http.StatusBadRequest, expectedErrors)
 }
@@ -82,8 +83,8 @@ func TestDoNotCreateActivityWithoutNameAndDescription(t *testing.T) {
 	w = sendRequest(router, "POST", "/activity", activity)
 
 	expectedErrors := []DTOs.FieldErrorDTO{
-		{Field: "Name", Message: "Le champ Name est invalide ou manquant"},
-		{Field: "Description", Message: "Le champ Description est invalide ou manquant"},
+		{Field: "name", Message: "Le champ name est invalide ou manquant"},
+		{Field: "description", Message: "Le champ description est invalide ou manquant"},
 	}
 	assertResponse(t, w, http.StatusBadRequest, expectedErrors)
 }
@@ -103,7 +104,7 @@ func TestDoNotCreateActivityWithLenghtNameOver50(t *testing.T) {
 	w = sendRequest(router, "POST", "/activity", activity)
 
 	expectedErrors := []DTOs.FieldErrorDTO{
-		{Field: "Name", Message: "Le champ Name est invalide ou manquant"},
+		{Field: "name", Message: "Le champ name est invalide ou manquant"},
 	}
 	assertResponse(t, w, http.StatusBadRequest, expectedErrors)
 }
@@ -121,8 +122,8 @@ func TestDoNotCreateActivityWithoutDates(t *testing.T) {
 	w = sendRequest(router, "POST", "/activity", activity)
 
 	expectedErrors := []DTOs.FieldErrorDTO{
-		{Field: "StartDate", Message: "Le champ StartDate est invalide ou manquant"},
-		{Field: "EndDate", Message: "Le champ EndDate est invalide ou manquant"},
+		{Field: "startDate", Message: "Le champ startDate est invalide ou manquant"},
+		{Field: "endDate", Message: "Le champ endDate est invalide ou manquant"},
 	}
 	assertResponse(t, w, http.StatusBadRequest, expectedErrors)
 }
@@ -142,7 +143,7 @@ func TestDoNotCreateActivityWithInvalidStartDate(t *testing.T) {
 	w = sendRequest(router, "POST", "/activity", activity)
 
 	expectedErrors := []DTOs.FieldErrorDTO{
-		{Field: "StartDate", Message: "Le champ StartDate est invalide ou manquant"},
+		{Field: "startDate", Message: "Le champ startDate est invalide ou manquant"},
 	}
 	assertResponse(t, w, http.StatusBadRequest, expectedErrors)
 }
@@ -162,7 +163,7 @@ func TestDoNotCreateActivityWithInvalidEndDate(t *testing.T) {
 	w = sendRequest(router, "POST", "/activity", activity)
 
 	expectedErrors := []DTOs.FieldErrorDTO{
-		{Field: "EndDate", Message: "Le champ EndDate est invalide ou manquant"},
+		{Field: "endDate", Message: "Le champ endDate est invalide ou manquant"},
 	}
 	assertResponse(t, w, http.StatusBadRequest, expectedErrors)
 }

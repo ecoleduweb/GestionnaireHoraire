@@ -13,11 +13,13 @@ func RegisterRoutes(r *gin.Engine) {
 		Pour l'instant aucune vérification de l'idetification d'un usager n'est faite!
 		( 2025-01-29/Quentin ): Il faudra faire appel à un middleware pour valider le token d'authentification
 	*/
-	r.POST("/create-user", controllers.CreateActivity)
 
 	activityGroup := r.Group("/activity")
 	{
 		activityGroup.POST("", controllers.CreateActivity)
+		activityGroup.Get("/all", controllers.GetAllActivities)
+		activityGroup.Get("/:id", controllers.GetActivityById)
+		activityGroup.PUT("", controllers.UpdateActivity)
 	}
 
 }

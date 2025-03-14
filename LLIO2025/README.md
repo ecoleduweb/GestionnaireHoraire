@@ -9,6 +9,7 @@ Une application WEB de gestion de calendrier développée avec SvelteKit et Type
 - **Langage** : TypeScript
 - **Bibliothèque calendrier** : FullCalendar
 - **Bundler** : Vite
+- **CSS** : Tailwindcss
 
 ## Structure du projet
 

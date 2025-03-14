@@ -1,4 +1,4 @@
-import { env } from "$env/dynamic/public"
+const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const getHeaders = (token = localStorage.getItem("token")) => ({
     "Content-Type": "application/json",
@@ -40,7 +40,7 @@ async function request<T>(
             options.body = JSON.stringify(body)
         }
 
-        const response = await fetch(`${env.PUBLIC_BASE_URL}${url}`, options)
+        const response = await fetch(`${VITE_API_BASE_URL}${url}`, options)
         const data = await handleResponse<T>(response, redirectToLoginOn401)
         return data as T
     } catch (error) {

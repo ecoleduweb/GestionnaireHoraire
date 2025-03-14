@@ -12,9 +12,9 @@ type Activity struct {
 	EndDate     time.Time `json:"end_date" gorm:"not null"`
 
 	// Clés étrangères
-	UserId     int `json:"user_id" gorm:"not null"`
-	ProjectId  int `json:"project_id" gorm:"not null"`
-	CategoryId int `json:"category_id" gorm:"not null"`
+	UserId     int `json:"userId" gorm:"not null"`
+	ProjectId  int `json:"projectId" gorm:"not null"`
+	CategoryId int `json:"categoryId" gorm:"not null"`
 
 	// Relations
 	User     User     `json:"user" gorm:"foreignKey:UserId;references:Id"`
