@@ -2,6 +2,7 @@ package main
 
 import (
 	"llio-api/auth"
+	"llio-api/cmd"
 	"llio-api/database"
 	"llio-api/handlers"
 	"llio-api/routes"
@@ -15,6 +16,13 @@ import (
 // Chercher à améliorer et sécuriser
 // Version fonctionnel mais inspirer de ChatGPT sans vérification de sécurité et efficacité
 func main() {
+	// permet de passer des commandes de migraion de la base de données
+	// ex : go run main.go migrate create initial_migration
+	if len(os.Args) > 1 {
+		cmd.Execute()
+		return
+	}
+
 	auth.NewAuth()
 
 	useful.LoadEnv()
