@@ -2,11 +2,10 @@ package DTOs
 
 import "time"
 
-// TaskRequest représente les données entrantes pour créer une tâche
-type TaskDTO struct {
+// ActivityRequest représente les données entrantes pour créer une tâche
+type ActivityDTO struct {
 	Name        string    `json:"name" binding:"required,max=50"`
 	Description string    `json:"description" binding:"required"`
-	Billable    bool      `json:"billable"`
 	StartDate   time.Time `json:"start_date" binding:"required"`
 	EndDate     time.Time `json:"end_date" binding:"required"`
 	UserId      int       `json:"user_id" binding:"required"`
@@ -14,11 +13,10 @@ type TaskDTO struct {
 	CategoryId  int       `json:"category_id" binding:"required"`
 }
 
-type TaskResponse struct {
+type ActivityResponse struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	State       string    `json:"state"`
-	Billable    bool      `json:"billable"`
 	StartDate   time.Time `json:"start_date"`
 	EndDate     time.Time `json:"end_date"`
 }

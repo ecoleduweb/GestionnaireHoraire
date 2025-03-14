@@ -21,7 +21,7 @@ LLIO2025/
 │   ├── Components/   # Composants réutilisables
 │   │   └── Calendar/ # Composants liés au calendrier
 │   ├── forms/        # Formulaires et validations
-│   │   └── task/     # Formulaires liés aux tâches
+│   │   └── activity/     # Formulaires liés aux tâches
 │   ├── lib/          # Bibliothèques et utilitaires partagés
 │   ├── Models/       # Types et interfaces TypeScript
 │   ├── routes/       # Pages et routage de l'application

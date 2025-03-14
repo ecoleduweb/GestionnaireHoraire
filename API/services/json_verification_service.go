@@ -11,9 +11,9 @@ import (
 
 // Fonction qui permet de valider la structure et le contenu du JSON attendu
 // Traite les erreurs de validation de champs, de parsing de date et autres erreurs
-func VerifyJSON(c *gin.Context, taskDTO *DTOs.TaskDTO) []DTOs.FieldErrorDTO {
+func VerifyJSON(c *gin.Context, activityDTO *DTOs.ActivityDTO) []DTOs.FieldErrorDTO {
 	var fieldErrors []DTOs.FieldErrorDTO
-	if err := c.ShouldBindJSON(taskDTO); err != nil {
+	if err := c.ShouldBindJSON(activityDTO); err != nil {
 		// Toutes les listes d'erreurs possibles
 		var validationErrors validator.ValidationErrors
 		var parseErrors []*time.ParseError

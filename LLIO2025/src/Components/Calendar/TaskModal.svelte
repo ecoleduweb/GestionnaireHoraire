@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { Task, User, Project, Category } from '../../Models';
-  import { taskTemplate } from '../../forms/task';
-  // import { TaskService } from "../../services/TaskService";
-  import { TaskApiService } from '../../services/TaskApiService';
+  import type { Activity, User, Project, Category } from '../../Models';
+  import { activityTemplate } from '../../forms/activity';
+  // import { ActivityService } from "../../services/ActivityService";
+  import { ActivityApiService } from '../../services/ActivityApiService';
   import { getHoursFromDate, getMinutesFromDate } from '../../utils/date';
   import '../../style/app.css';
 
@@ -11,11 +11,11 @@
     users: User[];
     projects: Project[];
     categories: Category[];
-    taskToEdit: Task | null;
+    activityToEdit: Activity | null;
     onClose: () => void;
-    onDelete: (task: Task) => void;
-    onSubmit: (task: Task) => void;
-    onUpdate: (task: Task) => void;
+    onDelete: (activity: Activity) => void;
+    onSubmit: (activity: Activity) => void;
+    onUpdate: (activity: Activity) => void;
   };
 
   let {
@@ -23,16 +23,16 @@
     users,
     projects,
     categories,
-    taskToEdit,
+    activityToEdit,
     onClose,
     onDelete,
     onSubmit,
     onUpdate,
   }: Props = $props();
 
-  const editMode = taskToEdit !== null;
+  const editMode = activityToEdit !== null;
 
-  const task = $state<Task>(taskTemplate.generate());
+  const activity = $state<Activity>(activityTemplate.generate());
   const time = $state({
     startHours: '00',
     startMinutes: '00',
@@ -40,18 +40,18 @@
     endMinutes: '00',
   });
 
-  if (taskToEdit) {
-    Object.assign(task, taskToEdit);
-    time.startHours = getHoursFromDate(taskToEdit.startDateTime);
-    time.startMinutes = getMinutesFromDate(taskToEdit.startDateTime);
-    time.endHours = getHoursFromDate(taskToEdit.endDateTime);
-    time.endMinutes = getMinutesFromDate(taskToEdit.endDateTime);
+  if (activityToEdit) {
+    Object.assign(activity, activityToEdit);
+    time.startHours = getHoursFromDate(activityToEdit.startDateTime);
+    time.startMinutes = getMinutesFromDate(activityToEdit.startDateTime);
+    time.endHours = getHoursFromDate(activityToEdit.endDateTime);
+    time.endMinutes = getMinutesFromDate(activityToEdit.endDateTime);
   }
 
   const {
     states,
     time: { hours, minutes },
-  } = taskTemplate;
+  } = activityTemplate;
 
   const validateEndTime = () => {
     if (
@@ -65,12 +65,12 @@
   };
 
   const handleSubmit = async () => {
-    if (task.name && task.userId && task.projectId && task.categoryId) {
+    if (activity.name && activity.userId && activity.projectId && activity.categoryId) {
       try {
         if (editMode) {
-          await onUpdate(task);
+          await onUpdate(activity);
         } else {
-          await onSubmit(task);
+          await onSubmit(activity);
         }
         onClose();
       } catch (error) {
@@ -80,12 +80,12 @@
   };
 
   const handleDelete = async () => {
-    if (!task.id) return;
+    if (!activity.id) return;
 
     if (confirm('Supprimer cette tâche ?')) {
       try {
-        await TaskApiService.deleteTask(task.id);
-        onDelete(task);
+        await ActivityApiService.deleteActivity(activity.id);
+        onDelete(activity);
       } catch (error) {
         console.error('Erreur lors de la suppression', error);
       }
@@ -103,11 +103,11 @@
       <h2 class="text-2xl text-gray-800 font-medium mb-6">{editMode ? 'Modifier la tâche' : 'Nouvelle tâche'}</h2>
       <form on:submit|preventDefault={handleSubmit}>
         <div class="mb-6">
-          <label for="task-name" class="block text-gray-600 mb-2">Nom*</label>
+          <label for="activity-name" class="block text-gray-600 mb-2">Nom*</label>
           <input
-            id="task-name"
+            id="activity-name"
             type="text"
-            bind:value={task.name}
+            bind:value={activity.name}
             placeholder="Nom de la tâche..."
             required
             autofocus
@@ -116,29 +116,14 @@
         </div>
 
         <div class="mb-6">
-          <label for="task-description" class="block text-gray-600 mb-2">Description</label>
+          <label for="activity-description" class="block text-gray-600 mb-2">Description</label>
           <textarea 
-            id="task-description" 
-            bind:value={task.description} 
+            id="activity-description" 
+            bind:value={activity.description} 
             rows="3"
             class="w-full py-3 px-3 border border-gray-300 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-gray-500"
           ></textarea>
         </div>
-
-        <div class="flex gap-4 mb-6">
-
-          <div class="flex items-center">
-            <label class="flex items-center gap-2 text-gray-600">
-              <input 
-                type="checkbox" 
-                bind:checked={task.billable}
-                class="h-5 w-5"
-              />
-              Facturable
-            </label>
-          </div>
-        </div>
-
         <div class="grid grid-cols-2 gap-4 mb-6">
           <div class="flex flex-col gap-2">
             <label class="text-gray-600">Heure de début*</label>
@@ -188,10 +173,10 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div>
-            <label for="task-user" class="block text-gray-600 mb-2">Utilisateur*</label>
+            <label for="activity-user" class="block text-gray-600 mb-2">Utilisateur*</label>
             <select 
-              id="task-user" 
-              bind:value={task.userId} 
+              id="activity-user" 
+              bind:value={activity.userId} 
               required
               class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
             >
@@ -203,10 +188,10 @@
           </div>
 
           <div>
-            <label for="task-project" class="block text-gray-600 mb-2">Projet*</label>
+            <label for="activity-project" class="block text-gray-600 mb-2">Projet*</label>
             <select 
-              id="task-project" 
-              bind:value={task.projectId} 
+              id="activity-project" 
+              bind:value={activity.projectId} 
               required
               class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
             >
@@ -218,10 +203,10 @@
           </div>
 
           <div>
-            <label for="task-category" class="block text-gray-600 mb-2">Catégorie*</label>
+            <label for="activity-category" class="block text-gray-600 mb-2">Catégorie*</label>
             <select 
-              id="task-category" 
-              bind:value={task.categoryId} 
+              id="activity-category" 
+              bind:value={activity.categoryId} 
               required
               class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
             >

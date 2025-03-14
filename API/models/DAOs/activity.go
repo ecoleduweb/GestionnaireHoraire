@@ -4,11 +4,10 @@ import (
 	"time"
 )
 
-type Task struct {
+type Activity struct {
 	Id          int       `json:"id" gorm:"primaryKey;autoIncrement;not null"`
 	Name        string    `json:"name" gorm:"type:varchar(50);not null"`
 	Description string    `json:"description" gorm:"type:text;not null"`
-	Billable    bool      `json:"billable" gorm:"type:boolean;not null;default:false"`
 	StartDate   time.Time `json:"start_date" gorm:"not null"`
 	EndDate     time.Time `json:"end_date" gorm:"not null"`
 
