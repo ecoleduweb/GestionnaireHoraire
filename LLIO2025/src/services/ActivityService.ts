@@ -1,7 +1,7 @@
 import type { Activity } from "../Models/index";
 import { GET, POST, PUT, DELETE } from "../ts/server";
 
-interface FormTask extends Omit<Activity, 'startDate' | 'endDate'> {
+interface FormActivity extends Omit<Activity, 'startDate' | 'endDate'> {
     startDate: string;
     endDate: string;
 }
