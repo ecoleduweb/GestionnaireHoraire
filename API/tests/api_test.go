@@ -13,9 +13,6 @@ import (
 
 // Vérification du Ping Pong, si le serveur répond bien
 func TestApiPingPong(t *testing.T) {
-	router := gin.Default()
-	handlers.ApiStatus(router)
-
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/ping", nil)
 	router.ServeHTTP(w, req)
@@ -28,9 +25,6 @@ func TestApiPingPong(t *testing.T) {
 // Nous verifions Si l'objet JSON contient bien les clés "status" et "uptime"
 // On par du principe que si l'API est en ligne, elle est en bonne santé
 func TestApiHealthStatus(t *testing.T) {
-	router := gin.Default()
-	handlers.ApiStatus(router)
-
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/health/status", nil)
 	router.ServeHTTP(w, req)
