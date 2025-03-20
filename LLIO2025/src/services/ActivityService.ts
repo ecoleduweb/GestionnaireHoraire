@@ -45,7 +45,7 @@ const updateTask = async (activity: Activity): Promise<Activity> => {
         endDate: activity.endDate.toISOString()
     };
 
-    const response = await PUT<FormTask, FormTask>(`/tasks/${activity.id}`, taskForApi);
+    const response = await PUT<FormTask, FormTask>(`/activities/${activity.id}`, taskForApi);
     return transformTasksDates(response);
 };
 
