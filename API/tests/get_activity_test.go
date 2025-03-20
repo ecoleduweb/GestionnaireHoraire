@@ -9,7 +9,7 @@ import (
 )
 
 func TestGetActivities(t *testing.T) {
-	w = sendRequest(router, "GET", "/activities", nil)
+	w := sendRequest(router, "GET", "/activities", nil)
 	assertResponse(t, w, http.StatusOK, nil)
 	assert.NotNil(t, w.Body)
 }
