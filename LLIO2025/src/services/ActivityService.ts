@@ -26,7 +26,7 @@ const createTask = async (activity: Activity): Promise<Activity> => {
     };
     
     try {
-        const response = await POST<typeof taskForApi, {activity: Activity}>("/tasks", taskForApi);
+        const response = await POST<typeof taskForApi, {activity: Activity}>("/activities", taskForApi);
         return {
             ...response.activity,
             startDate: new Date(response.activity.startDate),
