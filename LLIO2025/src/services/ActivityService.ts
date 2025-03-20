@@ -50,7 +50,7 @@ const updateTask = async (activity: Activity): Promise<Activity> => {
 };
 
 const deleteTask = async (id: number): Promise<void> => {
-    await DELETE(`/tasks/${id}`);
+    await DELETE(`/activities/${id}`);
 };
 
 const getTasks = async () => {
