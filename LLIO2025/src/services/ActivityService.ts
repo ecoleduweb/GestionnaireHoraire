@@ -55,7 +55,7 @@ const deleteTask = async (id: number): Promise<void> => {
 
 const getTasks = async () => {
     try {
-        const response = await GET<FormTask[]>("/tasks");
+        const response = await GET<FormTask[]>("/activities");
         const taskData = response.map(transformTasksDates);
         return taskData;
     } catch (error) {
