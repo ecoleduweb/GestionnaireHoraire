@@ -2,10 +2,9 @@
   import type { CalendarService } from '../../services/calendar.service';
   import { CalendarService as CS } from '../../services/calendar.service';
   import { onMount } from 'svelte';
-  import TaskModal from '../../Components/Calendar/TaskModal.svelte';
-  import { TaskApiService } from '../../services/TaskApiService';
-  import type { Task } from '../../Models/index.ts';
-
+  import ActivityModal from '../../Components/Calendar/ActivityModal.svelte';
+  import { ActivityApiService } from '../../services/ActivityApiService';
+  import type { Activity } from '../../Models/index.ts';
   // Importez le fichier CSS
   import '../../style/modern-calendar.css';
 
@@ -14,7 +13,7 @@
   let showModal = $state(false);
   let selectedDate: { start: Date; end: Date } | null = null;
   let editMode = $state(false);
-  let editTask = $state(null);
+  let editActivity = $state(null);
   let activeView = $state('timeGridWeek');
   let currentViewTitle = $state('');
 
@@ -121,19 +120,18 @@
 
       calendarService.onDateSelect = (info) => {
         editMode = false;
-        editTask = null;
+        editActivity = null;
         selectedDate = info;
         showModal = true;
       };
 
       calendarService.onEventClick = (info) => {
         editMode = true;
-        editTask = {
+        editActivity = {
           id: info.event.extendedProps.id,
           name: info.event.title,
           description: info.event.extendedProps.description,
           state: info.event.extendedProps.state,
-          billable: info.event.extendedProps.billable,
           userId: info.event.extendedProps.userId,
           projectId: info.event.extendedProps.projectId,
           categoryId: info.event.extendedProps.categoryId,
@@ -164,41 +162,41 @@
     }
   }
 
-  async function handleTaskSubmit(taskData: Task) {
+  async function handleActivitySubmit(activityData: Activity) {
     calendarService.addEvent({
-      id: taskData.id.toString(),
-      title: taskData.name,
-      start: taskData.startDate,
-      end: taskData.endDate,
-      extendedProps: { ...taskData },
+      id: activityData.id.toString(),
+      title: activityData.name,
+      start: activityData.startDate,
+      end: activityData.endDate,
+      extendedProps: { ...activityData },
     });
   }
 
-  async function handleTaskUpdate(task: Task) {
+  async function handleActivityUpdate(activity: Activity) {
     if (!calendarService?.calendar) return;
     try {
-      const updatedTask = await TaskApiService.updateTask(task);
-      calendarService.updateEvent(updatedTask);
+      const updatedActivity = await ActivityApiService.updateActivity(activity);
+      calendarService.updateEvent(updatedActivity);
     } catch (error) {
-      console.error('Erreur lors de la mise à jour de la tâche', error);
+      console.error('Erreur lors de la mise à jour de l'activité', error);
       throw error;
     }
   }
 
-  async function handleTaskDelete(task: Task) {
-    if (!calendarService?.calendar || !task.id) return;
+  async function handleActivityDelete(activity: Activity) {
+    if (!calendarService?.calendar || !activity.id) return;
     try {
-      await TaskApiService.deleteTask(task.id);
-      calendarService.deleteTask(task.id.toString());
+      await ActivityApiService.deleteActivity(activity.id);
+      calendarService.deleteActivity(activity.id.toString());
     } catch (error) {
-      console.error('Erreur lors de la suppression de la tâche', error);
+      console.error('Erreur lors de la suppression de l'activité', error);
       throw error;
     }
   }
 
   function handleNewActivity() {
     editMode = false;
-    editTask = null;
+    editActivity = null;
     selectedDate = {
       start: new Date(),
       end: new Date(new Date().getTime() + 30 * 60000), // 30 minutes par défaut
@@ -386,16 +384,16 @@
 </div>
 
 {#if showModal}
-  <TaskModal
+  <ActivityModal
     show={showModal}
     {users}
     {projects}
     {categories}
-    taskToEdit={editTask}
+    activityToEdit={editActivity}
     {selectedDate}
-    onDelete={handleTaskDelete}
-    onSubmit={handleTaskSubmit}
-    onUpdate={handleTaskUpdate}
+    onDelete={handleActivityDelete}
+    onSubmit={handleActivitySubmit}
+    onUpdate={handleActivityUpdate}
     onClose={() => {
       showModal = false;
     }}
