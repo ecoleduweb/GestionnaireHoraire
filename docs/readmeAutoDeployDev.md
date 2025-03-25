@@ -29,7 +29,7 @@ jobs:
 ```
 
 - Un job unique exécuté sur un runner Ubuntu
-- Utilise l'action SSH pour se connecter au serveur distant
+- Utilise l'action SSH pour se connecter au serveur distant (environnement de dev)
 - Paramètres de connexion stockés dans les secrets GitHub
 
 ## Explication du script de déploiement
@@ -50,7 +50,7 @@ sudo systemctl stop llio-frontend.service || echo "Frontend service not running"
 ```
 
 - Arrête les services existants
-- Continue même si les services ne sont pas actifs
+- Le || est utile pour que le script continue même si les services ne sont pas actifs
 
 ### Rafraîchissement du code source
 
@@ -76,7 +76,7 @@ EOF
 /usr/local/go/bin/go mod tidy
 ```
 
-- Crée le fichier de configuration .env avec les secrets
+- Crée le fichier de configuration .env avec les secrets GitHub
 - Télécharge et organise les dépendances Go
 
 ### Configuration et build du frontend
@@ -105,7 +105,7 @@ sudo systemctl status llio-frontend --no-pager
 ```
 
 - Démarre les services
-- Affiche leur statut pour vérification
+- Affiche leur statut pour vérification si tout fonctionne correctement
 
 ## Points techniques importants
 
@@ -121,10 +121,10 @@ sudo systemctl status llio-frontend --no-pager
 
 ## Prérequis
 
-1. **Secrets GitHub**: Configurer toutes les variables référencées dans le script.
+1. **Secrets GitHub**: Configurer toutes les variables référencées dans le script. À noter que si vous ajoutez des variables dans le .env, ne pas oublier d'ajouter leurs contenus dans les secrets GitHub, sinon rien ne sera ajouté au .env
 
 2. **Configuration du serveur**:
-   - Services systemd `llio-api` et `llio-frontend` configurés
+   - Services /etc/systemd/system `llio-api.service` et `llio-frontend.service` configurés
    - Permissions sudo pour l'utilisateur SSH
    - Go, Node.js, npm et Git installés
 
@@ -132,21 +132,22 @@ sudo systemctl status llio-frontend --no-pager
 
 1. **Services ne démarrant pas**:
 
-   - Vérifier les logs: `journalctl -u llio-api`
+   - Vérifier les logs: `journalctl -u llio-api` ou `journalctl -u llio-frontend`
    - Confirmer que les fichiers .env sont correctement générés
 
 2. **Échec lors du clonage**:
 
    - Vérifier l'accès au repository et les permissions
+   - Vérifier que la connection SSH s'effectue correctement et sans erreur
 
 3. **Échec d'installation des dépendances**:
 
    - Vérifier les versions de Node/npm sur le serveur
-   - Contrôler l'espace disque disponible
+   - Regarder si le serveur a assez de stockage ET DE MÉMOIRE
 
 4. **Problèmes avec les variables d'environnement**:
    - Vérifier que tous les secrets sont configurés dans GitHub
-   - S'assurer que les noms des variables correspondent à ceux attendus
+   - S'assurer que les noms des variables correspondent à ceux attendus dans les secrets ou dans le .env
 
 ## Maintenance
 

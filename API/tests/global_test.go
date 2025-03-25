@@ -65,7 +65,7 @@ func prepareTestData() {
 		EndAt:       time.Now(),
 	}
 	database.DB.Create(&testProject)
-	doNotDeleteCategory = testProject
+	doNotDeleteProject = testProject
 
 	testCategory := DAOs.Category{
 		Name:        "Test Category",
@@ -74,10 +74,10 @@ func prepareTestData() {
 		UpdatedAt:   time.Now(),
 	}
 	database.DB.Create(&testCategory)
-	doNotDeleteProject = testCategory
+	doNotDeleteCategory = testCategory
 
 	testActivity := DAOs.Activity{
-		Name:        "Test Category",
+		Name:        "Test Activity",
 		StartDate:   time.Now(),
 		EndDate:     time.Now().Add(time.Hour),
 		Description: "test description",
