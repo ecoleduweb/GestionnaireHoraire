@@ -178,7 +178,7 @@
       const updatedActivity = await ActivityApiService.updateActivity(activity);
       calendarService.updateEvent(updatedActivity);
     } catch (error) {
-      console.error('Erreur lors de la mise à jour de l'activité', error);
+      console.error("Erreur lors de la mise à jour de l'activité", error);
       throw error;
     }
   }
@@ -189,7 +189,7 @@
       await ActivityApiService.deleteActivity(activity.id);
       calendarService.deleteActivity(activity.id.toString());
     } catch (error) {
-      console.error('Erreur lors de la suppression de l'activité', error);
+      console.error("Erreur lors de la suppression de l'activité", error);
       throw error;
     }
   }

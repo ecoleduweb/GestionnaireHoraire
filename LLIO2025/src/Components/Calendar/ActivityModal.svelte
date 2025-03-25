@@ -147,7 +147,7 @@
       on:click|stopPropagation
     >
       <h2 class="text-2xl text-gray-800 font-medium mb-6">
-        {editMode ? 'Modifier l'activité' : 'Nouvelle tâche'}
+        {editMode ? "Modifier l'activité" : 'Nouvelle tâche'}
       </h2>
       <form on:submit|preventDefault={handleSubmit}>
         <div class="mb-6">
@@ -222,9 +222,9 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div>
             <label for="activity-user" class="block text-gray-600 mb-2">Utilisateur*</label>
-            <select 
-              id="activity-user" 
-              bind:value={activity.userId} 
+            <select
+              id="activity-user"
+              bind:value={activity.userId}
               required
               class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
             >
@@ -237,9 +237,9 @@
 
           <div>
             <label for="activity-project" class="block text-gray-600 mb-2">Projet*</label>
-            <select 
-              id="activity-project" 
-              bind:value={activity.projectId} 
+            <select
+              id="activity-project"
+              bind:value={activity.projectId}
               required
               class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
             >
@@ -252,9 +252,9 @@
 
           <div>
             <label for="activity-category" class="block text-gray-600 mb-2">Catégorie*</label>
-            <select 
-              id="activity-category" 
-              bind:value={activity.categoryId} 
+            <select
+              id="activity-category"
+              bind:value={activity.categoryId}
               required
               class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
             >
