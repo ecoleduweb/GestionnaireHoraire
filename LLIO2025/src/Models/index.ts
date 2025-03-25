@@ -24,3 +24,10 @@ export interface Category {
     id: number;
     name: string;
 }
+
+export interface TaskUpdateResponse 
+{
+    udpdated_task: Task;
+    startDate?: Date | null;
+    endDate?: Date | null;
+}

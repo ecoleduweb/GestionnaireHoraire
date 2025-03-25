@@ -6,6 +6,7 @@ let tasks: Task[];
 interface FormTask extends Omit<Task, 'startDate' | 'endDate'> {
     startDate: string;
     endDate: string;
+    updated_task?: Task;
 }
 
 const transformTasksDates = (task: FormTask): Task => ({
@@ -42,14 +43,49 @@ const createTask = async (task: Task): Promise<Task> => {
 };
 
 const updateTask = async (task: Task): Promise<Task> => {
-    const taskForApi: FormTask = {
-        ...task,
+    if (!task) {
+        console.error("La tâche est undefined");
+        throw new Error("La tâche ou son ID est manquant");
+    }
+
+    if (!task.id) {
+        console.error("L'ID de la tâche est manquant", task);
+        throw new Error("L'ID de la tâche est manquant");
+    }
+
+    // Préparation des données pour l'API - ATTENTION: UTILISER L'URL RACINE /tasks
+    const taskForApi = {
+        id: task.id,
+        name: task.name,
+        description: task.description || "",
+        billable: task.billable || false,
         startDate: task.startDate.toISOString(),
-        endDate: task.endDate.toISOString()
+        endDate: task.endDate.toISOString(),
+        userId: task.userId || 1,
+        projectId: task.projectId || 1,
+        categoryId: task.categoryId || 1
     };
 
-    const response = await PUT<FormTask, FormTask>(`/tasks/${task.id}`, taskForApi);
-    return transformTasksDates(response);
+    try {
+        const response = await PUT<typeof taskForApi, {updated_task: Task}>("/tasks", taskForApi);
+        
+        if (response && response.updated_task) {
+            // Extraire la tâche mise à jour de l'objet de réponse
+            const updatedTaskData = response.updated_task;
+            
+            // Convertir les dates
+            return {
+                ...updatedTaskData,
+                startDate: new Date(updatedTaskData.startDate),
+                endDate: new Date(updatedTaskData.endDate)
+            };
+        } else {
+            return task;
+        }
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour de la tâche:", error);
+        throw error;
+    }
 };
 
 const deleteTask = async (id: number): Promise<void> => {

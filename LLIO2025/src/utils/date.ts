@@ -1,12 +1,16 @@
 // Extraire les heures et minutes d'un objet Date
-export const getHoursFromDate = (date: Date): string => {
-  const hours = date.getHours();
-  return hours.toString().padStart(2, '0');
+export function getHoursFromDate(date: Date | null | undefined): string {
+  if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+    return '12';
+  }
+  return date.getHours().toString().padStart(2, '0');
 };
 
-export const getMinutesFromDate = (date: Date): string => {
-  const minutes = date.getMinutes();
-  return minutes.toString().padStart(2, '0');
+export function getMinutesFromDate(date: Date | null | undefined): string {
+  if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+    return '00';
+  }
+  return date.getMinutes().toString().padStart(2, '0');
 };
 
 // Créer une date avec année/mois/jour spécifiques et heures/minutes données

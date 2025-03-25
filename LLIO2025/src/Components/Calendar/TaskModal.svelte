@@ -106,7 +106,17 @@
         task.endDate = updatedEndDate;
 
         if (editMode) {
-          const updatedTask = await TaskApiService.updateTask(task);
+          // Vérifier que l'ID est présent
+          if (!task.id) {
+            console.error('ID de tâche manquant en mode édition');
+            throw new Error('ID de tâche manquant');
+          }
+
+          // Créer une copie complète pour éviter les problèmes de référence
+          const taskToUpdate = { ...task };
+
+          const updatedTask = await TaskApiService.updateTask(taskToUpdate);
+
           onUpdate(updatedTask);
         } else {
           const newTask = await TaskApiService.createTask(task);

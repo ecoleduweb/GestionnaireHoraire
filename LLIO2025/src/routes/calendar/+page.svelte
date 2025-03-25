@@ -96,6 +96,12 @@
         slotMinTime: '06:00:00',
         slotMaxTime: '20:00:00',
         nowIndicator: true,
+
+        // Gestion du drag
+        editable: true,
+        eventDrop: handleEventDrop,
+        eventResize: handleEventResize,
+
         height: 'auto',
         contentHeight: 'auto', // Hauteur automatique
         slotHeight: 25, // Hauteur réduite des slots (plus compact)
@@ -176,12 +182,75 @@
 
   async function handleTaskUpdate(task: Task) {
     if (!calendarService?.calendar) return;
+
+    // Vérifier que l'ID existe
+    if (!task.id) {
+      console.error('ID de tâche manquant pour la mise à jour');
+      return;
+    }
+
     try {
+      // S'assurer que les dates sont valides
+      if (!(task.startDate instanceof Date) || isNaN(task.startDate.getTime())) {
+        task.startDate = new Date(); // Utiliser une date par défaut si invalide
+      }
+      if (!(task.endDate instanceof Date) || isNaN(task.endDate.getTime())) {
+        task.endDate = new Date(task.startDate.getTime() + 30 * 60000); // 30 min après le début
+      }
+
       const updatedTask = await TaskApiService.updateTask(task);
+
       calendarService.updateEvent(updatedTask);
     } catch (error) {
       console.error('Erreur lors de la mise à jour de la tâche', error);
-      throw error;
+    }
+  }
+
+  // Fonction pour gérer le déplacement d'une tâche
+  async function handleEventDrop(info) {
+    try {
+      const task = {
+        id: parseInt(info.event.id),
+        name: info.event.title,
+        description: info.event.extendedProps.description,
+        billable: info.event.extendedProps.billable,
+        startDate: info.event.start,
+        endDate: info.event.end,
+        userId: info.event.extendedProps.userId,
+        projectId: info.event.extendedProps.projectId,
+        categoryId: info.event.extendedProps.categoryId,
+      };
+
+      const updatedTask = await TaskApiService.updateTask(task);
+
+      calendarService.updateEvent(updatedTask);
+    } catch (error) {
+      console.error('Erreur lors du déplacement de la tâche', error);
+      info.revert();
+    }
+  }
+
+  // Fonction pour gérer le redimensionnement d'une tâche
+  async function handleEventResize(info) {
+    try {
+      const task = {
+        id: parseInt(info.event.id),
+        name: info.event.title,
+        description: info.event.extendedProps.description,
+        billable: info.event.extendedProps.billable,
+        startDate: info.event.start,
+        endDate: info.event.end,
+        userId: info.event.extendedProps.userId,
+        projectId: info.event.extendedProps.projectId,
+        categoryId: info.event.extendedProps.categoryId,
+      };
+
+      const updatedTask = await TaskApiService.updateTask(task);
+
+      calendarService.updateEvent(updatedTask);
+    } catch (error) {
+      console.error('Erreur lors du redimensionnement de la tâche', error);
+      info.revert();
     }
   }
 
