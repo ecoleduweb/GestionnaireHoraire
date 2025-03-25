@@ -6,15 +6,15 @@ interface FormActivity extends Omit<Activity, 'startDate' | 'endDate'> {
   endDate: string;
 }
 
-const transformTasksDates = (activity: FormActivity): Activity => ({
+const transformActivitiesDates = (activity: FormActivity): Activity => ({
   ...activity,
   startDate: new Date(activity.startDate),
   endDate: new Date(activity.endDate),
 });
 
-const createTask = async (activity: Activity): Promise<Activity> => {
+const createActivity = async (activity: Activity): Promise<Activity> => {
   // Préparation des données pour l'API
-  const taskForApi = {
+  const activityForApi = {
     name: activity.name,
     description: activity.description || '',
     startDate: activity.startDate.toISOString(),
@@ -25,9 +25,9 @@ const createTask = async (activity: Activity): Promise<Activity> => {
   };
 
   try {
-    const response = await POST<typeof taskForApi, { activity: Activity }>(
+    const response = await POST<typeof activityForApi, { activity: Activity }>(
       '/activities',
-      taskForApi
+      activityForApi
     );
     return {
       ...response.activity,
@@ -40,26 +40,29 @@ const createTask = async (activity: Activity): Promise<Activity> => {
   }
 };
 
-const updateTask = async (activity: Activity): Promise<Activity> => {
-  const taskForApi: FormTask = {
+const updateActivity = async (activity: Activity): Promise<Activity> => {
+  const activityForApi: FormActivity = {
     ...activity,
     startDate: activity.startDate.toISOString(),
     endDate: activity.endDate.toISOString(),
   };
 
-  const response = await PUT<FormActivity, FormActivity>(`/activities/${activity.id}`, taskForApi);
-  return transformTasksDates(response);
+  const response = await PUT<FormActivity, FormActivity>(
+    `/activities/${activity.id}`,
+    activityForApi
+  );
+  return transformActivitiesDates(response);
 };
 
-const deleteTask = async (id: number): Promise<void> => {
+const deleteActivity = async (id: number): Promise<void> => {
   await DELETE(`/activities/${id}`);
 };
 
-const getTasks = async () => {
+const getActivities = async () => {
   try {
     const response = await GET<FormActivity[]>('/activities');
-    const taskData = response.map(transformTasksDates);
-    return taskData;
+    const activityData = response.map(transformActivitiesDates);
+    return activityData;
   } catch (error) {
     // Gardé pour le débogage, mais peut être supprimé si nécessaire
     console.error('Erreur lors de la récupération des tâches', error);
@@ -67,9 +70,9 @@ const getTasks = async () => {
   }
 };
 
-export const TaskApiService = {
-  getTasks,
-  createTask,
-  updateTask,
-  deleteTask,
+export const ActivityApiService = {
+  getActivities,
+  createActivity,
+  updateActivity,
+  deleteActivity,
 };
