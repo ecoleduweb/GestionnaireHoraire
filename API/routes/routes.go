@@ -7,6 +7,7 @@ import (
 )
 
 func RegisterRoutes(r *gin.Engine) {
+	/*------------------- Activities -------------------*/
 	activityGroup := r.Group("/activity")
 	{
 		activityGroup.POST("", controllers.CreateActivity)
@@ -18,6 +19,12 @@ func RegisterRoutes(r *gin.Engine) {
 	activitiesGroup := r.Group("/activities")
 	{
 		activitiesGroup.GET("", controllers.GetAllActivities)
+	}
+
+	/*------------------- Categories -------------------*/
+	categoryGroup := r.Group("/category")
+	{
+		categoryGroup.POST("", controllers.CreateCategory)
 	}
 
 }
