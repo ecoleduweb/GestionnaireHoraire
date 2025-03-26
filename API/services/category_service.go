@@ -41,3 +41,31 @@ func CreateCategory(categoryDTO *DTOs.CategoryDTO) (*DTOs.CategoryDTO, error) {
 	err = copier.Copy(categoryDTOResponse, activityDAOAded)
 	return categoryDTOResponse, err
 }
+
+func GetCategories() ([]*DTOs.CategoryDTO, error) {
+	categories, err := repositories.GetCategories()
+	if err != nil {
+		return nil, err
+	}
+
+	var categoriesDTOs []*DTOs.CategoryDTO
+	for _, category := range categories {
+		categoryDTO := &DTOs.CategoryDTO{}
+		err = copier.Copy(categoryDTO, category)
+		categoriesDTOs = append(categoriesDTOs, categoryDTO)
+	}
+
+	return categoriesDTOs, err
+}
+
+func GetCategoryById(id string) (*DTOs.CategoryDTO, error) {
+	category, err := repositories.GetCategoryById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	categoryDTO := &DTOs.CategoryDTO{}
+	err = copier.Copy(categoryDTO, category)
+
+	return categoryDTO, err
+}

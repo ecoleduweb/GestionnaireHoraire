@@ -1,12 +1,14 @@
 package controllers
 
 import (
+	"errors"
 	"llio-api/models/DTOs"
 	"llio-api/services"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func CreateCategory(c *gin.Context) {
@@ -38,4 +40,34 @@ func CreateCategory(c *gin.Context) {
 		"reponse":  "La catégorie a bien été ajoutée à la base de données.",
 		"activity": categoryAdded,
 	})
+}
+
+func GetCategories(c *gin.Context) {
+	categories, err := services.GetCategories()
+	if err != nil {
+		log.Printf("Impossible de récupérer les catégories:%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer les catégories."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"categories": categories})
+}
+
+func GetCategoryById(c *gin.Context) {
+	id := c.Param("id")
+
+	category, err := services.GetCategoryById(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			log.Printf("La catégorie est introuvable:%v", err)
+			c.JSON(http.StatusNotFound, gin.H{"error": "La catégorie est introuvable."})
+			return
+		}
+		log.Printf("Impossible de récupérer la catégorie:%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la catégorie."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"category": category})
+
 }

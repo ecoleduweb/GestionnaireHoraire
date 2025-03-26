@@ -9,3 +9,16 @@ func CreateCategory(category *DAOs.Category) (*DAOs.Category, error) {
 	err := database.DB.Create(category).Error
 	return category, err
 }
+
+func GetCategories() ([]*DAOs.Category, error) {
+	var categories []*DAOs.Category
+	err := database.DB.Find(&categories).Error
+	return categories, err
+}
+
+func GetCategoryById(id string) (*DAOs.Category, error) {
+	var category DAOs.Category
+
+	err := database.DB.First(&category, id).Error
+	return &category, err
+}

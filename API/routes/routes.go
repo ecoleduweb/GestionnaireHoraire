@@ -25,6 +25,12 @@ func RegisterRoutes(r *gin.Engine) {
 	categoryGroup := r.Group("/category")
 	{
 		categoryGroup.POST("", controllers.CreateCategory)
+		categoryGroup.GET("/:id", controllers.GetCategoryById)
+	}
+
+	categoriesGroup := r.Group("/categories")
+	{
+		categoriesGroup.GET("", controllers.GetCategories)
 	}
 
 }
