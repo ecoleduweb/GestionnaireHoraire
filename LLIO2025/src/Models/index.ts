@@ -1,8 +1,7 @@
-export interface Task {
+export interface Activity {
     id?: number;
     name: string;
     description: string;
-    billable: boolean;
     startDate: Date;
     endDate: Date;
     userId: number;

@@ -24,7 +24,7 @@ export const createDateWithTime = (
 };
 
 // Initialiser les dates de début et fin pour une nouvelle tâche
-export const initializeTaskDates = (targetDate?: Date): { startDate: Date, endDate: Date } => {
+export const initializeActivityDates = (targetDate?: Date): { startDate: Date, endDate: Date } => {
   const date = targetDate ? new Date(targetDate) : new Date();
   // Réinitialiser les secondes et millisecondes
   date.setSeconds(0);
@@ -32,7 +32,7 @@ export const initializeTaskDates = (targetDate?: Date): { startDate: Date, endDa
   
   // Créer des copies pour éviter les références partagées
   const startDate = new Date(date);
-  // Par défaut, la tâche dure 1 heure
+  // Par défaut, l'activité dure 1 heure
   const endDate = new Date(date);
   endDate.setHours(endDate.getHours() + 1);
   

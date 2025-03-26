@@ -1,60 +1,34 @@
 package database
 
 import (
-	"fmt"
-	"llio-api/models/DAOs"
 	"llio-api/useful"
 	"log"
-	"os"
 
-	"gorm.io/driver/mysql"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	mysqld "gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
 func Connect() {
-
 	// Charger les variables d'environnement
 	useful.LoadEnv()
 
-	// Lire les variables d'environnement
-	env := os.Getenv("ENV")
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	port := os.Getenv("DB_PORT")
-	host := os.Getenv("DB_HOST")
-
-	var databaseName string
-
-	// Définir le host et le nom de la base de données en fonction de l'environnement
-	switch env {
-	case "TEST":
-		databaseName = os.Getenv("DB_NAME_TEST")
-	case "DEV", "PROD":
-		databaseName = os.Getenv("DB_NAME_RUN")
-	default:
-		log.Fatalf("Environnement non pris en charge : %s", env)
+	log.Println("Exécution des migrations...")
+	// Run migrations first
+	err := useful.RunMigrationCommand("up")
+	if err != nil {
+		log.Printf("Attention lors des migrations: %v", err)
+		// Continue anyway since it might be an ErrNoChange or other non-fatal error
 	}
 
-	// Construire la chaîne de connexion DSN
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		user, password, host, port, databaseName,
-	)
-
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// Then connect to DB
+	db, err := gorm.Open(mysqld.Open(useful.GetGormDSN()), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Erreur de connexion à la base de données : ", err)
 	} else {
 		log.Println("Connexion à la base de données effectuée avec succès")
-	}
-
-	// Migrer le modèle
-	err = db.AutoMigrate(&DAOs.Task{})
-	if err != nil {
-		log.Fatal("Erreur lors de la migration des modèles : ", err)
-	} else {
-		log.Println("Migrations effectuées avec succès")
 	}
 
 	DB = db
