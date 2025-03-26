@@ -90,8 +90,8 @@ func UpdateActivity(c *gin.Context) {
 	_, err := services.GetActivityById(id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			log.Printf("L'activités à mettre à jour est introuvable:%v", err)
-			c.JSON(http.StatusNotFound, gin.H{"error": "L'activités est introuvable."})
+			log.Printf("L'activité à mettre à jour est introuvable:%v", err)
+			c.JSON(http.StatusNotFound, gin.H{"error": "L'activité est introuvable."})
 			return
 		}
 		log.Printf("Impossible de récupérer l'activité à mettre à jour:%v", err)
@@ -101,11 +101,36 @@ func UpdateActivity(c *gin.Context) {
 
 	updatedActivityDTO, err := services.UpdateActivity(&updateActivityDTO)
 	if err != nil {
-		log.Printf("L'activités n'a pas été modifiée : %v", err)
-		c.JSON(http.StatusNotModified, gin.H{"error": "L'activités n'a pas été modifiée."})
+		log.Printf("L'activité n'a pas été modifiée : %v", err)
+		c.JSON(http.StatusNotModified, gin.H{"error": "L'activité n'a pas été modifiée."})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"updated_activity": updatedActivityDTO})
 
+}
+
+func DeleteActivity(c *gin.Context) {
+
+	id := c.Param("id")
+	task, err := services.GetActivityById(id)
+	if err != nil {
+		log.Printf("Erreur lors de la récupération de l'activité. : %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur lors de la récupération de l'activité."})
+		return
+	}
+	if task == nil {
+		log.Printf("L'activité à supprimer n'existe pas. : %v", err)
+		c.JSON(http.StatusNotFound, gin.H{"error": "L'activité à supprimer n'existe pas."})
+		return
+	}
+
+	err = services.DeleteActivity(id)
+	if err != nil {
+		log.Printf("Impossible de supprimer l'activité.: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de supprimer l'activité."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "La suppression de l'activité est un succès."})
 }

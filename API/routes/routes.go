@@ -12,6 +12,7 @@ func RegisterRoutes(r *gin.Engine) {
 		activityGroup.POST("", controllers.CreateActivity)
 		activityGroup.GET("/:id", controllers.GetActivityById)
 		activityGroup.PUT("", controllers.UpdateActivity)
+		activityGroup.DELETE("/:id", controllers.DeleteActivity)
 	}
 
 	activitiesGroup := r.Group("/activities")

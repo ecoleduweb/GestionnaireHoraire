@@ -26,8 +26,8 @@ var (
 	router              *gin.Engine
 	w                   *httptest.ResponseRecorder
 	doNotDeleteUser     DAOs.User
-	doNotDeleteCategory DAOs.Project
-	doNotDeleteProject  DAOs.Category
+	doNotDeleteCategory DAOs.Category
+	doNotDeleteProject  DAOs.Project
 	doNotDeleteActivity DAOs.Activity
 )
 

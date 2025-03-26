@@ -27,3 +27,7 @@ func UpdateActivity(ActivityDAO *DAOs.Activity) (*DAOs.Activity, error) {
 	err := database.DB.Updates(ActivityDAO).Error
 	return ActivityDAO, err
 }
+
+func DeleteActivity(id string) error {
+	return database.DB.Delete(&DAOs.Activity{}, id).Error
+}
