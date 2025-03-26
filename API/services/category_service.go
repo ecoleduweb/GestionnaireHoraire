@@ -4,23 +4,10 @@ import (
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
 	"llio-api/repositories"
+	"log"
 
 	"github.com/jinzhu/copier"
 )
-
-func VerifyCreateCategoryJSON(categoryDTO *DTOs.CategoryDTO) []DTOs.FieldErrorDTO {
-	var errors []DTOs.FieldErrorDTO
-
-	// Vérifier que StartDate est avant EndDate
-	if categoryDTO.CreatedAt.After(categoryDTO.UpdatedAt) {
-		errors = append(errors, DTOs.FieldErrorDTO{
-			Field:   "createdAt",
-			Message: "La date de création doit être avant la date de mise à jour",
-		})
-	}
-
-	return errors
-}
 
 func CreateCategory(categoryDTO *DTOs.CategoryDTO) (*DTOs.CategoryDTO, error) {
 
@@ -68,4 +55,23 @@ func GetCategoryById(id string) (*DTOs.CategoryDTO, error) {
 	err = copier.Copy(categoryDTO, category)
 
 	return categoryDTO, err
+}
+
+func UpdateCategory(categoryDTO *DTOs.CategoryDTO) (*DTOs.CategoryDTO, error) {
+
+	categoryDAO := &DAOs.Category{}
+	err := copier.Copy(categoryDAO, categoryDTO)
+	if err != nil {
+		return nil, err
+	}
+
+	categoryDAOUpdated, err := repositories.UpdateCategory(categoryDAO)
+	log.Println(categoryDAOUpdated)
+	if err != nil {
+		return nil, err
+	}
+
+	categoryDTOResponse := &DTOs.CategoryDTO{}
+	err = copier.Copy(categoryDTOResponse, categoryDAOUpdated)
+	return categoryDTOResponse, err
 }

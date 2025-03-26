@@ -22,3 +22,8 @@ func GetCategoryById(id string) (*DAOs.Category, error) {
 	err := database.DB.First(&category, id).Error
 	return &category, err
 }
+
+func UpdateCategory(categoryDAO *DAOs.Category) (*DAOs.Category, error) {
+	err := database.DB.Updates(categoryDAO).Error
+	return categoryDAO, err
+}
