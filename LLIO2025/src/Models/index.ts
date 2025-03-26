@@ -1,4 +1,4 @@
-export interface Task {
+export interface Activity {
     id?: number;
     name: string;
     description: string;
@@ -25,9 +25,7 @@ export interface Category {
     name: string;
 }
 
-export interface TaskUpdateResponse 
+export interface ActivityUpdateResponse 
 {
-    udpdated_task: Task;
-    startDate?: Date | null;
-    endDate?: Date | null;
+    updated_activity: Activity;
 }

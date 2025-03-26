@@ -70,24 +70,24 @@ export class CalendarService {
     this.calendar?.addEvent(eventData);
   }
 
-  updateEvent(task: any) {
+  updateEvent(activity: any) {
     // Trouver l'événement existant
-    const event = this.calendar?.getEventById(task.id.toString());
+    const event = this.calendar?.getEventById(activity.id.toString());
     if (event) {
       // Mettre à jour les propriétés de l'événement
-      event.setProp('title', task.name);
-      event.setStart(task.startDate);
-      event.setEnd(task.endDate);
-      event.setExtendedProp('description', task.description);
-      event.setExtendedProp('billable', task.billable);
-      event.setExtendedProp('userId', task.userId);
-      event.setExtendedProp('projectId', task.projectId);
-      event.setExtendedProp('categoryId', task.categoryId);
+      event.setProp('title', activity.name);
+      event.setStart(activity.startDate);
+      event.setEnd(activity.endDate);
+      event.setExtendedProp('description', activity.description);
+      event.setExtendedProp('billable', activity.billable);
+      event.setExtendedProp('userId', activity.userId);
+      event.setExtendedProp('projectId', activity.projectId);
+      event.setExtendedProp('categoryId', activity.categoryId);
     }
   }
 
-  deleteTask(taskId: string) {
-    const event = this.calendar?.getEventById(taskId);
+  deleteActivity(activityId: string) {
+    const event = this.calendar?.getEventById(activityId);
     if (event) {
       event.remove();
     }

@@ -2,10 +2,9 @@
   import type { CalendarService } from '../../services/calendar.service';
   import { CalendarService as CS } from '../../services/calendar.service';
   import { onMount } from 'svelte';
-  import TaskModal from '../../Components/Calendar/TaskModal.svelte';
-  import { TaskApiService } from '../../services/TaskApiService';
-  import type { Task } from '../../Models/index.ts';
-
+  import ActivityModal from '../../Components/Calendar/ActivityModal.svelte';
+  import { ActivityApiService } from '../../services/ActivityApiService';
+  import type { Activity } from '../../Models/index.ts';
   // Importez le fichier CSS
   import '../../style/modern-calendar.css';
 
@@ -14,7 +13,7 @@
   let showModal = $state(false);
   let selectedDate: { start: Date; end: Date } | null = null;
   let editMode = $state(false);
-  let editTask = $state(null);
+  let editActivity = $state(null);
   let activeView = $state('timeGridWeek');
   let currentViewTitle = $state('');
 
@@ -127,19 +126,18 @@
 
       calendarService.onDateSelect = (info) => {
         editMode = false;
-        editTask = null;
+        editActivity = null;
         selectedDate = info;
         showModal = true;
       };
 
       calendarService.onEventClick = (info) => {
         editMode = true;
-        editTask = {
+        editActivity = {
           id: info.event.extendedProps.id,
           name: info.event.title,
           description: info.event.extendedProps.description,
           state: info.event.extendedProps.state,
-          billable: info.event.extendedProps.billable,
           userId: info.event.extendedProps.userId,
           projectId: info.event.extendedProps.projectId,
           categoryId: info.event.extendedProps.categoryId,
@@ -170,37 +168,37 @@
     }
   }
 
-  async function handleTaskSubmit(taskData: Task) {
+  async function handleActivitySubmit(activityData: Activity) {
     calendarService.addEvent({
-      id: taskData.id.toString(),
-      title: taskData.name,
-      start: taskData.startDate,
-      end: taskData.endDate,
-      extendedProps: { ...taskData },
+      id: activityData.id.toString(),
+      title: activityData.name,
+      start: activityData.startDate,
+      end: activityData.endDate,
+      extendedProps: { ...activityData },
     });
   }
 
-  async function handleTaskUpdate(task: Task) {
+  async function handleActivityUpdate(activity: Activity) {
     if (!calendarService?.calendar) return;
 
     // Vérifier que l'ID existe
-    if (!task.id) {
+    if (!activity.id) {
       console.error('ID de tâche manquant pour la mise à jour');
       return;
     }
 
     try {
       // S'assurer que les dates sont valides
-      if (!(task.startDate instanceof Date) || isNaN(task.startDate.getTime())) {
-        task.startDate = new Date(); // Utiliser une date par défaut si invalide
+      if (!(activity.startDate instanceof Date) || isNaN(activity.startDate.getTime())) {
+        activity.startDate = new Date(); // Utiliser une date par défaut si invalide
       }
-      if (!(task.endDate instanceof Date) || isNaN(task.endDate.getTime())) {
-        task.endDate = new Date(task.startDate.getTime() + 30 * 60000); // 30 min après le début
+      if (!(activity.endDate instanceof Date) || isNaN(activity.endDate.getTime())) {
+        activity.endDate = new Date(activity.startDate.getTime() + 30 * 60000); // 30 min après le début
       }
 
-      const updatedTask = await TaskApiService.updateTask(task);
+      const updatedActivity = await ActivityApiService.updateActivity(activity);
 
-      calendarService.updateEvent(updatedTask);
+      calendarService.updateEvent(updatedActivity);
     } catch (error) {
       console.error('Erreur lors de la mise à jour de la tâche', error);
     }
@@ -209,7 +207,7 @@
   // Fonction pour gérer le déplacement d'une tâche
   async function handleEventDrop(info) {
     try {
-      const task = {
+      const activity = {
         id: parseInt(info.event.id),
         name: info.event.title,
         description: info.event.extendedProps.description,
@@ -221,9 +219,9 @@
         categoryId: info.event.extendedProps.categoryId,
       };
 
-      const updatedTask = await TaskApiService.updateTask(task);
+      const updatedActivity = await ActivityApiService.updateActivity(activity);
 
-      calendarService.updateEvent(updatedTask);
+      calendarService.updateEvent(updatedActivity);
     } catch (error) {
       console.error('Erreur lors du déplacement de la tâche', error);
       info.revert();
@@ -233,7 +231,7 @@
   // Fonction pour gérer le redimensionnement d'une tâche
   async function handleEventResize(info) {
     try {
-      const task = {
+      const activity = {
         id: parseInt(info.event.id),
         name: info.event.title,
         description: info.event.extendedProps.description,
@@ -245,29 +243,29 @@
         categoryId: info.event.extendedProps.categoryId,
       };
 
-      const updatedTask = await TaskApiService.updateTask(task);
+      const updatedActivity = await ActivityApiService.updateActivity(activity);
 
-      calendarService.updateEvent(updatedTask);
+      calendarService.updateEvent(updatedActivity);
     } catch (error) {
       console.error('Erreur lors du redimensionnement de la tâche', error);
       info.revert();
     }
   }
 
-  async function handleTaskDelete(task: Task) {
-    if (!calendarService?.calendar || !task.id) return;
+  async function handleActivityDelete(activity: Activity) {
+    if (!calendarService?.calendar || !activity.id) return;
     try {
-      await TaskApiService.deleteTask(task.id);
-      calendarService.deleteTask(task.id.toString());
+      await ActivityApiService.deleteActivity(activity.id);
+      calendarService.deleteActivity(activity.id.toString());
     } catch (error) {
-      console.error('Erreur lors de la suppression de la tâche', error);
+      console.error("Erreur lors de la suppression de l'activité", error);
       throw error;
     }
   }
 
   function handleNewActivity() {
     editMode = false;
-    editTask = null;
+    editActivity = null;
     selectedDate = {
       start: new Date(),
       end: new Date(new Date().getTime() + 30 * 60000), // 30 minutes par défaut
@@ -455,16 +453,16 @@
 </div>
 
 {#if showModal}
-  <TaskModal
+  <ActivityModal
     show={showModal}
     {users}
     {projects}
     {categories}
-    taskToEdit={editTask}
+    activityToEdit={editActivity}
     {selectedDate}
-    onDelete={handleTaskDelete}
-    onSubmit={handleTaskSubmit}
-    onUpdate={handleTaskUpdate}
+    onDelete={handleActivityDelete}
+    onSubmit={handleActivitySubmit}
+    onUpdate={handleActivityUpdate}
     onClose={() => {
       showModal = false;
     }}

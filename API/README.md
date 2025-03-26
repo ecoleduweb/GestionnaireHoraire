@@ -73,6 +73,23 @@ API/
     PORT = port_de_l'application
     FRONTEND_URL = http://localhost:xxxx
    ```
+
+# Migrations et mise en place de la base de données
+1. Créer une base de données vide nommée llio et une autre nommée llio_test
+2. À la racine du projet API, exécuter la commande `go run main.go migrate up`. Cette commande permet d'exécuter les nouvelles migrataions en se basant sur la table schema_migrations.
+
+## Pour créer une nouvelle migration
+1. Exécuter la commande  `go run main.go migrate create un_nom_significatif_pour_ta_migration`. Cela va ajouter deux fichiers dans le dossier database/migrations.
+2. Complète les fichiers de migration. L'ia peut t'aider à le faire, mais assures-toi de bien valider ce qui est produit! Le ficher up applique le changement, le fichier down revient en arrière.
+
+Test ensuite ta migration. Si elle échoue, la table schema_migration aura ton numéro de migration et la valeur 1 à isDirty qui montre que ta migration a échouée.
+
+## Pour annuler une migration
+La commande  `go run main.go migrate down` annule la dernière migration qui a été exécutée.
+
+## Si jamais ma migration a tout cassé?
+Le champ isDirty dans schema_migration sera à 1. Le changer pour 0 dans la base de données et re rouler la migration!
+
 # Test
 ## Installation de la librairie de test pour du golang : testify
 Installation de la librairie de base:

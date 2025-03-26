@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { Task, User, Project, Category } from '../../Models';
-  import { taskTemplate } from '../../forms/task';
-  import { TaskApiService } from '../../services/TaskApiService';
+  import type { Activity, User, Project, Category } from '../../Models';
+  import { activityTemplate } from '../../forms/activity';
+  import { ActivityApiService } from '../../services/ActivityApiService';
   import {
     getHoursFromDate,
     getMinutesFromDate,
     createDateWithTime,
-    initializeTaskDates,
+    initializeActivityDates,
     applyEndTime as applyEndTimeUtil,
   } from '../../utils/date';
   import '../../style/app.css';
@@ -16,12 +16,12 @@
     users: User[];
     projects: Project[];
     categories: Category[];
-    taskToEdit: Task | null;
+    activityToEdit: Activity | null;
     selectedDate?: { start: Date; end: Date } | null;
     onClose: () => void;
-    onDelete: (task: Task) => void;
-    onSubmit: (task: Task) => void;
-    onUpdate: (task: Task) => void;
+    onDelete: (activity: Activity) => void;
+    onSubmit: (activity: Activity) => void;
+    onUpdate: (activity: Activity) => void;
   };
 
   let {
@@ -29,7 +29,7 @@
     users,
     projects,
     categories,
-    taskToEdit,
+    activityToEdit,
     selectedDate = null,
     onClose,
     onDelete,
@@ -37,38 +37,38 @@
     onUpdate,
   }: Props = $props();
 
-  const editMode = taskToEdit !== null;
+  const editMode = activityToEdit !== null;
 
-  let initialTask = taskTemplate.generate();
+  let initialActivity = activityTemplate.generate();
 
   let isSubmitting = false;
 
   if (selectedDate && selectedDate.start) {
-    const { startDate, endDate } = initializeTaskDates(selectedDate.start);
-    initialTask.startDate = startDate;
-    initialTask.endDate = endDate ? new Date(selectedDate.end) : endDate;
+    const { startDate, endDate } = initializeActivityDates(selectedDate.start);
+    initialActivity.startDate = startDate;
+    initialActivity.endDate = endDate ? new Date(selectedDate.end) : endDate;
   }
 
-  const task = $state<Task>(initialTask);
+  const activity = $state<Activity>(initialActivity);
 
   const time = $state({
-    startHours: getHoursFromDate(task.startDate),
-    startMinutes: getMinutesFromDate(task.startDate),
-    endHours: getHoursFromDate(task.endDate),
-    endMinutes: getMinutesFromDate(task.endDate),
+    startHours: getHoursFromDate(activity.startDate),
+    startMinutes: getMinutesFromDate(activity.startDate),
+    endHours: getHoursFromDate(activity.endDate),
+    endMinutes: getMinutesFromDate(activity.endDate),
   });
 
-  if (taskToEdit) {
-    Object.assign(task, taskToEdit);
-    time.startHours = getHoursFromDate(taskToEdit.startDate);
-    time.startMinutes = getMinutesFromDate(taskToEdit.startDate);
-    time.endHours = getHoursFromDate(taskToEdit.endDate);
-    time.endMinutes = getMinutesFromDate(taskToEdit.endDate);
+  if (activityToEdit) {
+    Object.assign(activity, activityToEdit);
+    time.startHours = getHoursFromDate(activityToEdit.startDate);
+    time.startMinutes = getMinutesFromDate(activityToEdit.startDate);
+    time.endHours = getHoursFromDate(activityToEdit.endDate);
+    time.endMinutes = getMinutesFromDate(activityToEdit.endDate);
   }
 
   const {
     time: { hours, minutes },
-  } = taskTemplate;
+  } = activityTemplate;
 
   const applyEndTime = () => {
     const result = applyEndTimeUtil(
@@ -85,42 +85,42 @@
     if (isSubmitting) return; // Empêche les soumissions multiples
     isSubmitting = true;
 
-    if (task.name && task.userId && task.projectId && task.categoryId) {
+    if (activity.name && activity.userId && activity.projectId && activity.categoryId) {
       try {
-        // Créer une nouvelle date de début basée sur la tâche existante et les heures/minutes sélectionnées
+        // Créer une nouvelle date de début basée sur l'activité existante et les heures/minutes sélectionnées
         const updatedStartDate = createDateWithTime(
-          task.startDate,
+          activity.startDate,
           time.startHours,
           time.startMinutes
         );
 
         // Créer une date de fin basée sur la même date (même jour) que le début
         const updatedEndDate = createDateWithTime(
-          task.startDate, // Utiliser la même date de base que le début
+          activity.startDate, // Utiliser la même date de base que le début
           time.endHours,
           time.endMinutes
         );
 
-        // Mettre à jour les dates dans l'objet task
-        task.startDate = updatedStartDate;
-        task.endDate = updatedEndDate;
+        // Mettre à jour les dates dans l'objet activity
+        activity.startDate = updatedStartDate;
+        activity.endDate = updatedEndDate;
 
         if (editMode) {
           // Vérifier que l'ID est présent
-          if (!task.id) {
+          if (!activity.id) {
             console.error('ID de tâche manquant en mode édition');
             throw new Error('ID de tâche manquant');
           }
 
           // Créer une copie complète pour éviter les problèmes de référence
-          const taskToUpdate = { ...task };
+          const activityToUpdate = { ...activity };
 
-          const updatedTask = await TaskApiService.updateTask(taskToUpdate);
+          const updatedActivity = await ActivityApiService.updateActivity(activityToUpdate);
 
-          onUpdate(updatedTask);
+          onUpdate(updatedActivity);
         } else {
-          const newTask = await TaskApiService.createTask(task);
-          onSubmit(newTask);
+          const newActivity = await ActivityApiService.createActivity(activity);
+          onSubmit(newActivity);
         }
         onClose();
       } catch (error) {
@@ -135,12 +135,12 @@
   };
 
   const handleDelete = async () => {
-    if (!task.id) return;
+    if (!activity.id) return;
 
     if (confirm('Supprimer cette tâche ?')) {
       try {
-        await TaskApiService.deleteTask(task.id);
-        onDelete(task);
+        await ActivityApiService.deleteActivity(activity.id);
+        onDelete(activity);
       } catch (error) {
         console.error('Erreur lors de la suppression', error);
       }
@@ -159,16 +159,16 @@
       on:click|stopPropagation
     >
       <h2 class="text-2xl text-gray-800 font-medium mb-6">
-        {editMode ? 'Modifier la tâche' : 'Nouvelle tâche'}
+        {editMode ? "Modifier l'activité" : 'Nouvelle tâche'}
       </h2>
       <form on:submit|preventDefault={handleSubmit}>
         <div class="mb-6">
-          <label for="task-name" class="block text-gray-600 mb-2">Nom*</label>
+          <label for="activity-name" class="block text-gray-600 mb-2">Nom*</label>
           <input
-            id="task-name"
+            id="activity-name"
             type="text"
-            bind:value={task.name}
-            placeholder="Nom de la tâche..."
+            bind:value={activity.name}
+            placeholder="Nom de l'activité..."
             required
             autofocus
             class="w-full py-3 px-3 border border-gray-300 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -176,24 +176,14 @@
         </div>
 
         <div class="mb-6">
-          <label for="task-description" class="block text-gray-600 mb-2">Description</label>
+          <label for="activity-description" class="block text-gray-600 mb-2">Description</label>
           <textarea
-            id="task-description"
-            bind:value={task.description}
+            id="activity-description"
+            bind:value={activity.description}
             rows="3"
             class="w-full py-3 px-3 border border-gray-300 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-gray-500"
           ></textarea>
         </div>
-
-        <div class="flex gap-4 mb-6">
-          <div class="flex items-center">
-            <label class="flex items-center gap-2 text-gray-600">
-              <input type="checkbox" bind:checked={task.billable} class="h-5 w-5" />
-              Facturable
-            </label>
-          </div>
-        </div>
-
         <div class="grid grid-cols-2 gap-4 mb-6">
           <div class="flex flex-col gap-2">
             <label class="text-gray-600">Heure de début*</label>
@@ -243,10 +233,10 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div>
-            <label for="task-user" class="block text-gray-600 mb-2">Utilisateur*</label>
+            <label for="activity-user" class="block text-gray-600 mb-2">Utilisateur*</label>
             <select
-              id="task-user"
-              bind:value={task.userId}
+              id="activity-user"
+              bind:value={activity.userId}
               required
               class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
             >
@@ -258,10 +248,10 @@
           </div>
 
           <div>
-            <label for="task-project" class="block text-gray-600 mb-2">Projet*</label>
+            <label for="activity-project" class="block text-gray-600 mb-2">Projet*</label>
             <select
-              id="task-project"
-              bind:value={task.projectId}
+              id="activity-project"
+              bind:value={activity.projectId}
               required
               class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
             >
@@ -273,10 +263,10 @@
           </div>
 
           <div>
-            <label for="task-category" class="block text-gray-600 mb-2">Catégorie*</label>
+            <label for="activity-category" class="block text-gray-600 mb-2">Catégorie*</label>
             <select
-              id="task-category"
-              bind:value={task.categoryId}
+              id="activity-category"
+              bind:value={activity.categoryId}
               required
               class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
             >
