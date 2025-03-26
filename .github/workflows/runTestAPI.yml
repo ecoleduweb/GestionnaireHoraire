@@ -44,7 +44,7 @@ jobs:
 
       - name: Verify database connection
         run: |
-          apt-get update && apt-get install -y mariadb-client
+          sudo apt-get update && apt-get install -y mariadb-client
           mariadb --no-defaults -u${{ secrets.DB_USER }} -p${{ secrets.DB_PASSWORD }} -hdev.edwrdl.ca -P3306 ${{ secrets.DB_NAME_TEST }} -e "SELECT 'Connection test successful';"
 
       - name: Run tests
