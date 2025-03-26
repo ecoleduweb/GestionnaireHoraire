@@ -24,14 +24,16 @@ func CreateCategory(c *gin.Context) {
 		return
 	}
 
+	// Récupérer l'id du user depuis le token
+	// A Modifier quand les user ok
+	categoryDTO.UserId = 1
+
 	messageErrs := services.VerifyCreateCategoryJSON(&categoryDTO)
 	if len(messageErrs) > 0 {
 		log.Printf("Une ou plusieurs erreurs de verification du format de l'activité sont survenues:%v", messageErrs)
 		c.JSON(http.StatusBadRequest, gin.H{"errors": messageErrs})
 		return
 	}
-
-	// Verifier si l'utilisateur existe et est authentifié (middleware)
 
 	// Vérifier que le projet existe et ne soit pas cloturé
 

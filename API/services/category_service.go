@@ -12,12 +12,6 @@ import (
 func VerifyCreateCategoryJSON(categoryDTO *DTOs.CategoryDTO) []DTOs.FieldErrorDTO {
 	var errors []DTOs.FieldErrorDTO
 
-	if categoryDTO.UserId == 0 {
-		errors = append(errors, DTOs.FieldErrorDTO{
-			Field:   "userId",
-			Message: "Le champ userId est invalide ou manquant",
-		})
-	}
 	if categoryDTO.ProjectId == 0 {
 		errors = append(errors, DTOs.FieldErrorDTO{
 			Field:   "projectId",
