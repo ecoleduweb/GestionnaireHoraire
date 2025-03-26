@@ -1,4 +1,4 @@
-export interface Task {
+export interface Activity {
     id?: number;
     name: string;
     description: string;
@@ -23,4 +23,9 @@ export interface Project {
 export interface Category {
     id: number;
     name: string;
+}
+
+export interface ActivityUpdateResponse 
+{
+    updated_activity: Activity;
 }
