@@ -30,7 +30,7 @@ jobs:
           DB_USER=${{ secrets.DB_USER }}
           DB_PASSWORD=${{ secrets.DB_PASSWORD }}
           DB_HOST=dev.edwrdl.ca
-          DB_PORT=3306
+          DB_PORT=${{ secrets.DB_PORT }}
           DB_NAME_RUN=${{ secrets.DB_NAME_RUN }}
           DB_NAME_TEST=${{ secrets.DB_NAME_TEST }}
           ENV=TEST
