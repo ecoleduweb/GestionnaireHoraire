@@ -1,5 +1,5 @@
 name: Test BackEnd Go
-on:
+on:5
   push:
     branches:
       - JL_runTestAPI
@@ -23,40 +23,30 @@ jobs:
         working-directory: API
         run: go mod tidy
 
-      - name: "Create env file"
+      - name: Create env file
         working-directory: API
         run: |
-          touch .env
-          echo DB_USER=LLIODBADMIN >> .env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-          echo DB_HOST=dev.edwrdl.ca >> .env
-          echo DB_PORT=3006 >> .env
-          echo DB_NAME_RUN=LLIO2025 >> .env
-          echo DB_NAME_TEST=LLIO2025_TEST >> .env
-          echo ENV=TEST >> .env
-          echo "AZUREAD_CLIENT_ID=${{ secrets.AZUREAD_CLIENT_ID }}" >> .env
-          echo "AZUREAD_CLIENT_SECRET=${{ secrets.AZUREAD_CLIENT_SECRET }}" >> .env
-          echo "AZUREAD_CALLBACK_URL=${{ secrets.AZUREAD_CALLBACK_URL }}" >> .env
-          echo "SESSION_MAX_AGE=${{ secrets.SESSION_MAX_AGE }}" >> .env
-          echo "SESSION_SECRET=${{ secrets.SESSION_SECRET }}" >> .env
-          echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> .env
+          cat > .env << EOF
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_HOST=dev.edwrdl.ca
+          DB_PORT=3306
+          DB_NAME_RUN=${{ secrets.DB_NAME_RUN }}
+          DB_NAME_TEST=${{ secrets.DB_NAME_TEST }}
+          ENV=TEST
+          AZUREAD_CLIENT_ID=${{ secrets.AZUREAD_CLIENT_ID }}
+          AZUREAD_CLIENT_SECRET=${{ secrets.AZUREAD_CLIENT_SECRET }}
+          AZUREAD_CALLBACK_URL=${{ secrets.AZUREAD_CALLBACK_URL }}
+          SESSION_MAX_AGE=${{ secrets.SESSION_MAX_AGE }}
+          SESSION_SECRET=${{ secrets.SESSION_SECRET }}
+          FRONTEND_URL=${{ secrets.FRONTEND_URL }}
+          EOF
 
-          # Afficher le fichier .env créé (sans les secrets) pour le débogage
-          grep -v "PASSWORD\|SECRET\|AZURE" .env
-
-      - name: Test database connection
+      - name: Verify database connection
         run: |
-          # Test de connexion à la base de données externe avec timeout
-          timeout 10s mariadb --no-defaults -uLLIODBADMIN -p${{ secrets.DB_PASSWORD }} -hdev.edwrdl.ca -P3006 LLIO2025_TEST -e "SELECT 'Connection successful';" || echo "Connection failed, but continuing"
+          apt-get update && apt-get install -y mariadb-client
+          mariadb --no-defaults -u${{ secrets.DB_USER }} -p${{ secrets.DB_PASSWORD }} -hdev.edwrdl.ca -P3306 ${{ secrets.DB_NAME_TEST }} -e "SELECT 'Connection test successful';"
 
-      - name: Run tests with timeout
+      - name: Run tests
         working-directory: API
-        run: |
-          # Exécuter les tests avec un timeout de 2 minutes
-          timeout 120s go test -v ./tests/... || echo "Tests failed or timed out"
-
-          # Afficher les journaux pour le débogage
-          echo "=== Journaux des tests ==="
-          if [ -f test-log.txt ]; then
-            cat test-log.txt
-          fi
+        run: go test -v ./tests/...
