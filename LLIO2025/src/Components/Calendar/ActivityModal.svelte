@@ -1,5 +1,7 @@
 <script lang="ts">
   import type { Activity, User, Project, Category } from '../../Models';
+  import { activityTemplate } from '../../forms/activity';
+  import { ActivityApiService } from '../../services/ActivityApiService';
   import {
     getHoursFromDate,
     getMinutesFromDate,
