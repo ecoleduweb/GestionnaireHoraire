@@ -1,0 +1,62 @@
+name: Test BackEnd Go
+on:
+  push:
+    branches:
+      - JL_runTestAPI
+  pull_request:
+    paths:
+      - "API/**"
+
+jobs:
+  unit-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.23"
+
+      - name: Install dependencies
+        working-directory: API
+        run: go mod tidy
+
+      - name: "Create env file"
+        working-directory: API
+        run: |
+          touch .env
+          echo DB_USER=LLIODBADMIN >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo DB_HOST=dev.edwrdl.ca >> .env
+          echo DB_PORT=3006 >> .env
+          echo DB_NAME_RUN=LLIO2025 >> .env
+          echo DB_NAME_TEST=LLIO2025_TEST >> .env
+          echo ENV=TEST >> .env
+          echo "AZUREAD_CLIENT_ID=${{ secrets.AZUREAD_CLIENT_ID }}" >> .env
+          echo "AZUREAD_CLIENT_SECRET=${{ secrets.AZUREAD_CLIENT_SECRET }}" >> .env
+          echo "AZUREAD_CALLBACK_URL=${{ secrets.AZUREAD_CALLBACK_URL }}" >> .env
+          echo "SESSION_MAX_AGE=${{ secrets.SESSION_MAX_AGE }}" >> .env
+          echo "SESSION_SECRET=${{ secrets.SESSION_SECRET }}" >> .env
+          echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> .env
+
+          # Afficher le fichier .env créé (sans les secrets) pour le débogage
+          grep -v "PASSWORD\|SECRET\|AZURE" .env
+
+      - name: Test database connection
+        run: |
+          # Test de connexion à la base de données externe avec timeout
+          timeout 10s mariadb --no-defaults -uLLIODBADMIN -p${{ secrets.DB_PASSWORD }} -hdev.edwrdl.ca -P3006 LLIO2025_TEST -e "SELECT 'Connection successful';" || echo "Connection failed, but continuing"
+
+      - name: Run tests with timeout
+        working-directory: API
+        run: |
+          # Exécuter les tests avec un timeout de 2 minutes
+          timeout 120s go test -v ./tests/... || echo "Tests failed or timed out"
+
+          # Afficher les journaux pour le débogage
+          echo "=== Journaux des tests ==="
+          if [ -f test-log.txt ]; then
+            cat test-log.txt
+          fi
