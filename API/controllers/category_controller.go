@@ -98,5 +98,30 @@ func UpdateCategory(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"updatedCategory": updatedCategoryDTO})
+}
 
+func DeleteCategory(c *gin.Context) {
+
+	id := c.Param("id")
+	task, err := services.GetCategoryById(id)
+	if err != nil {
+		if task == nil {
+			log.Printf("La catégorie à supprimer n'existe pas. : %v", err)
+			c.JSON(http.StatusNotFound, gin.H{"error": "La catégorie à supprimer n'existe pas."})
+			return
+		} else {
+			log.Printf("Erreur lors de la récupération de la catégorie. : %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur lors de la récupération de la catégorie."})
+			return
+		}
+	}
+
+	err = services.DeleteCategory(id)
+	if err != nil {
+		log.Printf("Impossible de supprimer la catégorie.: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de supprimer la catégorie."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "La suppression de la catégorie est un succès."})
 }
