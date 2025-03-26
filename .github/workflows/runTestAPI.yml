@@ -9,7 +9,6 @@ on:
 
 jobs:
   unit-testing:
-    # Nous n'utilisons pas de service MySQL local car nous nous connectons à une base distante
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -47,8 +46,38 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y mariadb-client
-          mariadb --no-defaults -u${{ secrets.DB_USER }} -p${{ secrets.DB_PASSWORD }} -hdev.edwrdl.ca -P3306 ${{ secrets.DB_NAME_TEST }} -e "SELECT 'Connection test successful';"
+          mariadb --no-defaults -uLLIODBADMIN -pBADWjiwaHBDlWBDkjHDGWAdglwaUGDhagdhg1l123y12o873y213GDKLJgaljkwhd -hdev.edwrdl.ca -P3306 LLIO2025_TEST -e "SELECT 'Connection test successful';"
 
       - name: Run tests
         working-directory: API
-        run: go test -v ./tests/...
+        run: |
+          echo "::group::Exécution des tests Go"
+          go test -v ./tests/...
+          TEST_EXIT_CODE=$?
+          echo "::endgroup::"
+
+          echo ""
+          echo "=== Résumé des Tests ==="
+          if [ $TEST_EXIT_CODE -eq 0 ]; then
+            echo "✅ Tous les tests ont réussi! 🎉"
+          else
+            echo "❌ Certains tests ont échoué. Consultez les détails ci-dessus."
+          fi
+
+          # Extraction des résultats des tests pour un rapport plus détaillé
+          echo ""
+          echo "=== Détails des Tests ==="
+          go test -v ./tests/... | grep -E "^=== RUN|^--- PASS|^--- FAIL" | while read -r line; do
+            if [[ $line == *"=== RUN"* ]]; then
+              TEST_NAME=$(echo $line | awk '{print $3}')
+              echo -n "Test: $TEST_NAME - "
+            elif [[ $line == *"--- PASS"* ]]; then
+              DURATION=$(echo $line | awk '{print $4}')
+              echo "✅ RÉUSSI ($DURATION)"
+            elif [[ $line == *"--- FAIL"* ]]; then
+              DURATION=$(echo $line | awk '{print $4}')
+              echo "❌ ÉCHOUÉ ($DURATION)"
+            fi
+          done
+
+          exit $TEST_EXIT_CODE
