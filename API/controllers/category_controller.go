@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -23,8 +24,30 @@ func CreateCategory(c *gin.Context) {
 		return
 	}
 
+	messageErrs := services.VerifyCreateCategoryJSON(&categoryDTO)
+	if len(messageErrs) > 0 {
+		log.Printf("Une ou plusieurs erreurs de verification du format de l'activité sont survenues:%v", messageErrs)
+		c.JSON(http.StatusBadRequest, gin.H{"errors": messageErrs})
+		return
+	}
+
+	// Verifier si l'utilisateur existe et est authentifié (middleware)
+
+	// Vérifier que le projet existe et ne soit pas cloturé
+
 	categoryAdded, err := services.CreateCategory(&categoryDTO)
 	if err != nil {
+		// Vérification spécifique pour MySQL
+		if is, ok := err.(*mysql.MySQLError); ok {
+			// Code d'erreur MySQL pour entrée dupliquée
+			if is.Number == 1062 {
+				c.JSON(http.StatusConflict, gin.H{
+					"reponse": "Une catégorie du même nom existe déjà pour ce projet.",
+				})
+				return
+			}
+		}
+
 		log.Printf("Erreur critique du server:%v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

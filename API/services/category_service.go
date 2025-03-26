@@ -9,6 +9,25 @@ import (
 	"github.com/jinzhu/copier"
 )
 
+func VerifyCreateCategoryJSON(categoryDTO *DTOs.CategoryDTO) []DTOs.FieldErrorDTO {
+	var errors []DTOs.FieldErrorDTO
+
+	if categoryDTO.UserId == 0 {
+		errors = append(errors, DTOs.FieldErrorDTO{
+			Field:   "userId",
+			Message: "Le champ userId est invalide ou manquant",
+		})
+	}
+	if categoryDTO.ProjectId == 0 {
+		errors = append(errors, DTOs.FieldErrorDTO{
+			Field:   "projectId",
+			Message: "Le champ projectId est invalide ou manquant",
+		})
+	}
+
+	return errors
+}
+
 func CreateCategory(categoryDTO *DTOs.CategoryDTO) (*DTOs.CategoryDTO, error) {
 
 	// Mapper le body vers le modèle Activity

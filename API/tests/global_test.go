@@ -72,6 +72,8 @@ func prepareTestData() {
 		Description: "Sample category",
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
+		UserId:      doNotDeleteUser.Id,
+		ProjectId:   doNotDeleteProject.Id,
 	}
 	database.DB.Create(&testCategory)
 	doNotDeleteCategory = testCategory
