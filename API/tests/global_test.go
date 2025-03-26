@@ -28,6 +28,7 @@ var (
 	doNotDeleteUser     DAOs.User
 	doNotDeleteCategory DAOs.Category
 	doNotDeleteProject  DAOs.Project
+	doNotDeleteProject2 DAOs.Project
 	doNotDeleteActivity DAOs.Activity
 )
 
@@ -66,12 +67,24 @@ func prepareTestData() {
 	}
 	database.DB.Create(&testProject)
 	doNotDeleteProject = testProject
+	testProject2 := DAOs.Project{
+		Name:        "Test Project 2",
+		Description: "Sample project 2",
+		Status:      true,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
+		EndAt:       time.Now(),
+	}
+	database.DB.Create(&testProject2)
+	doNotDeleteProject2 = testProject2
 
 	testCategory := DAOs.Category{
 		Name:        "Test Category",
 		Description: "Sample category",
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
+		UserId:      doNotDeleteUser.Id,
+		ProjectId:   doNotDeleteProject.Id,
 	}
 	database.DB.Create(&testCategory)
 	doNotDeleteCategory = testCategory
