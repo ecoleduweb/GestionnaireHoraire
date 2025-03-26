@@ -105,3 +105,7 @@ func UpdateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.ActivityDTO, error) {
 	err = copier.Copy(activityDTOResponse, activityDAOUpdated)
 	return activityDTOResponse, err
 }
+
+func DeleteActivity(id string) error {
+	return repositories.DeleteActivity(id)
+}
