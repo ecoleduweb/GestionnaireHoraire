@@ -1,8 +1,5 @@
 name: Test BackEnd Go
 on:
-  push:
-    branches:
-      - JL_runTestAPI
   pull_request:
     paths:
       - "API/**"
