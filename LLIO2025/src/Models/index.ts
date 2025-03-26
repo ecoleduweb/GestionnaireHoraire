@@ -28,6 +28,4 @@ export interface Category {
 export interface ActivityUpdateResponse 
 {
     updated_activity: Activity;
-    startDate?: Date | null;
-    endDate?: Date | null;
 }
