@@ -59,7 +59,7 @@ export class CalendarService {
     const options = { ...defaultOptions, ...customOptions };
 
     // Initialiser le calendrier avec les options
-    this.calendar = new Calendar(element, options);
+    this.calendar = new Calendar(element, options as any);
   }
 
   render() {

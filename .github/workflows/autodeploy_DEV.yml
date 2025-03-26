@@ -5,10 +5,10 @@ on:
       - main
 
 jobs:
-  deploy-api:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy Go API
+      - name: Deploy Full Application
         uses: appleboy/ssh-action@v0.1.2
         with:
           host: ${{secrets.DEV_SSH_HOST}}
@@ -16,15 +16,26 @@ jobs:
           username: ${{ secrets.SSH_USERNAME}}
           debug: true
           script: |
-            echo "Starting API deployment..."
-            cd /root/ProjetLLIO2025/GestionnaireHoraire
-            echo "Current directory: $(pwd)"
-            echo "Stopping API service..."
-            sudo systemctl stop llio-api.service
-            echo "Pulling latest changes..."
-            git pull origin main
-            cd API
-            echo "Creating .env file..."
+            set -e # Exit immediately if a command exits with a non-zero status.
+            echo "Starting deployment process..."
+
+            # Arrêt des services
+            echo "Stopping services..."
+            sudo systemctl stop llio-api.service || echo "API service not running"
+            sudo systemctl stop llio-frontend.service || echo "Frontend service not running"
+
+            # Suppression et récréation du répertoire GestionnaireHoraire
+            echo "Refreshing project directory..."
+            cd /root/ProjetLLIO2025
+            rm -rf GestionnaireHoraire
+
+            # Clone du projet (plus propre qu'un pull)
+            echo "Cloning fresh repository..."
+            git clone https://github.com/ecoleduweb/GestionnaireHoraire.git
+
+            # Configuration API
+            echo "Configuring API..."
+            cd /root/ProjetLLIO2025/GestionnaireHoraire/API
             cat > .env << EOF
             DB_USER=${{ secrets.DB_USER }}
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}
@@ -38,37 +49,31 @@ jobs:
             AZUREAD_CALLBACK_URL=${{ secrets.AZUREAD_CALLBACK_URL }}
             SESSION_MAX_AGE=${{ secrets.SESSION_MAX_AGE }}
             SESSION_SECRET=${{ secrets.SESSION_SECRET }}
+            FRONTEND_URL=${{ secrets.FRONTEND_URL }}
             EOF
-            echo "Running go mod tidy..."
-            /usr/local/go/bin/go mod tidy 
-            echo "Starting API service..."
-            sudo systemctl start llio-api
-            echo 'API deployment successful'
 
-  deploy-frontend:
-    needs: deploy-api
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy Svelte Frontend
-        uses: appleboy/ssh-action@v0.1.2
-        with:
-          host: ${{secrets.DEV_SSH_HOST}}
-          key: ${{secrets.DEV_SSH_KEY}}
-          username: ${{ secrets.SSH_USERNAME}}
-          debug: true
-          script: |
-            echo "Starting Frontend deployment..."
-            cd /root/ProjetLLIO2025/GestionnaireHoraire
-            echo "Current directory: $(pwd)"
-            echo "Stopping frontend service..."
-            sudo systemctl stop llio-frontend.service
-            echo "Pulling latest changes..."
-            git pull origin main
-            cd LLIO2025
-            echo "Installing dependencies..."
+            echo "Building API..."
+            /usr/local/go/bin/go mod tidy
+
+            # Configuration Frontend
+            echo "Configuring Frontend..."
+            cd /root/ProjetLLIO2025/GestionnaireHoraire/LLIO2025
+            cat > .env << EOF
+            VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
+            EOF
+
+            echo "Building Frontend..."
             npm install
-            echo "Building application..."
             npm run build
-            echo "Starting frontend service..."
-            sudo systemctl start llio-frontend
-            echo 'Frontend deployment successful'
+
+            # Démarrage des services
+            echo "Starting services..."
+            sudo systemctl start llio-api || echo "Failed to start API service"
+            sudo systemctl start llio-frontend || echo "Failed to start Frontend service"
+
+            # Vérification
+            echo "Checking services status..."
+            sudo systemctl status llio-api --no-pager
+            sudo systemctl status llio-frontend --no-pager
+
+            echo "Deployment completed successfully!"
