@@ -9,6 +9,7 @@ on:
 
 jobs:
   unit-testing:
+    # Nous n'utilisons pas de service MySQL local car nous nous connectons à une base distante
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
