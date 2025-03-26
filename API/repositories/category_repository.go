@@ -27,7 +27,3 @@ func UpdateCategory(categoryDAO *DAOs.Category) (*DAOs.Category, error) {
 	err := database.DB.Updates(categoryDAO).Error
 	return categoryDAO, err
 }
-
-func DeleteCategory(id string) error {
-	return database.DB.Delete(&DAOs.Category{}, id).Error
-}

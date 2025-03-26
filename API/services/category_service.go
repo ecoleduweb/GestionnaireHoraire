@@ -75,7 +75,3 @@ func UpdateCategory(categoryDTO *DTOs.CategoryDTO) (*DTOs.CategoryDTO, error) {
 	err = copier.Copy(categoryDTOResponse, categoryDAOUpdated)
 	return categoryDTOResponse, err
 }
-
-func DeleteCategory(id string) error {
-	return repositories.DeleteCategory(id)
-}
