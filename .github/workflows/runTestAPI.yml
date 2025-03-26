@@ -1,9 +1,11 @@
 name: Test BackEnd Go
 on:
+  push:
+    branches:
+      - JL_runTestAPI
   pull_request:
     paths:
       - "API/**"
-  workflow_dispatch: # Permet de lancer le workflow manuellement depuis l'interface GitHub
 
 jobs:
   unit-testing:
