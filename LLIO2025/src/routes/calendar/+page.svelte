@@ -9,6 +9,7 @@
   import '../../style/modern-calendar.css';
   // Importer FullCalendar en français
   import frLocale from '@fullcalendar/core/locales/fr';
+  import { formatViewTitle } from '../../utils/date';
 
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
@@ -45,45 +46,10 @@
   // Fonction pour mettre à jour le titre de la période courante
   function updateViewTitle() {
     if (calendarService?.calendar) {
-      const dateAPI = calendarService.calendar.getDate();
-      const view = calendarService.calendar.view;
-
-      if (view.type === 'dayGridMonth') {
-        // Format pour la vue mois: "Février 2025"
-        currentViewTitle = dateAPI.toLocaleDateString('fr-FR', {
-          month: 'long',
-          year: 'numeric',
-        });
-      } else if (view.type === 'timeGridWeek') {
-        // Format pour la vue semaine: "10 mars – 16 mars 2025"
-        // Trouver le lundi de la semaine
-        const startDate = new Date(dateAPI);
-        const day = startDate.getDay();
-        const diff = startDate.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
-        startDate.setDate(diff);
-        
-        // Le dimanche est le 6ème jour après le lundi
-        const endDate = new Date(startDate);
-        endDate.setDate(startDate.getDate() + 6);
-
-        const startFormatted = startDate.getDate();
-        const startMonth = startDate.toLocaleDateString('fr-FR', { month: 'short' });
-
-        const endFormatted = endDate.getDate();
-        const endMonth = endDate.toLocaleDateString('fr-FR', { month: 'long' });
-        const year = endDate.getFullYear();
-
-        currentViewTitle = `${startFormatted} ${startMonth}. – ${endFormatted} ${endMonth} ${year}`;
-      } else if (view.type === 'timeGridDay') {
-        // Format pour la vue jour: "Mercredi 26 février 2025"
-        currentViewTitle = dateAPI.toLocaleDateString('fr-FR', {
-          weekday: 'long',
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
-        });
-      }
-    }
+    const dateAPI = calendarService.calendar.getDate();
+    const viewType = calendarService.calendar.view.type;
+    currentViewTitle = formatViewTitle(viewType, dateAPI);
+  }
   }
 
   onMount(() => {
