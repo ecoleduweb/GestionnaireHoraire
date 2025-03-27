@@ -6,13 +6,13 @@ interface RawActivity extends Omit<Activity, 'startDate' | 'endDate'> {
     endDate: string;
 }
 
-const transformActivityDates = (activity: RawActivity): Activity => ({
+const transformActivityStringToDates = (activity: RawActivity): Activity => ({
     ...activity,
     startDate: new Date(activity.startDate),
     endDate: new Date(activity.endDate)
 });
 
-const toStringDates = (activity: Activity) => ({
+const toStringDatesToString = (activity: Activity) => ({
     ...activity,
     startDate: activity.startDate.toISOString(),
     endDate: activity.endDate.toISOString()
@@ -21,11 +21,11 @@ const toStringDates = (activity: Activity) => ({
 const createActivity = async (activity: Activity): Promise<Activity> => {
         
     // Préparation des données pour l'API
-    const activityForApi = toStringDates(activity);
+    const activityForApi = toStringDatesToString(activity);
     
     try {
         const response = await POST<typeof activityForApi, {activity: RawActivity}>("/activity", activityForApi);
-        return transformActivityDates(response.activity);
+        return transformActivityStringToDates(response.activity);
     } catch (error) {
         console.error("Erreur lors de la création de tâche:", error);
         throw error;
@@ -43,7 +43,7 @@ const updateActivity = async (activity: Activity): Promise<Activity> => {
         throw new Error("L'ID de la tâche est manquant");
     }
 
-    const activityForApi = toStringDates(activity);
+    const activityForApi = toStringDatesToString(activity);
 
     try {
         const response = await PUT<typeof activityForApi, ActivityUpdateResponse>("/activity", activityForApi);
@@ -71,7 +71,7 @@ const deleteActivity = async (id: number): Promise<void> => {
 const getActivites = async () => {
     try {
         const response = await GET<RawActivity[]>("/activities");
-        return response.map(transformActivityDates);
+        return response.map(transformActivityStringToDates);
     } catch (error) {
         // Gardé pour le débogage, mais peut être supprimé si nécessaire
         console.error("Erreur lors de la récupération des tâches", error);

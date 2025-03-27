@@ -106,7 +106,17 @@
         activity.endDate = updatedEndDate;
 
         if (editMode) {
-          const updatedActivity = await ActivityApiService.updateActivity(activity);
+          // Vérifier que l'ID est présent
+          if (!activity.id) {
+            console.error('ID de tâche manquant en mode édition');
+            throw new Error('ID de tâche manquant');
+          }
+
+          // Créer une copie complète pour éviter les problèmes de référence
+          const activityToUpdate = { ...activity };
+
+          const updatedActivity = await ActivityApiService.updateActivity(activityToUpdate);
+
           onUpdate(updatedActivity);
         } else {
           const newActivity = await ActivityApiService.createActivity(activity);

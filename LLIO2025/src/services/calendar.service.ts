@@ -76,9 +76,10 @@ export class CalendarService {
     if (event) {
       // Mettre à jour les propriétés de l'événement
       event.setProp('title', activity.name);
-      event.setStart(activity.startDateTime);
-      event.setEnd(activity.endDateTime);
+      event.setStart(activity.startDate);
+      event.setEnd(activity.endDate);
       event.setExtendedProp('description', activity.description);
+      event.setExtendedProp('billable', activity.billable);
       event.setExtendedProp('userId', activity.userId);
       event.setExtendedProp('projectId', activity.projectId);
       event.setExtendedProp('categoryId', activity.categoryId);
