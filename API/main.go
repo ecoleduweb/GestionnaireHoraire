@@ -58,5 +58,8 @@ func main() {
 
 	database.Connect()
 
+	shutdown := useful.InitTracer()
+	defer shutdown()
+
 	r.Run(":" + port)
 }
