@@ -7,6 +7,7 @@ type ProjectDTO struct {
 	Name        string        `json:"name" binding:"required,max=50"`
 	Description string        `json:"description" binding:"required"`
 	Status      bool          `json:"status"`
+	Billable    bool          `json:"billable"`
 	Activities  []ActivityDTO `json:"activities"`
 	Categories  []CategoryDTO `json:"categories"`
 	CreatedAt   time.Time     `json:"created_at"`
