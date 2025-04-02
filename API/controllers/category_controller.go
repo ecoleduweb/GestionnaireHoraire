@@ -30,7 +30,7 @@ func CreateCategory(c *gin.Context) {
 
 	messageErrs := services.VerifyCreateCategoryJSON(&categoryDTO)
 	if len(messageErrs) > 0 {
-		log.Printf("Une ou plusieurs erreurs de verification du format de l'activité sont survenues:%v", messageErrs)
+		log.Printf("Une ou plusieurs erreurs de verification du format de la catégorie sont survenues:%v", messageErrs)
 		c.JSON(http.StatusBadRequest, gin.H{"errors": messageErrs})
 		return
 	}
