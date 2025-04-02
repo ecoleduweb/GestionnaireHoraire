@@ -7,6 +7,7 @@
   import type { Activity } from '../../Models/index.ts';
   // Importez le fichier CSS
   import '../../style/modern-calendar.css';
+  import { getDateOrDefault } from '../../utils/date';
 
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
@@ -98,8 +99,8 @@
 
         // Gestion du drag
         editable: true,
-        eventDrop: handleEventDrop,
-        eventResize: handleEventResize,
+        eventDrop: handleEventDropOrResize,
+        eventResize: handleEventDropOrResize,
 
         height: 'auto',
         contentHeight: 'auto', // Hauteur automatique
@@ -181,73 +182,37 @@
   async function handleActivityUpdate(activity: Activity) {
     if (!calendarService?.calendar) return;
 
-    // Vérifier que l'ID existe
-    if (!activity.id) {
-      console.error('ID de tâche manquant pour la mise à jour');
-      return;
-    }
-
     try {
-      // S'assurer que les dates sont valides
-      if (!(activity.startDate instanceof Date) || isNaN(activity.startDate.getTime())) {
-        activity.startDate = new Date(); // Utiliser une date par défaut si invalide
-      }
-      if (!(activity.endDate instanceof Date) || isNaN(activity.endDate.getTime())) {
-        activity.endDate = new Date(activity.startDate.getTime() + 30 * 60000); // 30 min après le début
-      }
+      // Utiliser la fonction pour valider les dates
+      const now = new Date();
+      activity.startDate = getDateOrDefault(activity.startDate, now);
+
+      // si la date est invalide, définir par défaut 30 minutes après le début
+      const defaultEndDate = new Date(activity.startDate.getTime() + 30 * 60000);
+      activity.endDate = getDateOrDefault(activity.endDate, defaultEndDate);
 
       const updatedActivity = await ActivityApiService.updateActivity(activity);
-
       calendarService.updateEvent(updatedActivity);
     } catch (error) {
       console.error('Erreur lors de la mise à jour de la tâche', error);
+
+      alert("Une erreur est survenue lors de la mise à jour de l'activité.");
+
+      throw error;
     }
   }
 
-  // Fonction pour gérer le déplacement d'une tâche
-  async function handleEventDrop(info) {
+  // Fonction pour gérer le déplacement et le redimmensionnement d'une tâche
+  async function handleEventDropOrResize(info) {
     try {
-      const activity = {
-        id: parseInt(info.event.id),
-        name: info.event.title,
-        description: info.event.extendedProps.description,
-        billable: info.event.extendedProps.billable,
-        startDate: info.event.start,
-        endDate: info.event.end,
-        userId: info.event.extendedProps.userId,
-        projectId: info.event.extendedProps.projectId,
-        categoryId: info.event.extendedProps.categoryId,
-      };
+      const activity = calendarService.eventToActivity(info);
 
       const updatedActivity = await ActivityApiService.updateActivity(activity);
 
       calendarService.updateEvent(updatedActivity);
     } catch (error) {
-      console.error('Erreur lors du déplacement de la tâche', error);
-      info.revert();
-    }
-  }
-
-  // Fonction pour gérer le redimensionnement d'une tâche
-  async function handleEventResize(info) {
-    try {
-      const activity = {
-        id: parseInt(info.event.id),
-        name: info.event.title,
-        description: info.event.extendedProps.description,
-        billable: info.event.extendedProps.billable,
-        startDate: info.event.start,
-        endDate: info.event.end,
-        userId: info.event.extendedProps.userId,
-        projectId: info.event.extendedProps.projectId,
-        categoryId: info.event.extendedProps.categoryId,
-      };
-
-      const updatedActivity = await ActivityApiService.updateActivity(activity);
-
-      calendarService.updateEvent(updatedActivity);
-    } catch (error) {
-      console.error('Erreur lors du redimensionnement de la tâche', error);
+      console.error("Erreur lors de la mise à jour de l'activité", error);
+      alert("Une erreur est survenue lors de la mise à jour de l'activité.");
       info.revert();
     }
   }

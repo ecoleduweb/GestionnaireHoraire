@@ -62,3 +62,10 @@ export const applyEndTime = (
   }
   return { endHours, endMinutes };
 };
+
+export function getDateOrDefault(dateToValidate: Date | null | undefined, defaultDate: Date): Date {
+  if (!dateToValidate || !(dateToValidate instanceof Date) || isNaN(dateToValidate.getTime())) {
+    return new Date(defaultDate);
+  }
+  return dateToValidate;
+}

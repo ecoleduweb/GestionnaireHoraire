@@ -4,6 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import frLocale from '@fullcalendar/core/locales/fr';
+import type { Activity } from '../Models/index';
 
 export class CalendarService {
   calendar: Calendar | null = null;
@@ -107,5 +108,19 @@ export class CalendarService {
 
   today() {
     this.calendar?.today();
+  }
+
+  eventToActivity(eventInfo: any): Activity {
+    return {
+      id: parseInt(eventInfo.event.id),
+      name: eventInfo.event.title,
+      description: eventInfo.event.extendedProps.description,
+      billable: eventInfo.event.extendedProps.billable,
+      startDate: eventInfo.event.start,
+      endDate: eventInfo.event.end,
+      userId: eventInfo.event.extendedProps.userId,
+      projectId: eventInfo.event.extendedProps.projectId,
+      categoryId: eventInfo.event.extendedProps.categoryId,
+    };
   }
 }
