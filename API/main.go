@@ -32,7 +32,7 @@ func main() {
 
 	r := gin.Default()
 
-	frontendAddress := os.Getenv("FRONT_ADDRESS")
+	frontendAddress := os.Getenv("FRONTEND_URL")
 	if frontendAddress == "" {
 		frontendAddress = "http://localhost:5173" // Port par défaut
 	}

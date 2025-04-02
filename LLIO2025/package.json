@@ -25,10 +25,10 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
-		"@fullcalendar/core": "^6.1.15",
-		"@fullcalendar/daygrid": "^6.1.15",
-		"@fullcalendar/interaction": "^6.1.15",
-		"@fullcalendar/timegrid": "^6.1.15",
+		"@fullcalendar/core": "^6.1.17",
+		"@fullcalendar/daygrid": "^6.1.17",
+		"@fullcalendar/interaction": "^6.1.17",
+		"@fullcalendar/timegrid": "^6.1.17",
 		"@tailwindcss/vite": "^4.0.9",
 		"lucide-svelte": "^0.476.0"
 	}
