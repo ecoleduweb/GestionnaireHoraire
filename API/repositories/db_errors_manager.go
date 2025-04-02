@@ -8,7 +8,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// WrapDBError analyse l'erreur de base de données et renvoie une erreur métier appropriée
 func DBErrorManager(err error) error {
 	if err == nil {
 		return nil
@@ -20,7 +19,6 @@ func DBErrorManager(err error) error {
 		if mysqlErr.Number == 1062 {
 			return customs_errors.ErrDuplicateEntry
 		}
-		// Ajouter d'autres codes d'erreur MySQL si nécessaire
 	}
 
 	// Pour les erreurs "not found" (selon votre ORM, cette implémentation peut varier)
