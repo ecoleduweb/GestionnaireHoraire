@@ -34,6 +34,19 @@ func RegisterRoutes(r *gin.Engine) {
 		categoriesGroup.GET("", controllers.GetCategories)
 	}
 
+	/*------------------- Projets -------------------*/
+	projectGroup := r.Group("/project")
+	{
+		projectGroup.POST("", controllers.CreatedProject)
+		projectGroup.GET("/:id", controllers.GetProjectById)
+		projectGroup.PUT("", controllers.UpdateProject)
+	}
+
+	projectsGroup := r.Group("/projects")
+	{
+		projectsGroup.GET("", controllers.GetProjects)
+	}
+
 }
 
 // Routes pour l'authentification
