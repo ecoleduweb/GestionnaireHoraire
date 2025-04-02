@@ -103,11 +103,10 @@ func DeleteActivity(c *gin.Context) {
 		handleDatabaseError(c, err, activiteSTR)
 		return
 	}
-	if task == nil {
+	if activity == nil {
 		log.Printf("L'activité à supprimer n'existe pas. : %v", err)
 		c.JSON(http.StatusNotFound, gin.H{"error": "L'activité à supprimer n'existe pas."})
 		return
-
 	}
 
 	err = services.DeleteActivity(id)
