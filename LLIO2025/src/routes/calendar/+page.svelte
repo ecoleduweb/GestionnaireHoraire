@@ -8,6 +8,9 @@
   // Importez le fichier CSS
   import '../../style/modern-calendar.css';
   import { getDateOrDefault } from '../../utils/date';
+  // Importer FullCalendar en français
+  import frLocale from '@fullcalendar/core/locales/fr';
+  import { formatViewTitle } from '../../utils/date';
 
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
@@ -45,36 +48,8 @@
   function updateViewTitle() {
     if (calendarService?.calendar) {
       const dateAPI = calendarService.calendar.getDate();
-      const view = calendarService.calendar.view;
-
-      if (view.type === 'dayGridMonth') {
-        // Format pour la vue mois: "Février 2025"
-        currentViewTitle = dateAPI.toLocaleDateString('fr-FR', {
-          month: 'long',
-          year: 'numeric',
-        });
-      } else if (view.type === 'timeGridWeek') {
-        // Format pour la vue semaine: "24 févr. – 2 mars 2025"
-        const endDate = new Date(dateAPI);
-        endDate.setDate(dateAPI.getDate() + 6);
-
-        const startFormatted = dateAPI.getDate();
-        const startMonth = dateAPI.toLocaleDateString('fr-FR', { month: 'short' });
-
-        const endFormatted = endDate.getDate();
-        const endMonth = endDate.toLocaleDateString('fr-FR', { month: 'long' });
-        const year = endDate.getFullYear();
-
-        currentViewTitle = `${startFormatted} ${startMonth}. – ${endFormatted} ${endMonth} ${year}`;
-      } else if (view.type === 'timeGridDay') {
-        // Format pour la vue jour: "Mercredi 26 février 2025"
-        currentViewTitle = dateAPI.toLocaleDateString('fr-FR', {
-          weekday: 'long',
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
-        });
-      }
+      const viewType = calendarService.calendar.view.type;
+      currentViewTitle = formatViewTitle(viewType, dateAPI);
     }
   }
 
@@ -85,11 +60,13 @@
       // Configuration personnalisée pour FullCalendar
       const calendarOptions = {
         initialView: activeView,
+        locale: frLocale, // Utiliser la locale française
+        firstDay: 1, // 1 = lundi (standard français)
         buttonText: {
-          today: 'today',
-          month: 'Month',
-          week: 'Week',
-          day: 'Day',
+          today: "Aujourd'hui",
+          month: 'Mois',
+          week: 'Semaine',
+          day: 'Jour',
         },
         slotDuration: '00:30:00', // Durée de chaque intervalle de temps
         allDaySlot: false,
@@ -117,7 +94,7 @@
         slotLabelFormat: {
           hour: 'numeric',
           minute: '2-digit',
-          hour12: true,
+          hour12: false,
         },
         datesSet: () => {
           // Appelé à chaque changement de dates ou de vue
@@ -317,7 +294,7 @@
             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
           ></path>
         </svg>
-        <h1 class="text-xl font-semibold text-gray-800">Today, {formattedDate}</h1>
+        <h1 class="text-xl font-semibold text-gray-800">Aujourd'hui, {formattedDate}</h1>
       </div>
 
       <!-- Boutons de vue alignés au centre -->
@@ -328,7 +305,7 @@
             : 'text-gray-500 hover:bg-white hover:text-[#015e61]'}"
           on:click={() => setView('timeGridDay')}
         >
-          Day
+          Jour
         </button>
         <button
           class="px-5 py-2 rounded-lg transition-colors {activeView === 'timeGridWeek'
@@ -336,7 +313,7 @@
             : 'text-gray-500 hover:bg-white hover:text-[#015e61]'}"
           on:click={() => setView('timeGridWeek')}
         >
-          Week
+          Semaine
         </button>
         <button
           class="px-5 py-2 rounded-lg transition-colors {activeView === 'dayGridMonth'
@@ -344,7 +321,7 @@
             : 'text-gray-500 hover:bg-white hover:text-[#015e61]'}"
           on:click={() => setView('dayGridMonth')}
         >
-          Month
+          Mois
         </button>
       </div>
 
@@ -365,7 +342,7 @@
             clip-rule="evenodd"
           ></path>
         </svg>
-        New Activity
+        Nouvelle activité
       </button>
     </div>
 
@@ -398,7 +375,7 @@
           on:click={goToday}
           class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
         >
-          today
+          Aujourd'hui
         </button>
       </div>
       <div class="text-lg font-medium text-gray-700">

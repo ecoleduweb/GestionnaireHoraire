@@ -113,16 +113,17 @@ func UpdateActivity(c *gin.Context) {
 func DeleteActivity(c *gin.Context) {
 
 	id := c.Param("id")
-	task, err := services.GetActivityById(id)
+	activity, err := services.GetActivityById(id)
 	if err != nil {
-		log.Printf("Erreur lors de la récupération de l'activité. : %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur lors de la récupération de l'activité."})
-		return
-	}
-	if task == nil {
-		log.Printf("L'activité à supprimer n'existe pas. : %v", err)
-		c.JSON(http.StatusNotFound, gin.H{"error": "L'activité à supprimer n'existe pas."})
-		return
+		if activity == nil {
+			log.Printf("L'activité à supprimer n'existe pas. : %v", err)
+			c.JSON(http.StatusNotFound, gin.H{"error": "L'activité à supprimer n'existe pas."})
+			return
+		} else {
+			log.Printf("Erreur lors de la récupération de l'activité. : %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur lors de la récupération de l'activité."})
+			return
+		}
 	}
 
 	err = services.DeleteActivity(id)
