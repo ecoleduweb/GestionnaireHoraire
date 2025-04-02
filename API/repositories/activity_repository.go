@@ -7,27 +7,27 @@ import (
 
 func CreateActivity(activity *DAOs.Activity) (*DAOs.Activity, error) {
 	err := database.DB.Create(activity).Error
-	return activity, err
+	return activity, DBErrorManager(err)
 }
 
 func GetAllActivities() ([]*DAOs.Activity, error) {
 	var activities []*DAOs.Activity
 	err := database.DB.Find(&activities).Error
-	return activities, err
+	return activities, DBErrorManager(err)
 }
 
 func GetActivityById(id string) (*DAOs.Activity, error) {
 	var activity DAOs.Activity
 
 	err := database.DB.First(&activity, id).Error
-	return &activity, err
+	return &activity, DBErrorManager(err)
 }
 
 func UpdateActivity(ActivityDAO *DAOs.Activity) (*DAOs.Activity, error) {
 	err := database.DB.Updates(ActivityDAO).Error
-	return ActivityDAO, err
+	return ActivityDAO, DBErrorManager(err)
 }
 
 func DeleteActivity(id string) error {
-	return database.DB.Delete(&DAOs.Activity{}, id).Error
+	return DBErrorManager(database.DB.Delete(&DAOs.Activity{}, id).Error)
 }
