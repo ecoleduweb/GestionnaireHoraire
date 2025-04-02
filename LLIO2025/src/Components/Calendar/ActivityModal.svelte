@@ -10,7 +10,6 @@
     applyEndTime as applyEndTimeUtil,
   } from '../../utils/date';
   import '../../style/app.css';
-  import { on } from 'svelte/events';
 
   type Props = {
     show: boolean;
@@ -141,167 +140,249 @@
   };
 </script>
 
+<style>
+  /* Animation pour le panneau latéral - ne peut pas être fait en Tailwind standard */
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  .animate-slideIn {
+    animation: slideIn 0.3s forwards;
+  }
+</style>
+
 {#if show}
-  <div class="fixed inset-0 flex items-center justify-center z-10" on:click={handleClose}>
+  <!-- Structure principale avec Tailwind -->
+  <div class="fixed inset-0 z-40 flex justify-end">
+    <!-- Overlay semi-transparent avec opacité à 40% comme dans l'original -->
     <div
-      class="bg-white p-8 rounded-lg w-11/12 max-w-lg border-2 border-gray-300 shadow-xl"
-      on:click|stopPropagation
+      class="absolute inset-0 bg-gray bg-opacity-40 transition-opacity"
+      on:click={handleClose}
+    ></div>
+
+    <!-- Panneau latéral avec bordure et ombre à gauche pour délimiter -->
+    <div
+      class="w-full max-w-[480px] bg-white h-full overflow-y-auto relative flex flex-col z-50 animate-slideIn border-l border-gray-300 shadow-xl"
     >
-      <h2 class="text-2xl text-gray-800 font-medium mb-6">
-        {editMode ? "Modifier l'activité" : 'Nouvelle tâche'}
-      </h2>
-      <form on:submit|preventDefault={handleSubmit}>
-        <div class="mb-6">
-          <label for="activity-name" class="block text-gray-600 mb-2">Nom*</label>
-          <input
-            id="activity-name"
-            type="text"
-            bind:value={activity.name}
-            placeholder="Nom de l'activité..."
-            required
-            autofocus
-            class="w-full py-3 px-3 border border-gray-300 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-gray-500"
-          />
-        </div>
-
-        <div class="mb-6">
-          <label for="activity-description" class="block text-gray-600 mb-2">Description</label>
-          <textarea
-            id="activity-description"
-            bind:value={activity.description}
-            rows="3"
-            class="w-full py-3 px-3 border border-gray-300 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-gray-500"
-          ></textarea>
-        </div>
-        <div class="grid grid-cols-2 gap-4 mb-6">
-          <div class="flex flex-col gap-2">
-            <label class="text-gray-600">Heure de début*</label>
-            <div class="flex gap-2">
-              <select
-                bind:value={time.startHours}
-                class="p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                {#each hours as hour}
-                  <option value={hour}>{hour}h</option>
-                {/each}
-              </select>
-              <select
-                bind:value={time.startMinutes}
-                class="p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                {#each minutes as minute}
-                  <option value={minute}>{minute}</option>
-                {/each}
-              </select>
-            </div>
-          </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-gray-600">Heure de fin*</label>
-            <div class="flex gap-2">
-              <select
-                bind:value={time.endHours}
-                on:change={applyEndTime}
-                class="p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                {#each hours as hour}
-                  <option value={hour}>{hour}h</option>
-                {/each}
-              </select>
-              <select
-                bind:value={time.endMinutes}
-                on:change={applyEndTime}
-                class="p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                {#each minutes as minute}
-                  <option value={minute}>{minute}</option>
-                {/each}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div>
-            <label for="activity-user" class="block text-gray-600 mb-2">Utilisateur*</label>
-            <select
-              id="activity-user"
-              bind:value={activity.userId}
-              required
-              class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
-            >
-              <option value="">Sélectionner...</option>
-              {#each users as user}
-                <option value={user.id}>{user.name}</option>
-              {/each}
-            </select>
-          </div>
-
-          <div>
-            <label for="activity-project" class="block text-gray-600 mb-2">Projet*</label>
-            <select
-              id="activity-project"
-              bind:value={activity.projectId}
-              required
-              class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
-            >
-              <option value="">Sélectionner...</option>
-              {#each projects as project}
-                <option value={project.id}>{project.name}</option>
-              {/each}
-            </select>
-          </div>
-
-          <div>
-            <label for="activity-category" class="block text-gray-600 mb-2">Catégorie*</label>
-            <select
-              id="activity-category"
-              bind:value={activity.categoryId}
-              required
-              class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
-            >
-              <option value="">Sélectionner...</option>
-              {#each categories as category}
-                <option value={category.id}>{category.name}</option>
-              {/each}
-            </select>
-          </div>
-        </div>
-
-        <div class="flex justify-end gap-4">
-          {#if editMode}
-            <button
-              type="button"
-              class="py-3 px-6 bg-red-500 text-white rounded-md hover:bg-red-600"
-              on:click={handleDelete}
-            >
-              Supprimer
-            </button>
-            <button
-              type="submit"
-              class="py-3 px-6 bg-gray-900 text-white rounded-md hover:bg-gray-700"
-            >
-              Modifier
-            </button>
-          {:else}
-            <button
-              type="submit"
-              class="py-3 px-6 bg-gray-900 text-white rounded-md hover:bg-gray-700 {isSubmitting
-                ? 'opacity-50 cursor-not-allowed'
-                : ''}"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'En cours...' : 'Créer'}
-            </button>
-          {/if}
-          <button
-            type="button"
-            class="py-3 px-6 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
-            on:click={handleClose}
+      <!-- En-tête avec titre et bouton de fermeture -->
+      <div class="flex items-center justify-between bg-[#015e61] text-white px-6 py-4">
+        <h2 class="text-xl font-medium">
+          {editMode ? "Modifier l'activité" : 'Nouvelle activité'}
+        </h2>
+        <button type="button" class="text-white hover:text-gray-200" on:click={handleClose}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            Annuler
-          </button>
-        </div>
-      </form>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Contenu du formulaire - espace vertical ajusté -->
+      <div class="p-6 flex-grow">
+        <form on:submit|preventDefault={handleSubmit} class="flex flex-col h-full">
+          <!-- Champs de formulaire avec espacement vertical uniforme -->
+          <div class="space-y-6">
+            <!-- Champ Nom -->
+            <div>
+              <label for="activity-name" class="block text-gray-700 font-medium mb-2">Nom*</label>
+              <input
+                id="activity-name"
+                type="text"
+                bind:value={activity.name}
+                placeholder="Nom de l'activité..."
+                required
+                autofocus
+                class="w-full py-3 px-4 border border-gray-300 rounded-lg focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 transition"
+              />
+            </div>
+
+            <!-- Champ Description -->
+            <div>
+              <label for="activity-description" class="block text-gray-700 font-medium mb-2"
+                >Description*</label
+              >
+              <textarea
+                id="activity-description"
+                bind:value={activity.description}
+                required
+                rows="3"
+                class="w-full py-3 px-4 border border-gray-300 rounded-lg focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 transition"
+              ></textarea>
+            </div>
+
+            <!-- Sélecteurs d'heure côte à côte -->
+            <div>
+              <label class="block text-gray-700 font-medium mb-2">Heure de début*</label>
+              <div class="flex gap-3">
+                <select
+                  bind:value={time.startHours}
+                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition"
+                  style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23606060\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E'); background-position: right 0.75rem center; background-size: 1em;"
+                >
+                  {#each hours as hour}
+                    <option value={hour}>{hour} h</option>
+                  {/each}
+                </select>
+                <select
+                  bind:value={time.startMinutes}
+                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition"
+                  style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23606060\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E'); background-position: right 0.75rem center; background-size: 1em;"
+                >
+                  {#each minutes as minute}
+                    <option value={minute}>{minute} min</option>
+                  {/each}
+                </select>
+              </div>
+            </div>
+
+            <!-- Sélecteurs d'heure de fin -->
+            <div>
+              <label class="block text-gray-700 font-medium mb-2">Heure de fin*</label>
+              <div class="flex gap-3">
+                <select
+                  bind:value={time.endHours}
+                  on:change={applyEndTime}
+                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition"
+                  style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23606060\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E'); background-position: right 0.75rem center; background-size: 1em;"
+                >
+                  {#each hours as hour}
+                    <option value={hour}>{hour} h</option>
+                  {/each}
+                </select>
+                <select
+                  bind:value={time.endMinutes}
+                  on:change={applyEndTime}
+                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition"
+                  style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23606060\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E'); background-position: right 0.75rem center; background-size: 1em;"
+                >
+                  {#each minutes as minute}
+                    <option value={minute}>{minute} min</option>
+                  {/each}
+                </select>
+              </div>
+            </div>
+
+            <!-- Utilisateur -->
+            <div>
+              <label for="activity-user" class="block text-gray-700 font-medium mb-2"
+                >Utilisateur*</label
+              >
+              <div class="relative">
+                <select
+                  id="activity-user"
+                  bind:value={activity.userId}
+                  required
+                  class="w-full appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition"
+                  style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23606060\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E'); background-position: right 0.75rem center; background-size: 1em;"
+                >
+                  <option value="">Sélectionner un utilisateur...</option>
+                  {#each users as user}
+                    <option value={user.id}>{user.name}</option>
+                  {/each}
+                </select>
+              </div>
+            </div>
+
+            <!-- Projet -->
+            <div>
+              <label for="activity-project" class="block text-gray-700 font-medium mb-2"
+                >Projet*</label
+              >
+              <div class="relative">
+                <select
+                  id="activity-project"
+                  bind:value={activity.projectId}
+                  required
+                  class="w-full appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition"
+                  style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23606060\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E'); background-position: right 0.75rem center; background-size: 1em;"
+                >
+                  <option value="">Sélectionner un projet...</option>
+                  {#each projects as project}
+                    <option value={project.id}>{project.name}</option>
+                  {/each}
+                </select>
+              </div>
+            </div>
+
+            <!-- Catégorie -->
+            <div>
+              <label for="activity-category" class="block text-gray-700 font-medium mb-2"
+                >Catégorie*</label
+              >
+              <div class="relative">
+                <select
+                  id="activity-category"
+                  bind:value={activity.categoryId}
+                  required
+                  class="w-full appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition"
+                  style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23606060\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E'); background-position: right 0.75rem center; background-size: 1em;"
+                >
+                  <option value="">Sélectionner une catégorie...</option>
+                  {#each categories as category}
+                    <option value={category.id}>{category.name}</option>
+                  {/each}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Séparateur et boutons d'action -->
+          <div class="mt-auto">
+            <!-- Ligne de séparation -->
+            <div class="border-t border-gray-200 my-6"></div>
+
+            <!-- Actions en bas du formulaire -->
+            <div class="flex justify-end gap-3">
+              {#if editMode}
+                <button
+                  type="button"
+                  class="py-3 px-6 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 transition"
+                  on:click={handleDelete}
+                >
+                  Supprimer
+                </button>
+                <button
+                  type="submit"
+                  class="py-3 px-6 bg-[#015e61] text-white rounded-lg font-medium hover:bg-[#014446] hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 transition disabled:opacity-50"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'En cours...' : 'Modifier'}
+                </button>
+              {:else}
+                <button
+                  type="button"
+                  class="py-3 px-6 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 transition border border-gray-200"
+                  on:click={handleClose}
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  class="py-3 px-6 bg-[#015e61] text-white rounded-lg font-medium hover:bg-[#014446] hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 transition disabled:opacity-50"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'En cours...' : 'Créer'}
+                </button>
+              {/if}
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 {/if}
