@@ -124,7 +124,6 @@
           id: info.event.extendedProps.id,
           name: info.event.title,
           description: info.event.extendedProps.description,
-          state: info.event.extendedProps.state,
           userId: info.event.extendedProps.userId,
           projectId: info.event.extendedProps.projectId,
           categoryId: info.event.extendedProps.categoryId,
