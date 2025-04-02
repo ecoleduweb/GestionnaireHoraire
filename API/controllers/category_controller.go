@@ -36,7 +36,7 @@ func CreateCategory(c *gin.Context) {
 
 	categoryAdded, err := services.CreateCategory(&categoryDTO)
 	if err != nil {
-		handleDatabaseError(c, err, categorieSTR)
+		handleError(c, err, categorieSTR)
 		return
 	}
 
@@ -49,7 +49,7 @@ func CreateCategory(c *gin.Context) {
 func GetCategories(c *gin.Context) {
 	categories, err := services.GetCategories()
 	if err != nil {
-		handleDatabaseError(c, err, categorieSTR)
+		handleError(c, err, categorieSTR)
 		return
 	}
 
@@ -61,7 +61,7 @@ func GetCategoryById(c *gin.Context) {
 
 	category, err := services.GetCategoryById(id)
 	if err != nil {
-		handleDatabaseError(c, err, categorieSTR)
+		handleError(c, err, categorieSTR)
 		return
 	}
 
@@ -83,13 +83,13 @@ func UpdateCategory(c *gin.Context) {
 	id := strconv.Itoa(updateCategoryDTO.Id)
 	_, err := services.GetCategoryById(id)
 	if err != nil {
-		handleDatabaseError(c, err, categorieSTR)
+		handleError(c, err, categorieSTR)
 		return
 	}
 
 	updatedCategoryDTO, err := services.UpdateCategory(&updateCategoryDTO)
 	if err != nil {
-		handleDatabaseError(c, err, categorieSTR)
+		handleError(c, err, categorieSTR)
 		return
 	}
 

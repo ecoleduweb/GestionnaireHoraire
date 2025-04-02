@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func handleDatabaseError(ctx *gin.Context, err error, subject string) {
+func handleError(ctx *gin.Context, err error, subject string) {
 	switch err {
 	case customs_errors.ErrDuplicateEntry:
 		errorMsg := fmt.Sprintf("Un(e) %s avec ces données existe déjà", subject)

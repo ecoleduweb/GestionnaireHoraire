@@ -34,7 +34,7 @@ func CreateActivity(c *gin.Context) {
 
 	activityAded, err := services.CreateActivity(&activityDTO)
 	if err != nil {
-		handleDatabaseError(c, err, activiteSTR)
+		handleError(c, err, activiteSTR)
 		return
 	}
 
@@ -48,7 +48,7 @@ func GetAllActivities(c *gin.Context) {
 
 	activities, err := services.GetAllActivities()
 	if err != nil {
-		handleDatabaseError(c, err, activiteSTR)
+		handleError(c, err, activiteSTR)
 		return
 	}
 
@@ -60,7 +60,7 @@ func GetActivityById(c *gin.Context) {
 	id := c.Param("id")
 	activity, err := services.GetActivityById(id)
 	if err != nil {
-		handleDatabaseError(c, err, activiteSTR)
+		handleError(c, err, activiteSTR)
 		return
 	}
 
@@ -81,13 +81,13 @@ func UpdateActivity(c *gin.Context) {
 	id := strconv.Itoa(updateActivityDTO.Id)
 	_, err := services.GetActivityById(id)
 	if err != nil {
-		handleDatabaseError(c, err, activiteSTR)
+		handleError(c, err, activiteSTR)
 		return
 	}
 
 	updatedActivityDTO, err := services.UpdateActivity(&updateActivityDTO)
 	if err != nil {
-		handleDatabaseError(c, err, activiteSTR)
+		handleError(c, err, activiteSTR)
 		return
 	}
 
@@ -100,7 +100,7 @@ func DeleteActivity(c *gin.Context) {
 	id := c.Param("id")
 	activity, err := services.GetActivityById(id)
 	if err != nil {
-		handleDatabaseError(c, err, activiteSTR)
+		handleError(c, err, activiteSTR)
 		return
 	}
 	if activity == nil {
@@ -111,7 +111,7 @@ func DeleteActivity(c *gin.Context) {
 
 	err = services.DeleteActivity(id)
 	if err != nil {
-		handleDatabaseError(c, err, activiteSTR)
+		handleError(c, err, activiteSTR)
 		return
 	}
 
