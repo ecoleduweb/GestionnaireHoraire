@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"errors"
 	"llio-api/models/DTOs"
 	"llio-api/services"
 	"log"
@@ -10,8 +9,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
+
+var activiteSTR = "activité"
 
 func CreateActivity(c *gin.Context) {
 
@@ -34,8 +34,7 @@ func CreateActivity(c *gin.Context) {
 
 	activityAded, err := services.CreateActivity(&activityDTO)
 	if err != nil {
-		log.Printf("Erreur critique du server:%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		handleError(c, err, activiteSTR)
 		return
 	}
 
@@ -49,8 +48,7 @@ func GetAllActivities(c *gin.Context) {
 
 	activities, err := services.GetAllActivities()
 	if err != nil {
-		log.Printf("Impossible de récupérer les activités:%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer les activités."})
+		handleError(c, err, activiteSTR)
 		return
 	}
 
@@ -62,13 +60,7 @@ func GetActivityById(c *gin.Context) {
 	id := c.Param("id")
 	activity, err := services.GetActivityById(id)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			log.Printf("L'activités est introuvable:%v", err)
-			c.JSON(http.StatusNotFound, gin.H{"error": "L'activités est introuvable."})
-			return
-		}
-		log.Printf("Impossible de récupérer l'activité:%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer l'activité."})
+		handleError(c, err, activiteSTR)
 		return
 	}
 
@@ -89,20 +81,13 @@ func UpdateActivity(c *gin.Context) {
 	id := strconv.Itoa(updateActivityDTO.Id)
 	_, err := services.GetActivityById(id)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			log.Printf("L'activité à mettre à jour est introuvable:%v", err)
-			c.JSON(http.StatusNotFound, gin.H{"error": "L'activité est introuvable."})
-			return
-		}
-		log.Printf("Impossible de récupérer l'activité à mettre à jour:%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer l'activité à mettre à jour."})
+		handleError(c, err, activiteSTR)
 		return
 	}
 
 	updatedActivityDTO, err := services.UpdateActivity(&updateActivityDTO)
 	if err != nil {
-		log.Printf("L'activité n'a pas été modifiée : %v", err)
-		c.JSON(http.StatusNotModified, gin.H{"error": "L'activité n'a pas été modifiée."})
+		handleError(c, err, activiteSTR)
 		return
 	}
 
@@ -113,13 +98,12 @@ func UpdateActivity(c *gin.Context) {
 func DeleteActivity(c *gin.Context) {
 
 	id := c.Param("id")
-	task, err := services.GetActivityById(id)
+	activity, err := services.GetActivityById(id)
 	if err != nil {
-		log.Printf("Erreur lors de la récupération de l'activité. : %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur lors de la récupération de l'activité."})
+		handleError(c, err, activiteSTR)
 		return
 	}
-	if task == nil {
+	if activity == nil {
 		log.Printf("L'activité à supprimer n'existe pas. : %v", err)
 		c.JSON(http.StatusNotFound, gin.H{"error": "L'activité à supprimer n'existe pas."})
 		return
@@ -127,8 +111,7 @@ func DeleteActivity(c *gin.Context) {
 
 	err = services.DeleteActivity(id)
 	if err != nil {
-		log.Printf("Impossible de supprimer l'activité.: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de supprimer l'activité."})
+		handleError(c, err, activiteSTR)
 		return
 	}
 

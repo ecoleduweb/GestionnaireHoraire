@@ -1,5 +1,7 @@
 <script lang="ts">
   import type { Activity, User, Project, Category } from '../../Models';
+  import { activityTemplate } from '../../forms/activity';
+  import { ActivityApiService } from '../../services/ActivityApiService';
   import {
     getHoursFromDate,
     getMinutesFromDate,
@@ -8,6 +10,7 @@
     applyEndTime as applyEndTimeUtil,
   } from '../../utils/date';
   import '../../style/app.css';
+  import { on } from 'svelte/events';
 
   type Props = {
     show: boolean;
@@ -83,41 +86,39 @@
     if (isSubmitting) return; // Empêche les soumissions multiples
     isSubmitting = true;
 
-    if (activity.name && activity.userId && activity.projectId && activity.categoryId) {
-      try {
-        // Créer une nouvelle date de début basée sur l'activité existante et les heures/minutes sélectionnées
-        const updatedStartDate = createDateWithTime(
-          activity.startDate,
-          time.startHours,
-          time.startMinutes
-        );
-
-        // Créer une date de fin basée sur la même date (même jour) que le début
-        const updatedEndDate = createDateWithTime(
-          activity.startDate, // Utiliser la même date de base que le début
-          time.endHours,
-          time.endMinutes
-        );
-
-        // Mettre à jour les dates dans l'objet activity
-        activity.startDate = updatedStartDate;
-        activity.endDate = updatedEndDate;
-
-        if (editMode) {
-          const updatedActivity = await ActivityApiService.updateActivity(activity);
-          onUpdate(updatedActivity);
-        } else {
-          const newActivity = await ActivityApiService.createActivity(activity);
-          onSubmit(newActivity);
-        }
-        onClose();
-      } catch (error) {
-        console.error('Erreur', error);
-      } finally {
-        isSubmitting = false;
+    try {
+      if (!activity.name || !activity.userId || !activity.projectId || !activity.categoryId) {
+        alert('Veuillez remplir tous les champs obligatoires.');
+        return;
       }
-    } else {
-      alert('Veuillez remplir tous les champs obligatoires');
+
+      // Créer une nouvelle date de début avec les heures et minutes sélectionnées
+      const updatedStartDate = createDateWithTime(
+        activity.startDate,
+        time.startHours,
+        time.startMinutes
+      );
+
+      // Créer une nouvelle date de fin avec les heures et minutes sélectionnées
+      const updatedEndDate = createDateWithTime(activity.endDate, time.endHours, time.endMinutes);
+
+      // Mise à jour des dates de l'activité
+      activity.startDate = updatedStartDate;
+      activity.endDate = updatedEndDate;
+
+      if (editMode) {
+        const updatedActivity = await ActivityApiService.updateActivity(activity);
+        onUpdate(updatedActivity);
+      } else {
+        const newActivity = await ActivityApiService.createActivity(activity);
+        onSubmit(newActivity);
+      }
+
+      onClose();
+    } catch (error) {
+      console.error('Erreur lors de la soumission', error);
+      alert('Une erreur est survenue. Veuillez réessayer.');
+    } finally {
       isSubmitting = false;
     }
   };
