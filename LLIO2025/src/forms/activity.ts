@@ -7,12 +7,12 @@ export const activityTemplate = {
     return {
       name: '',
       description: '',
-      state: 'à faire',
+      billable: false,
       userId: 0,
       projectId: 0,
       categoryId: 0,
-      startDateTime: startDate,
-      endDateTime: endDate,
+      startDate,
+      endDate,
     };
   },
 
