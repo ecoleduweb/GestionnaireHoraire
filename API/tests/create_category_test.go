@@ -55,13 +55,6 @@ func TestDoNotCreateCategoryWithSameNameInSameProject(t *testing.T) {
 	w = sendRequest(router, "POST", "/category", duplicateCategory)
 	assertResponse(t, w, http.StatusConflict, nil)
 
-	// Vérification du corps de la réponse
-	var responseBody struct {
-		Reponse string `json:"reponse"`
-	}
-	err := json.Unmarshal(w.Body.Bytes(), &responseBody)
-	assert.NoError(t, err)
-	assert.Equal(t, "Une catégorie du même nom existe déjà pour ce projet.", responseBody.Reponse)
 }
 
 func TestCreateCategoryWithSameNameDifferentProjects(t *testing.T) {

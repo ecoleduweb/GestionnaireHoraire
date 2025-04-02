@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"errors"
 	"llio-api/models/DTOs"
 	"llio-api/services"
 	"log"
@@ -9,9 +8,9 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-sql-driver/mysql"
-	"gorm.io/gorm"
 )
+
+var categorieSTR = "catégorie"
 
 func CreateCategory(c *gin.Context) {
 
@@ -35,23 +34,9 @@ func CreateCategory(c *gin.Context) {
 		return
 	}
 
-	// Vérifier que le projet existe et ne soit pas cloturé
-
 	categoryAdded, err := services.CreateCategory(&categoryDTO)
 	if err != nil {
-		// Vérification spécifique pour MySQL
-		if is, ok := err.(*mysql.MySQLError); ok {
-			// Code d'erreur MySQL pour entrée dupliquée
-			if is.Number == 1062 {
-				c.JSON(http.StatusConflict, gin.H{
-					"reponse": "Une catégorie du même nom existe déjà pour ce projet.",
-				})
-				return
-			}
-		}
-
-		log.Printf("Erreur critique du server:%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		handleDatabaseError(c, err, categorieSTR)
 		return
 	}
 
@@ -64,8 +49,7 @@ func CreateCategory(c *gin.Context) {
 func GetCategories(c *gin.Context) {
 	categories, err := services.GetCategories()
 	if err != nil {
-		log.Printf("Impossible de récupérer les catégories:%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer les catégories."})
+		handleDatabaseError(c, err, categorieSTR)
 		return
 	}
 
@@ -77,13 +61,7 @@ func GetCategoryById(c *gin.Context) {
 
 	category, err := services.GetCategoryById(id)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			log.Printf("La catégorie est introuvable:%v", err)
-			c.JSON(http.StatusNotFound, gin.H{"error": "La catégorie est introuvable."})
-			return
-		}
-		log.Printf("Impossible de récupérer la catégorie:%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la catégorie."})
+		handleDatabaseError(c, err, categorieSTR)
 		return
 	}
 
@@ -105,20 +83,13 @@ func UpdateCategory(c *gin.Context) {
 	id := strconv.Itoa(updateCategoryDTO.Id)
 	_, err := services.GetCategoryById(id)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			log.Printf("La catégorie est introuvable:%v", err)
-			c.JSON(http.StatusNotFound, gin.H{"error": "La catégorie est introuvable."})
-			return
-		}
-		log.Printf("Impossible de récupérer la catégorie:%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible de récupérer la catégorie."})
+		handleDatabaseError(c, err, categorieSTR)
 		return
 	}
 
 	updatedCategoryDTO, err := services.UpdateCategory(&updateCategoryDTO)
 	if err != nil {
-		log.Printf("La catégorie n'a pas été modifiée : %v", err)
-		c.JSON(http.StatusNotModified, gin.H{"error": "La catégorie n'a pas été modifiée."})
+		handleDatabaseError(c, err, categorieSTR)
 		return
 	}
 
