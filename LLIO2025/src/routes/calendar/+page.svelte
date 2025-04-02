@@ -7,6 +7,7 @@
   import type { Activity } from '../../Models/index.ts';
   // Importez le fichier CSS
   import '../../style/modern-calendar.css';
+  import { getDateOrDefault } from '../../utils/date';
   // Importer FullCalendar en français
   import frLocale from '@fullcalendar/core/locales/fr';
   import { formatViewTitle } from '../../utils/date';
@@ -46,10 +47,10 @@
   // Fonction pour mettre à jour le titre de la période courante
   function updateViewTitle() {
     if (calendarService?.calendar) {
-    const dateAPI = calendarService.calendar.getDate();
-    const viewType = calendarService.calendar.view.type;
-    currentViewTitle = formatViewTitle(viewType, dateAPI);
-  }
+      const dateAPI = calendarService.calendar.getDate();
+      const viewType = calendarService.calendar.view.type;
+      currentViewTitle = formatViewTitle(viewType, dateAPI);
+    }
   }
 
   onMount(() => {
@@ -72,6 +73,12 @@
         slotMinTime: '06:00:00',
         slotMaxTime: '20:00:00',
         nowIndicator: true,
+
+        // Gestion du drag
+        editable: true,
+        eventDrop: handleEventDropOrResize,
+        eventResize: handleEventDropOrResize,
+
         height: 'auto',
         contentHeight: 'auto', // Hauteur automatique
         slotHeight: 25, // Hauteur réduite des slots (plus compact)
@@ -151,12 +158,39 @@
 
   async function handleActivityUpdate(activity: Activity) {
     if (!calendarService?.calendar) return;
+
     try {
+      // Utiliser la fonction pour valider les dates
+      const now = new Date();
+      activity.startDate = getDateOrDefault(activity.startDate, now);
+
+      // si la date est invalide, définir par défaut 30 minutes après le début
+      const defaultEndDate = new Date(activity.startDate.getTime() + 30 * 60000);
+      activity.endDate = getDateOrDefault(activity.endDate, defaultEndDate);
+
       const updatedActivity = await ActivityApiService.updateActivity(activity);
       calendarService.updateEvent(updatedActivity);
     } catch (error) {
-      console.error("Erreur lors de la mise à jour de l'activité", error);
+      console.error('Erreur lors de la mise à jour de la tâche', error);
+
+      alert("Une erreur est survenue lors de la mise à jour de l'activité.");
+
       throw error;
+    }
+  }
+
+  // Fonction pour gérer le déplacement et le redimmensionnement d'une tâche
+  async function handleEventDropOrResize(info) {
+    try {
+      const activity = calendarService.eventToActivity(info);
+
+      const updatedActivity = await ActivityApiService.updateActivity(activity);
+
+      calendarService.updateEvent(updatedActivity);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de l'activité", error);
+      alert("Une erreur est survenue lors de la mise à jour de l'activité.");
+      info.revert();
     }
   }
 

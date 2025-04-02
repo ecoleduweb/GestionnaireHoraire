@@ -4,6 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import frLocale from '@fullcalendar/core/locales/fr';
+import type { Activity } from '../Models/index';
 
 export class CalendarService {
   calendar: Calendar | null = null;
@@ -76,9 +77,10 @@ export class CalendarService {
     if (event) {
       // Mettre à jour les propriétés de l'événement
       event.setProp('title', activity.name);
-      event.setStart(activity.startDateTime);
-      event.setEnd(activity.endDateTime);
+      event.setStart(activity.startDate);
+      event.setEnd(activity.endDate);
       event.setExtendedProp('description', activity.description);
+      event.setExtendedProp('billable', activity.billable);
       event.setExtendedProp('userId', activity.userId);
       event.setExtendedProp('projectId', activity.projectId);
       event.setExtendedProp('categoryId', activity.categoryId);
@@ -106,5 +108,19 @@ export class CalendarService {
 
   today() {
     this.calendar?.today();
+  }
+
+  eventToActivity(eventInfo: any): Activity {
+    return {
+      id: parseInt(eventInfo.event.id),
+      name: eventInfo.event.title,
+      description: eventInfo.event.extendedProps.description,
+      billable: eventInfo.event.extendedProps.billable,
+      startDate: eventInfo.event.start,
+      endDate: eventInfo.event.end,
+      userId: eventInfo.event.extendedProps.userId,
+      projectId: eventInfo.event.extendedProps.projectId,
+      categoryId: eventInfo.event.extendedProps.categoryId,
+    };
   }
 }
