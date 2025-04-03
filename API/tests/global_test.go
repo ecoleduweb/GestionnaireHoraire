@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"llio-api/auth"
 	"llio-api/database"
 	"llio-api/handlers"
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
+	"llio-api/models/enums"
 	"llio-api/routes"
 	"log"
 	"net/http"
@@ -31,6 +33,20 @@ var (
 	doNotDeleteProject2 DAOs.Project
 	doNotDeleteActivity DAOs.Activity
 )
+
+// Global JWT token for authentication in tests
+var accessToken string
+
+// Create and set JWT token for tests
+
+func createAndSetAccessToken(role enums.UserRole) {
+	// Create a JWT token for the test user
+	token, err := auth.CreateJWTToken(doNotDeleteUser.Email, doNotDeleteUser.FirstName, doNotDeleteUser.LastName, time.Now().Add(time.Hour), role)
+	if err != nil {
+		log.Fatalf("Failed to create JWT token: %v", err)
+	}
+	accessToken = token
+}
 
 // agit comme un gros before each
 func TestMain(m *testing.M) {
@@ -149,9 +165,11 @@ func setupTestRouter() (*gin.Engine, *httptest.ResponseRecorder) {
 }
 
 // sendRequest envoie une requête HTTP au routeur de test
-func sendRequest(router *gin.Engine, method, url string, body interface{}) *httptest.ResponseRecorder {
+// pour créer une requête http avec un role administrateur, on ajoute le role voulu à la fin : sendRequest(router, "POST", "/activity", activity, enums.Employee)
+func sendRequest(router *gin.Engine, method, url string, body interface{}, userRole ...enums.UserRole) *httptest.ResponseRecorder {
 	var req *http.Request
-
+	// If accessToken exists, we need to add it to the request cookies
+	// This will be used in non-authenticated helper functions
 	if method == "GET" || body == nil {
 		// Pour GET ou body nil, ne pas inclure de corps
 		req, _ = http.NewRequest(method, url, nil)
@@ -161,6 +179,20 @@ func sendRequest(router *gin.Engine, method, url string, body interface{}) *http
 		req, _ = http.NewRequest(method, url, bytes.NewBuffer(jsonValue))
 	}
 
+	if (userRole != nil) && len(userRole) > 0 {
+		createAndSetAccessToken(userRole[0])
+	} else {
+		createAndSetAccessToken(enums.Employee)
+	}
+
+	cookie := &http.Cookie{
+		Name:     "access_token",
+		Value:    accessToken,
+		HttpOnly: true,
+		Path:     "/",
+	}
+	// Add cookies to the request if any exist
+	req.AddCookie(cookie)
 	req.Header.Set("Content-Type", "application/json")
 
 	w := httptest.NewRecorder()

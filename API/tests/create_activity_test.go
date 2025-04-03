@@ -9,6 +9,7 @@ import (
 	"llio-api/database"
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
+	"llio-api/models/enums"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -25,7 +26,7 @@ func TestCreateActivity(t *testing.T) {
 		CategoryId:  doNotDeleteCategory.Id,
 	}
 
-	w = sendRequest(router, "POST", "/activity", activity)
+	w = sendRequest(router, "POST", "/activity", activity, enums.Administrator)
 	assertResponse(t, w, http.StatusCreated, nil)
 
 	// Vérification du corps de la réponse
