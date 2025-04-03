@@ -61,6 +61,7 @@ jobs:
             cd /root/ProjetLLIO2025/GestionnaireHoraire/LLIO2025
             cat > .env << EOF
             VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
+            BASE_PATH=/llio-frontend
             EOF
 
             echo "Building Frontend..."
