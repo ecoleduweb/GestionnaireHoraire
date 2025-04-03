@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"llio-api/useful"
 	"log"
 	"net/http"
@@ -62,6 +63,10 @@ func NewAuth() {
 				Tenant: azureadv2.OrganizationsTenant,
 				Scopes: []azureadv2.ScopeType{
 					azureadv2.OpenIDScope,
+					azureadv2.EmailScope,
+					azureadv2.ProfileScope,
+					azureadv2.UserReadScope,
+					azureadv2.ScopeType(fmt.Sprintf("api://%s/user_access", authenticationConfig.AzureAdClientID)),
 				},
 			},
 		),

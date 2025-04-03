@@ -20,9 +20,19 @@ func GetAuthCallback(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
 	log.Printf("Utilisateur authentifié")
+	log.Printf(user.AccessToken)
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "access_token",
+		Value:    user.AccessToken,
+		Path:     "/",
+		HttpOnly: true,                 // Keep this true for security if it's an auth token
+		Secure:   false,                // Set to true when using HTTPS
+		Domain:   "",                   // Empty domain works better for localhost
+		SameSite: http.SameSiteLaxMode, // SameSiteLaxMode is most secure, but requires browser support
+	})
 	http.Redirect(c.Writer, c.Request, frontendURL+"/calendar", http.StatusFound)
-	c.JSON(http.StatusOK, gin.H{"message": "Utilisateur authentifié", "accessToken": user.AccessToken})
 }
 
 func Auth(c *gin.Context) {

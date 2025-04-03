@@ -4,8 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	//Importation des controleurs
 	"llio-api/controllers"
+	"llio-api/middleware"
 )
 
+// Importation du middleware
 func RegisterRoutes(r *gin.Engine) {
 	/*------------------- Activities -------------------*/
 	activityGroup := r.Group("/activity")
@@ -18,7 +20,7 @@ func RegisterRoutes(r *gin.Engine) {
 
 	activitiesGroup := r.Group("/activities")
 	{
-		activitiesGroup.GET("", controllers.GetAllActivities)
+		activitiesGroup.GET("", middleware.AuthTokenMiddleware(), controllers.GetAllActivities)
 	}
 
 	/*------------------- Categories -------------------*/

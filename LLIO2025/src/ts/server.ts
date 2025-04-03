@@ -33,6 +33,7 @@ async function request<T>(
     try {
         const options: RequestInit = {
             method,
+            credentials: 'include',
             headers: getHeaders(),
         }
 

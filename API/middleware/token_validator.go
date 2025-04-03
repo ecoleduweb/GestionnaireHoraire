@@ -1,60 +1,52 @@
 package middleware
 
 import (
-	"context"
+	"crypto/rsa"
 	"fmt"
-	"os"
 	"llio-api/useful"
 	"log"
+	"os"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/lestrrat-go/jwx/jwa"
 	"github.com/lestrrat-go/jwx/jwk"
 )
 
-
-func ValidateMicrosoftToken(accessToken string) (*jwt.Token, error) {
+func ValidateMicrosoftToken(accessToken string, c *gin.Context) (*jwt.Token, error) {
 	useful.LoadEnv()
 	tenantID := os.Getenv("AZUREAD_TENANT_ID")
 	jwksURL := fmt.Sprintf("https://login.microsoftonline.com/%s/discovery/v2.0/keys", tenantID)
+	keySet, err := jwk.Fetch(c, jwksURL)
 
-	// Récupérer les clés JWK (clés publiques pour vérifier la signature du token) depuis Microsoft
-	keySet, err := jwk.Fetch(context.Background(), jwksURL)
-	if err != nil {
-		log.Printf("Erreur lors de la récupération des clés JWK: %v", err)
-	}
+	log.Printf("VALIDATING TOKEN")
 
-	// Validation du token
 	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
-
-		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
-			return nil, fmt.Errorf("méthode de signature inattendue: %v", token.Header["alg"])
+		if token.Method.Alg() != jwa.RS256.String() {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-
-		// Récupérer du kid (identifiant de la clé) du token 
 		kid, ok := token.Header["kid"].(string)
 		if !ok {
-			return nil, fmt.Errorf("kid manquant dans le header du token")
+			return nil, fmt.Errorf("kid header not found")
 		}
 
-		// Utiliser LookupKeyID pour trouver la clé correspondante avec le kid du token
-		key, found := keySet.LookupKeyID(kid)
-		if !found {
-			return nil, fmt.Errorf("clé JWK non trouvée pour le kid: %s", kid)
+		keys, ok := keySet.LookupKeyID(kid)
+		if !ok {
+			return nil, fmt.Errorf("key %v not found", kid)
 		}
 
-		// Extraire la clé
-		var rawKey interface{}
-		if err := key.Raw(&rawKey); err != nil {
-			return nil, fmt.Errorf("erreur lors de l'extraction de la clé JWK: %v", err)
+		publickey := &rsa.PublicKey{}
+		err = keys.Raw(publickey)
+		if err != nil {
+			return nil, fmt.Errorf("could not parse pubkey")
 		}
 
-		return rawKey, nil
+		return publickey, nil
 	})
 
 	if err != nil {
-		log.Printf("Erreur lors de la validation du token: %v", err)
+		fmt.Errorf("could not parse pubkey %v", err)
 		return nil, err
 	}
-
 	return token, nil
 }

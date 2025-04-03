@@ -41,7 +41,7 @@ func main() {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{frontendAddress},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "Accept"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * 3600, // Durée de mise en cache de la requête preflight (en secondes)

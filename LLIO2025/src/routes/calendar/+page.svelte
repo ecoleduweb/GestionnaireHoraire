@@ -11,6 +11,7 @@
   // Importer FullCalendar en français
   import frLocale from '@fullcalendar/core/locales/fr';
   import { formatViewTitle } from '../../utils/date';
+  import { GET } from '../../ts/server.ts';
 
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
@@ -54,6 +55,7 @@
   }
 
   onMount(() => {
+    GET('/activities')
     if (calendarEl) {
       calendarService = new CS();
 
