@@ -23,7 +23,7 @@ func main() {
 		return
 	}
 
-	auth.NewAuth()
+	auth.AuthWithAzure()
 
 	useful.LoadEnv()
 	if os.Getenv("ENV") == "PROD" {

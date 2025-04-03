@@ -1,19 +1,21 @@
 package auth
 
 import (
-	"fmt"
+	"llio-api/models/enums"
 	"llio-api/useful"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/sessions"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/azureadv2"
 )
 
-func NewAuth() {
+func AuthWithAzure() {
 	useful.LoadEnv()
 	// Structure de configuration pour AzureAD
 	authenticationConfig := struct {
@@ -64,11 +66,32 @@ func NewAuth() {
 				Scopes: []azureadv2.ScopeType{
 					azureadv2.OpenIDScope,
 					azureadv2.EmailScope,
-					azureadv2.ProfileScope,
-					azureadv2.UserReadScope,
-					azureadv2.ScopeType(fmt.Sprintf("api://%s/user_access", authenticationConfig.AzureAdClientID)),
+					azureadv2.CalendarsReadScope,
 				},
 			},
 		),
 	)
+}
+
+func CreateJWTToken(userEmail string, fisrtName string, lastName string, expiresAt time.Time, userRole enums.UserRole) (string, error) {
+	// Define the claims for the token
+	secretKey := os.Getenv("JWT_SECRET_KEY")
+	claims := jwt.MapClaims{
+		"email":      userEmail,
+		"first_name": fisrtName,
+		"last_name":  lastName,
+		"exp":        expiresAt.Unix(),
+		"role":       userRole, // TODO aller chercher le role dans la base de données et le passer en paramètre ici
+	}
+
+	// Create a new token with the claims
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	// Sign the token with the secret key
+	signedToken, err := token.SignedString([]byte(secretKey))
+	if err != nil {
+		return "", err
+	}
+
+	return signedToken, nil
 }
