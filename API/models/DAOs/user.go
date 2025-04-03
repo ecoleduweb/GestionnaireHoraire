@@ -2,8 +2,6 @@ package DAOs
 
 import "llio-api/models/enums"
 
-type UserRole int
-
 type User struct {
 	Id         int            `json:"id" gorm:"primaryKey;autoIncrement;not null"`
 	FirstName  string         `json:"first_name" gorm:"type:varchar(50);not null"`

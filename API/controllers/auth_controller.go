@@ -32,17 +32,18 @@ func GetAuthCallback(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	isRunningSecure := useful.IsRunningSecure()
 
-	// cookie pour le graphapi
-	http.SetCookie(c.Writer, &http.Cookie{
-		Name:     "graphapi_access_token",
-		Value:    user.AccessToken,
-		Path:     "/",
-		HttpOnly: true,
-		Secure:   false,                    // TODO env
-		Domain:   "",                       // TODO env
-		SameSite: http.SameSiteDefaultMode, // SameSiteLaxMode is most secure, but requires browser support
-	})
+	// cookie pour le graphapi!
+	// Utilisé quand on va importer les valeurs du calendrier de l'utilisateur
+	// http.SetCookie(c.Writer, &http.Cookie{
+	// 	Name:     "graphapi_access_token",
+	// 	Value:    user.AccessToken,
+	// 	Path:     "/",
+	// 	HttpOnly: true,
+	// 	Secure:   isRunningSecure,
+	// 	SameSite: http.SameSiteStrictMode,
+	// })
 
 	// cookie pour l'authentification de l'utilisateur
 	http.SetCookie(c.Writer, &http.Cookie{
@@ -50,9 +51,8 @@ func GetAuthCallback(c *gin.Context) {
 		Value:    accessToken,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   false,                    // TODO env
-		Domain:   "",                       // TODO env
-		SameSite: http.SameSiteDefaultMode, // SameSiteLaxMode is most secure, but requires browser support
+		Secure:   isRunningSecure,
+		SameSite: http.SameSiteStrictMode,
 	})
 	http.Redirect(c.Writer, c.Request, frontendURL+"/calendar", http.StatusFound)
 }
