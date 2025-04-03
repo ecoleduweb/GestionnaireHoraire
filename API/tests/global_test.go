@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"llio-api/auth"
 	"llio-api/database"
 	"llio-api/handlers"
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
 	"llio-api/models/enums"
 	"llio-api/routes"
+	"llio-api/services"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -41,7 +41,7 @@ var accessToken string
 
 func createAndSetAccessToken(role enums.UserRole) {
 	// Create a JWT token for the test user
-	token, err := auth.CreateJWTToken(doNotDeleteUser.Email, doNotDeleteUser.FirstName, doNotDeleteUser.LastName, time.Now().Add(time.Hour), role)
+	token, err := services.CreateJWTToken(doNotDeleteUser.Email, doNotDeleteUser.FirstName, doNotDeleteUser.LastName, time.Now().Add(time.Hour), role)
 	if err != nil {
 		log.Fatalf("Failed to create JWT token: %v", err)
 	}

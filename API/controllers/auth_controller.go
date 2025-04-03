@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"llio-api/auth"
 	"llio-api/models/enums"
+	"llio-api/services"
 	"llio-api/useful"
 	"log"
 	"net/http"
@@ -26,7 +26,7 @@ func GetAuthCallback(c *gin.Context) {
 	// TODO : vérifier si l'utilisateur existe dans la base de données et aller chercher son role.
 	// Si le user n'existe pas, le créer avec le role par défaut (user).
 
-	accessToken, err := auth.CreateJWTToken(user.Email, user.FirstName, user.LastName, user.ExpiresAt, enums.Employee)
+	accessToken, err := services.CreateJWTToken(user.Email, user.FirstName, user.LastName, user.ExpiresAt, enums.Employee)
 	if err != nil {
 		log.Printf("Erreur lors de l'authentification: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -77,5 +77,6 @@ func Logout(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
 	http.Redirect(c.Writer, c.Request, frontendURL, http.StatusFound)
 }
