@@ -37,6 +37,7 @@ jobs:
           SESSION_MAX_AGE=${{ secrets.SESSION_MAX_AGE }}
           SESSION_SECRET=${{ secrets.SESSION_SECRET }}
           FRONTEND_URL=${{ secrets.FRONTEND_URL }}
+          JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
           EOF
 
       - name: Verify database connection

@@ -4,11 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 	//Importation des controleurs
 	"llio-api/controllers"
+	"llio-api/middleware"
+	"llio-api/models/enums"
 )
 
+// Importation du middleware
 func RegisterRoutes(r *gin.Engine) {
 	/*------------------- Activities -------------------*/
-	activityGroup := r.Group("/activity")
+	activityGroup := r.Group("/activity", middleware.RoleValidationMiddleware((enums.Employee)))
 	{
 		activityGroup.POST("", controllers.CreateActivity)
 		activityGroup.GET("/:id", controllers.GetActivityById)
@@ -16,20 +19,20 @@ func RegisterRoutes(r *gin.Engine) {
 		activityGroup.DELETE("/:id", controllers.DeleteActivity)
 	}
 
-	activitiesGroup := r.Group("/activities")
+	activitiesGroup := r.Group("/activities", middleware.RoleValidationMiddleware(enums.Employee))
 	{
 		activitiesGroup.GET("", controllers.GetAllActivities)
 	}
 
 	/*------------------- Categories -------------------*/
-	categoryGroup := r.Group("/category")
+	categoryGroup := r.Group("/category", middleware.RoleValidationMiddleware(enums.Employee))
 	{
 		categoryGroup.POST("", controllers.CreateCategory)
 		categoryGroup.GET("/:id", controllers.GetCategoryById)
 		categoryGroup.PUT("", controllers.UpdateCategory)
 	}
 
-	categoriesGroup := r.Group("/categories")
+	categoriesGroup := r.Group("/categories", middleware.RoleValidationMiddleware(enums.Employee))
 	{
 		categoriesGroup.GET("", controllers.GetCategories)
 	}

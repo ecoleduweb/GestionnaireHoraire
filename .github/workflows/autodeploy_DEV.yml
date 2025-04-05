@@ -53,6 +53,7 @@ jobs:
             ENABLE_TRACING=true
             TRACE_URL=https://telemetry.edwrdl.ca:4318/v1/traces
             APPLICATION_NAME=API_LLIO_DEV
+            JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
             EOF
 
             echo "Building API..."
@@ -66,6 +67,7 @@ jobs:
             PUBLIC_ENABLED_TELEMETRY=true
             PUBLIC_TRACE_URL=https://telemetry.edwrdl.ca:4318/v1/traces
             PUBLIC_APPLICATION_NAME=LLIO_DEV
+            BASE_PATH=/llio-frontend
             EOF
 
             echo "Building Frontend..."
