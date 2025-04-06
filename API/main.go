@@ -5,6 +5,7 @@ import (
 	"llio-api/cmd"
 	"llio-api/database"
 	"llio-api/handlers"
+	"llio-api/middleware"
 	"llio-api/routes"
 	"llio-api/useful"
 	"os"
@@ -37,11 +38,18 @@ func main() {
 		frontendAddress = "http://localhost:5173" // Port par défaut
 	}
 
+	if os.Getenv("ENABLE_TRACING") == "true" {
+		shutdown := useful.InitTracer()
+		defer shutdown()
+	}
+
+	r.Use(middleware.Telemetry())
+
 	// Configuration CORS
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{frontendAddress},
+		AllowOrigins:     []string{frontendAddress, "https://telemetry.edwrdl.ca"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "Accept"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "Accept", "traceparent", "tracestate"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * 3600, // Durée de mise en cache de la requête preflight (en secondes)
@@ -57,9 +65,6 @@ func main() {
 	}
 
 	database.Connect()
-
-	shutdown := useful.InitTracer()
-	defer shutdown()
 
 	r.Run(":" + port)
 }

@@ -51,7 +51,7 @@ jobs:
             SESSION_SECRET=${{ secrets.SESSION_SECRET }}
             FRONTEND_URL=${{ secrets.FRONTEND_URL }}
             ENABLE_TRACING=true
-            TRACE_URL=https://telemetry.edwrdl.ca:4318/v1/traces
+            TRACE_URL=https://telemetry.edwrdl.ca/traces
             APPLICATION_NAME=API_LLIO_DEV
             JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
             EOF
@@ -65,7 +65,7 @@ jobs:
             cat > .env << EOF
             VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
             PUBLIC_ENABLED_TELEMETRY=true
-            PUBLIC_TRACE_URL=https://telemetry.edwrdl.ca:4318/v1/traces
+            PUBLIC_TRACE_URL=https://telemetry.edwrdl.ca/traces
             PUBLIC_APPLICATION_NAME=LLIO_DEV
             BASE_PATH=/llio-frontend
             EOF
