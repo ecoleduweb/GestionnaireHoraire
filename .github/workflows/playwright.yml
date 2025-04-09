@@ -1,0 +1,57 @@
+name: Playwright Tests
+## Voir si le déclenchement est approprié pour nos besoins,
+## les tests se lancent sur toutes les branches à chaque push et pull requests
+## deploie le rapport sur GitHub Pages
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+on:
+  pull_request:
+    paths:
+      - "LLIO2025/**"
+      - "playwrightTests/**"
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install front-end dependencies
+        run: npm i
+        working-directory: LLIO2025
+
+      - name: Install playwright test dependencies
+        run: npm ci
+        working-directory: playwrightTests
+
+      - name: Install Playwright Browsers
+        run: npx playwright install chromium
+        working-directory: playwrightTests
+
+      - name: Run Playwright tests
+        run: npx playwright test
+        working-directory: playwrightTests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: ./playwrightTests/playwright-report/
+          retention-days: 1
+
+      
