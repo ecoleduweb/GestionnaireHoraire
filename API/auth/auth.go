@@ -12,8 +12,9 @@ import (
 	"github.com/markbates/goth/providers/azureadv2"
 )
 
-func NewAuth() {
+func AuthWithAzure() {
 	useful.LoadEnv()
+	// Structure de configuration pour AzureAD
 	authenticationConfig := struct {
 		AzureAdClientID string
 		AzureAdSecret   string
@@ -27,6 +28,7 @@ func NewAuth() {
 		log.Fatal("Les variables d'environnement AzureAD ne sont pas définies")
 	}
 
+	// Structure de configuration pour les sessions
 	sessionsConfig := struct {
 		SessionKey    string
 		SessionMaxAge int
@@ -42,6 +44,7 @@ func NewAuth() {
 	// Configuration de la session
 	store := sessions.NewCookieStore([]byte(sessionsConfig.SessionKey))
 	store.MaxAge(sessionsConfig.SessionMaxAge)
+
 	store.Options.Path = "/"
 	store.Options.HttpOnly = sessionsConfig.HttpOnly
 	store.Options.Secure = sessionsConfig.IsProduction
@@ -49,6 +52,7 @@ func NewAuth() {
 
 	gothic.Store = store
 
+	// Configuration du fournisseur AzureAD (ajouter d'autres fournisseurs si nécessaire)
 	goth.UseProviders(
 		azureadv2.New(
 			authenticationConfig.AzureAdClientID,
@@ -58,6 +62,8 @@ func NewAuth() {
 				Tenant: azureadv2.OrganizationsTenant,
 				Scopes: []azureadv2.ScopeType{
 					azureadv2.OpenIDScope,
+					azureadv2.EmailScope,
+					azureadv2.CalendarsReadScope,
 				},
 			},
 		),
