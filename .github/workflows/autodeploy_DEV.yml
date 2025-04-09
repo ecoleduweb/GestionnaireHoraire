@@ -26,7 +26,7 @@ jobs:
 
             # Copie du fichier de logs
             echo 'Moving logs file to logs backup folder'
-            mkdir /root/logs
+            mkdir -p /root/logs
             DATE=$(date +'%Y-%m-%d_%H-%M')
             cp /root/ProjetLLIO2025/GestionnaireHoraire/API/logs.txt /root/logs/logs_llio_$DATE.txt
 
