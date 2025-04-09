@@ -29,7 +29,6 @@ test.describe('checkAddActivity', () => {
         await page.getByText('Nouvelle activité').click();
         await page.getByPlaceholder('Nom de l\'activité...').fill('asd');
         await page.locator("#activity-description").fill('asd');
-        await page.locator('#activity-user').selectOption('1');
         await page.locator('#activity-project').selectOption('1');
         await page.locator('#activity-category').selectOption('1');
 
