@@ -52,6 +52,10 @@ npm install
 ```bash
 npm install @fullcalendar/core @fullcalendar/daygrid @fullcalendar/timegrid @fullcalendar/interaction
 ```
+4. Créer un .env à la racine du projet avec cette structure
+````
+VITE_API_BASE_URL=http://localhost:8080
+````
 
 ## Développement
 Lancer le serveur de développement :
@@ -59,5 +63,3 @@ Lancer le serveur de développement :
 npm run dev
 ```
 L'application sera disponible à l'adresse afficher dans le terminal
-
-

@@ -4,7 +4,6 @@ import (
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
 	"llio-api/repositories"
-	"log"
 
 	"github.com/jinzhu/copier"
 )
@@ -23,8 +22,6 @@ func VerifyCreateCategoryJSON(categoryDTO *DTOs.CategoryDTO) []DTOs.FieldErrorDT
 }
 
 func CreateCategory(categoryDTO *DTOs.CategoryDTO) (*DTOs.CategoryDTO, error) {
-
-	// Mapper le body vers le modèle Activity
 
 	category := &DAOs.Category{}
 	err := copier.Copy(category, categoryDTO)
@@ -79,7 +76,6 @@ func UpdateCategory(categoryDTO *DTOs.CategoryDTO) (*DTOs.CategoryDTO, error) {
 	}
 
 	categoryDAOUpdated, err := repositories.UpdateCategory(categoryDAO)
-	log.Println(categoryDAOUpdated)
 	if err != nil {
 		return nil, err
 	}
