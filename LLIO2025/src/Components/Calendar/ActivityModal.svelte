@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { createForm } from 'felte'
+  import ActivityValidationSchema from '../../Validation/Activity';
   import type { Activity, User, Project, Category } from '../../Models';
   import { activityTemplate } from '../../forms/activity';
   import { ActivityApiService } from '../../services/ActivityApiService';
@@ -82,6 +84,22 @@
     time.endMinutes = result.endMinutes;
   };
 
+  const { form, errors } = createForm({
+    validate: async (values) => {
+      try {
+        await ActivityValidationSchema.validate(values, { abortEarly: false });
+      } catch(err) {
+        
+        const errors = err.inner.reduce((res, value) => ({
+          [value.path]: value.message,
+          ...res,
+        }), {});
+        
+        return errors;
+      }
+    }
+  });
+
   const handleSubmit = async () => {
     if (isSubmitting) return; // Empêche les soumissions multiples
     isSubmitting = true;
@@ -150,11 +168,15 @@
       <h2 class="text-2xl text-gray-800 font-medium mb-6">
         {editMode ? "Modifier l'activité" : 'Nouvelle tâche'}
       </h2>
-      <form on:submit|preventDefault={handleSubmit}>
+      <form use:form on:submit|preventDefault={handleSubmit}>
         <div class="mb-6">
-          <label for="activity-name" class="block text-gray-600 mb-2">Nom*</label>
+          <label for="activity-name" class="block text-gray-600 mb-2">
+            Nom
+          <span class="text-red-500">*</span>
+          </label>
           <input
             id="activity-name"
+            name="name"
             type="text"
             bind:value={activity.name}
             placeholder="Nom de l'activité..."
@@ -162,16 +184,24 @@
             autofocus
             class="w-full py-3 px-3 border border-gray-300 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-gray-500"
           />
+          {#if $errors.name}
+          <span class="text-red-500 text-sm">{$errors.name}</span>
+          {/if}
         </div>
 
         <div class="mb-6">
           <label for="activity-description" class="block text-gray-600 mb-2">Description</label>
           <textarea
             id="activity-description"
+            name="description"
+            placeholder="Description de l'activité..."
             bind:value={activity.description}
             rows="3"
             class="w-full py-3 px-3 border border-gray-300 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-gray-500"
           ></textarea>
+          {#if $errors.description}
+          <span class="text-red-500 text-sm">{$errors.description}</span>
+          {/if}
         </div>
         <div class="grid grid-cols-2 gap-4 mb-6">
           <div class="flex flex-col gap-2">
@@ -225,6 +255,7 @@
             <label for="activity-user" class="block text-gray-600 mb-2">Utilisateur*</label>
             <select
               id="activity-user"
+              name="userId"
               bind:value={activity.userId}
               required
               class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -234,12 +265,16 @@
                 <option value={user.id}>{user.name}</option>
               {/each}
             </select>
+            {#if $errors.userId}
+            <span class="text-red-500 text-sm">{$errors.userId}</span>
+            {/if}
           </div>
 
           <div>
             <label for="activity-project" class="block text-gray-600 mb-2">Projet*</label>
             <select
               id="activity-project"
+              name="projectId"
               bind:value={activity.projectId}
               required
               class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -249,12 +284,16 @@
                 <option value={project.id}>{project.name}</option>
               {/each}
             </select>
+            {#if $errors.projectId}
+            <span class="text-red-500 text-sm">{$errors.projectId}</span>
+            {/if}
           </div>
 
           <div>
             <label for="activity-category" class="block text-gray-600 mb-2">Catégorie*</label>
             <select
               id="activity-category"
+              name="categoryId"
               bind:value={activity.categoryId}
               required
               class="w-full p-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -264,6 +303,9 @@
                 <option value={category.id}>{category.name}</option>
               {/each}
             </select>
+            {#if $errors.categoryId}
+            <span class="text-red-500 text-sm">{$errors.categoryId}</span>
+            {/if}
           </div>
         </div>
 
