@@ -31,7 +31,7 @@ export default defineConfig({
     baseURL: 'http://localhost:5002',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: 'on-first-retry'
   },
 
   /* Configure projects for major browsers */
@@ -62,7 +62,7 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'cd ../front-end/projet_application && npm run playwright',
+    command: 'cd ../LLIO2025 && npm run playwright',
     url: 'http://localhost:5002',
     reuseExistingServer: false,
   }
