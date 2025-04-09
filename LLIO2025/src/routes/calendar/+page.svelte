@@ -21,6 +21,7 @@
   let editActivity = $state(null);
   let activeView = $state('timeGridWeek');
   let currentViewTitle = $state('');
+  let isLoading = $state(false);
 
   const users = [{ id: 1, name: 'Test ManuDev' }];
   const projects = [{ id: 1, name: 'Projet manudev' }];
@@ -54,7 +55,33 @@
     }
   }
 
-  onMount(() => {
+  // Fonction pour charger toutes les activités
+  async function loadActivities() {
+    isLoading = true;
+    try {
+      const activities = await ActivityApiService.getAllActivites();
+
+      // Ajouter chaque activité au calendrier
+      if (activities && calendarService) {
+        activities.forEach((activity) => {
+          calendarService.addEvent({
+            id: activity.id.toString(),
+            title: activity.name,
+            start: activity.startDate,
+            end: activity.endDate,
+            extendedProps: { ...activity },
+          });
+        });
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des activités:', error);
+      alert('Une erreur est survenue lors du chargement des activités.');
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  onMount(async () => {
     if (calendarEl) {
       calendarService = new CS();
 
@@ -135,6 +162,9 @@
 
       // Mettre à jour le titre initial
       updateViewTitle();
+
+      // Charger les activités
+      await loadActivities();
     }
   });
 
@@ -290,7 +320,7 @@
           class="px-5 py-2 rounded-lg transition-colors {activeView === 'timeGridDay'
             ? 'bg-white text-[#015e61] font-medium'
             : 'text-gray-500 hover:bg-white hover:text-[#015e61]'}"
-          on:click={() => setView('timeGridDay')}
+          onclick={() => setView('timeGridDay')}
         >
           Jour
         </button>
@@ -298,7 +328,7 @@
           class="px-5 py-2 rounded-lg transition-colors {activeView === 'timeGridWeek'
             ? 'bg-white text-[#015e61] font-medium'
             : 'text-gray-500 hover:bg-white hover:text-[#015e61]'}"
-          on:click={() => setView('timeGridWeek')}
+          onclick={() => setView('timeGridWeek')}
         >
           Semaine
         </button>
@@ -306,7 +336,7 @@
           class="px-5 py-2 rounded-lg transition-colors {activeView === 'dayGridMonth'
             ? 'bg-white text-[#015e61] font-medium'
             : 'text-gray-500 hover:bg-white hover:text-[#015e61]'}"
-          on:click={() => setView('dayGridMonth')}
+          onclick={() => setView('dayGridMonth')}
         >
           Mois
         </button>
@@ -314,7 +344,7 @@
 
       <!-- Bouton New Activity -->
       <button
-        on:click={handleNewActivity}
+        onclick={handleNewActivity}
         class="bg-[#015e61] hover:bg-[#014446] text-white py-2 px-6 rounded-xl flex items-center gap-2 font-semibold transition-colors"
       >
         <Plus class="h-5 w-5" />
@@ -326,19 +356,19 @@
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center space-x-3">
         <button
-          on:click={prevPeriod}
+          onclick={prevPeriod}
           class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
         >
           <ChevronLeft class="w-6 h-6 text-gray-600" />
         </button>
         <button
-          on:click={nextPeriod}
+          onclick={nextPeriod}
           class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
         >
           <ChevronRight class="w-6 h-6 text-gray-600" />
         </button>
         <button
-          on:click={goToday}
+          onclick={goToday}
           class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
         >
           Aujourd'hui
