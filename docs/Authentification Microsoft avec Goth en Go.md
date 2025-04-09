@@ -182,7 +182,6 @@ func GetAuthCallback(c *gin.Context) {
         return
     }
 
-    log.Printf("Utilisateur authentifié: %s", user.Email)
     http.Redirect(c.Writer, c.Request, frontendURL+"/calendar", http.StatusFound) // Redirection vers le frontend
 }
 ```
