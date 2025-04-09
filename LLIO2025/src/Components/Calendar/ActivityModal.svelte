@@ -220,9 +220,11 @@
           </div>
         </div>
 
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <!-- TODO: Gérer les utilisateur plus ne tard (ne fait pas partie du MVP)
           <div>
-            <label for="activity-user" class="block text-gray-600 mb-2">Utilisateur*</label>
+            <label for="activity-user" class="block text-gray-600 mb-2">Inviter des participants</label>
             <select
               id="activity-user"
               bind:value={activity.userId}
@@ -235,6 +237,7 @@
               {/each}
             </select>
           </div>
+          -->
 
           <div>
             <label for="activity-project" class="block text-gray-600 mb-2">Projet*</label>
