@@ -68,19 +68,26 @@ const deleteActivity = async (id: number): Promise<void> => {
     await DELETE(`/activity/${id}`);
 };
 
-const getActivites = async () => {
+const getAllActivites = async () => {
     try {
-        const response = await GET<RawActivity[]>("/activities");
-        return response.map(transformActivityStringToDates);
+        // La réponse est un objet avec une propriété 'activities'
+        const response = await GET<{activities: RawActivity[]}>("/activities");
+        
+        // Vérifier si la réponse contient la propriété 'activities' et si c'est un tableau
+        if (response && response.activities && Array.isArray(response.activities)) {
+            return response.activities.map(transformActivityStringToDates);
+        } else {
+            console.error("Format de réponse inattendu :", response);
+            return []; // Retourner un tableau vide en cas de problème
+        }
     } catch (error) {
-        // Gardé pour le débogage, mais peut être supprimé si nécessaire
         console.error("Erreur lors de la récupération des tâches", error);
         throw error;
     }
 };
 
 export const ActivityApiService = {
-    getActivites,
+    getAllActivites,
     createActivity,
     updateActivity,
     deleteActivity
