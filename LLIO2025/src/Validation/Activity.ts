@@ -16,9 +16,11 @@ const schema = yup.object().shape({
   // Validation des informations projet et catégorie
   projectId: yup
     .number()
+    .typeError('Veuillez sélectionner un projet')
     .min(1, 'Veuillez sélectionner un projet'),
   categoryId: yup
     .number()
+    .typeError('Veuillez sélectionner une catégorie')
     .min(1, 'Veuillez sélectionner une catégorie'),
 });
 
