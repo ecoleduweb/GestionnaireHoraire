@@ -155,10 +155,52 @@
     animation: slideIn 0.3s forwards;
   }
 
-  .select-arrow {
+  /* Classe condensée pour tous les selects */
+  .form-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    padding-right: 2.5rem;
+    color: #4b5563;
+    background-repeat: no-repeat;
+    transition: all 0.2s;
     background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="%23606060"%3E%3Cpath stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"%3E%3C/path%3E%3C/svg%3E');
     background-position: right 0.75rem center;
     background-size: 1em;
+  }
+
+  .form-select:focus {
+    outline: none;
+    border-color: #015e61;
+    box-shadow: 0 0 0 3px rgba(1, 94, 97, 0.2);
+  }
+
+  .form-select-flex {
+    flex: 1;
+  }
+
+  .form-select::-ms-expand {
+    display: none;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    background-color: white;
+    color: #4b5563;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #015e61;
+    box-shadow: 0 0 0 3px rgba(1, 94, 97, 0.2);
   }
 </style>
 
@@ -168,7 +210,7 @@
     <!-- Overlay semi-transparent avec opacité à 40% comme dans l'original -->
     <div
       class="absolute inset-0 bg-gray bg-opacity-40 transition-opacity"
-      on:click={handleClose}
+      onclick={handleClose}
     ></div>
 
     <!-- Panneau latéral avec bordure et ombre à gauche pour délimiter -->
@@ -180,7 +222,7 @@
         <h2 class="text-xl font-medium">
           {editMode ? "Modifier l'activité" : 'Nouvelle activité'}
         </h2>
-        <button type="button" class="text-white hover:text-gray-200" on:click={handleClose}>
+        <button type="button" class="text-white hover:text-gray-200" onclick={handleClose}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6"
@@ -200,7 +242,13 @@
 
       <!-- Contenu du formulaire - espace vertical ajusté -->
       <div class="p-6 flex-grow">
-        <form on:submit|preventDefault={handleSubmit} class="flex flex-col h-full">
+        <form
+          onsubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+          class="flex flex-col h-full"
+        >
           <!-- Champs de formulaire avec espacement vertical uniforme -->
           <div class="space-y-6">
             <!-- Champ Nom -->
@@ -213,7 +261,7 @@
                 placeholder="Nom de l'activité..."
                 required
                 autofocus
-                class="w-full py-3 px-4 border border-gray-300 rounded-lg focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 transition"
+                class="form-input"
               />
             </div>
 
@@ -227,7 +275,7 @@
                 bind:value={activity.description}
                 required
                 rows="3"
-                class="w-full py-3 px-4 border border-gray-300 rounded-lg focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 transition"
+                class="form-input"
               ></textarea>
             </div>
 
@@ -235,18 +283,12 @@
             <div>
               <label class="block text-gray-700 font-medium mb-2">Heure de début*</label>
               <div class="flex gap-3">
-                <select
-                  bind:value={time.startHours}
-                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition select-arrow"
-                >
+                <select bind:value={time.startHours} class="form-select form-select-flex">
                   {#each hours as hour}
                     <option value={hour}>{hour} h</option>
                   {/each}
                 </select>
-                <select
-                  bind:value={time.startMinutes}
-                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition select-arrow"
-                >
+                <select bind:value={time.startMinutes} class="form-select form-select-flex">
                   {#each minutes as minute}
                     <option value={minute}>{minute} min</option>
                   {/each}
@@ -260,8 +302,8 @@
               <div class="flex gap-3">
                 <select
                   bind:value={time.endHours}
-                  on:change={applyEndTime}
-                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition select-arrow"
+                  onchange={applyEndTime}
+                  class="form-select form-select-flex"
                 >
                   {#each hours as hour}
                     <option value={hour}>{hour} h</option>
@@ -269,8 +311,8 @@
                 </select>
                 <select
                   bind:value={time.endMinutes}
-                  on:change={applyEndTime}
-                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition select-arrow"
+                  onchange={applyEndTime}
+                  class="form-select form-select-flex"
                 >
                   {#each minutes as minute}
                     <option value={minute}>{minute} min</option>
@@ -289,7 +331,7 @@
                   id="activity-user"
                   bind:value={activity.userId}
                   required
-                  class="w-full appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition select-arrow"
+                  class="form-select w-full"
                 >
                   <option value="">Sélectionner un utilisateur...</option>
                   {#each users as user}
@@ -309,7 +351,7 @@
                   id="activity-project"
                   bind:value={activity.projectId}
                   required
-                  class="w-full appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition select-arrow"
+                  class="form-select w-full"
                 >
                   <option value="">Sélectionner un projet...</option>
                   {#each projects as project}
@@ -329,7 +371,7 @@
                   id="activity-category"
                   bind:value={activity.categoryId}
                   required
-                  class="w-full appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition select-arrow"
+                  class="form-select w-full"
                 >
                   <option value="">Sélectionner une catégorie...</option>
                   {#each categories as category}
@@ -351,7 +393,7 @@
                 <button
                   type="button"
                   class="py-3 px-6 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 transition"
-                  on:click={handleDelete}
+                  onclick={handleDelete}
                 >
                   Supprimer
                 </button>
@@ -366,7 +408,7 @@
                 <button
                   type="button"
                   class="py-3 px-6 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 transition border border-gray-200"
-                  on:click={handleClose}
+                  onclick={handleClose}
                 >
                   Annuler
                 </button>
