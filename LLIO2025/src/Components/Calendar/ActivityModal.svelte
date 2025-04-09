@@ -154,6 +154,23 @@
   .animate-slideIn {
     animation: slideIn 0.3s forwards;
   }
+
+  /* Classe pour les flèches de sélection */
+  .select-arrow {
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="%23606060"%3E%3Cpath stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"%3E%3C/path%3E%3C/svg%3E');
+    background-position: right 0.75rem center;
+    background-size: 1em;
+    background-repeat: no-repeat;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 2.5rem; /* Espace pour la flèche */
+  }
+
+  /* Supprimer la flèche par défaut sur IE */
+  .select-arrow::-ms-expand {
+    display: none;
+  }
 </style>
 
 {#if show}
@@ -231,8 +248,7 @@
               <div class="flex gap-3">
                 <select
                   bind:value={time.startHours}
-                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition"
-                  style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23606060\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E'); background-position: right 0.75rem center; background-size: 1em;"
+                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition select-arrow"
                 >
                   {#each hours as hour}
                     <option value={hour}>{hour} h</option>
@@ -240,8 +256,7 @@
                 </select>
                 <select
                   bind:value={time.startMinutes}
-                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition"
-                  style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23606060\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E'); background-position: right 0.75rem center; background-size: 1em;"
+                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition select-arrow"
                 >
                   {#each minutes as minute}
                     <option value={minute}>{minute} min</option>
@@ -257,8 +272,7 @@
                 <select
                   bind:value={time.endHours}
                   on:change={applyEndTime}
-                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition"
-                  style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23606060\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E'); background-position: right 0.75rem center; background-size: 1em;"
+                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition select-arrow"
                 >
                   {#each hours as hour}
                     <option value={hour}>{hour} h</option>
@@ -267,8 +281,7 @@
                 <select
                   bind:value={time.endMinutes}
                   on:change={applyEndTime}
-                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition"
-                  style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23606060\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E'); background-position: right 0.75rem center; background-size: 1em;"
+                  class="flex-1 appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition select-arrow"
                 >
                   {#each minutes as minute}
                     <option value={minute}>{minute} min</option>
@@ -287,8 +300,7 @@
                   id="activity-user"
                   bind:value={activity.userId}
                   required
-                  class="w-full appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition"
-                  style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23606060\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E'); background-position: right 0.75rem center; background-size: 1em;"
+                  class="w-full appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition select-arrow"
                 >
                   <option value="">Sélectionner un utilisateur...</option>
                   {#each users as user}
@@ -308,8 +320,7 @@
                   id="activity-project"
                   bind:value={activity.projectId}
                   required
-                  class="w-full appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition"
-                  style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23606060\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E'); background-position: right 0.75rem center; background-size: 1em;"
+                  class="w-full appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition select-arrow"
                 >
                   <option value="">Sélectionner un projet...</option>
                   {#each projects as project}
@@ -329,8 +340,7 @@
                   id="activity-category"
                   bind:value={activity.categoryId}
                   required
-                  class="w-full appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition"
-                  style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23606060\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E'); background-position: right 0.75rem center; background-size: 1em;"
+                  class="w-full appearance-none bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 focus:outline-none focus:border-[#015e61] focus:ring-2 focus:ring-[#015e61] focus:ring-opacity-20 pr-10 bg-no-repeat transition select-arrow"
                 >
                   <option value="">Sélectionner une catégorie...</option>
                   {#each categories as category}
