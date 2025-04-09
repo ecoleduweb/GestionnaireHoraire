@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"llio-api/auth"
 	"llio-api/cmd"
 	"llio-api/database"
@@ -8,6 +9,7 @@ import (
 	"llio-api/middleware"
 	"llio-api/routes"
 	"llio-api/useful"
+	"log"
 	"os"
 
 	"github.com/gin-contrib/cors"
@@ -23,6 +25,20 @@ func main() {
 		cmd.Execute()
 		return
 	}
+
+	logFile, err := os.OpenFile("logs.txt", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatal("Failed to open log file:", err)
+	}
+	defer logFile.Close()
+
+	//Pour copier les logs dans le fichier en plus de la console
+	multiWriter := io.MultiWriter(os.Stdout, logFile)
+	log.SetOutput(multiWriter)
+	log.SetFlags(log.Ldate | log.Ltime)
+
+	gin.DefaultWriter = multiWriter
+	gin.DefaultErrorWriter = multiWriter
 
 	auth.AuthWithAzure()
 
