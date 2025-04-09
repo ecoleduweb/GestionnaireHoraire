@@ -11,7 +11,17 @@
   // Importer FullCalendar en français
   import frLocale from '@fullcalendar/core/locales/fr';
   import { formatViewTitle } from '../../utils/date';
+  import { ClientTelemetry } from "$lib/tracer"
+  import { env } from "$env/dynamic/public"
+  import { Plus, Calendar, ChevronLeft, ChevronRight } from 'lucide-svelte';
 
+  const ENABLED_TELEMETRY = env.PUBLIC_ENABLED_TELEMETRY === "true";
+
+  if (ENABLED_TELEMETRY) {
+      const telemetry = ClientTelemetry.getInstance()
+      telemetry.start()
+  }
+  
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
   let showModal = $state(false);
@@ -279,20 +289,7 @@
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
       <!-- Titre avec icône -->
       <div class="flex items-center">
-        <svg
-          class="w-6 h-6 mr-2 text-gray-700"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="1.5"
-            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-          ></path>
-        </svg>
+        <Calendar class="mr-2" />
         <h1 class="text-xl font-semibold text-gray-800">Aujourd'hui, {formattedDate}</h1>
       </div>
 
@@ -329,18 +326,7 @@
         on:click={handleNewActivity}
         class="bg-[#015e61] hover:bg-[#014446] text-white py-2 px-6 rounded-xl flex items-center gap-2 font-semibold transition-colors"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-            clip-rule="evenodd"
-          ></path>
-        </svg>
+        <Plus class="h-5 w-5" />
         Nouvelle activité
       </button>
     </div>
@@ -352,23 +338,13 @@
           on:click={prevPeriod}
           class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
         >
-          <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            ></path>
-          </svg>
+          <ChevronLeft class="w-6 h-6 text-gray-600" />
         </button>
         <button
           on:click={nextPeriod}
           class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
         >
-          <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"
-            ></path>
-          </svg>
+          <ChevronRight class="w-6 h-6 text-gray-600" />
         </button>
         <button
           on:click={goToday}

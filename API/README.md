@@ -1,8 +1,6 @@
 ﻿# API LLIO
 
-Une API développée en Go avec le framework Gin-Gonic.
-
----
+> Une API développée en Go avec le framework Gin-Gonic.
 
 ## Structure du projet
 
@@ -22,70 +20,54 @@ API/
 ├── tests/         # Tests unitaires et d'intégration
 └── useful/        # Fonctions utilitaires
 ```
-# Golang
+# Prérequis
+
 1. Installation de la derniere version stable de go sur golang.org
     (go version go1.23.5 windows/amd64)
-   
-2. Instalation des modules GO
-    go mod init llio-api
 
-# Gin
-- Installation des modules gin-gonic
-   go get -u github.com/gin-gonic/gin
-
-# Base de données
-1. Installation des modules de l'ORM pour l'utilisation d'une BD MariaDB
-   go get -u gorm.io/gorm
-   go get -u gorm.io/driver/mysql
-
-2. Créer une base de données SQL
-
-# Authentification
-1. Installation des modules d'authentification et de session
-   go get github.com/markbates/goth
-   go get github.com/gorilla/sessions
-
-2. Import du provider pour l'authentification avec azuread
-   import (
-      "github.com/markbates/goth/providers/azureadv2"
-   )
-
+2. Une instance de MySQL Client (mariaDB)
 
 # Variables d'environnement
-1. Installation du module qui nous permet d'utiliser les variables d'environnement
-   go get github.com/joho/godotenv
+Ce projet utilise les variables d'environement.
 
-2. Structure
-   Voici la structure de fichier .env pour que l'API puisse fonctionner:
-   ```plaintext
-    DB_USER=user
-    DB_PASSWORD=password
-    DB_HOST=127.0.0.1
-    DB_PORT=3306
-    DB_NAME_RUN=nom_bd
-    DB_NAME_TEST=nom_bd_test
-    ENV=DEV ou TEST ou PROD
-    AZUREAD_CLIENT_ID=client_id_azure
-    AZUREAD_CLIENT_SECRET=client_secret_azuread
-    AZUREAD_CALLBACK_URL=http://localhost:8080/auth/azureadv2/callback
-    SESSION_SECRET=secret
-    SESSION_MAX_AGE=86400
-    PORT = port_de_l'application
-    FRONTEND_URL = http://localhost:xxxx
-   ```
+1. Se créer un fichier .env a la racine du dossier API
+
+2. Copier le contenu du fichier `.env.template` et le coller dans le `.env`
+
+3. Ajuster les valeurs selon votre réalité
+
+# Dépendances 
+Installation de toutes les dépendances avec la commande suivante
+```bash
+go mod tidy
+```
 
 # Migrations et mise en place de la base de données
-1. Créer une base de données vide nommée llio et une autre nommée llio_test
-2. À la racine du projet API, exécuter la commande `go run main.go migrate up`. Cette commande permet d'exécuter les nouvelles migrataions en se basant sur la table schema_migrations.
+1. Créer une base de données vide nommée llio et une autre nommée llio_test sur l'instance de MariaDb
+
+2. À la racine du projet API, exécuter la commande 
+```bash
+go run main.go migrate up
+```
+Cette commande permet d'exécuter les nouvelles migrations en se basant sur la table schema_migrations.
 
 ## Pour créer une nouvelle migration
-1. Exécuter la commande  `go run main.go migrate create un_nom_significatif_pour_ta_migration`. Cela va ajouter deux fichiers dans le dossier database/migrations.
+1. Exécuter la commande  
+```bash
+go run main.go migrate create un_nom_significatif_pour_ta_migration
+```
+Cela va ajouter deux fichiers dans le dossier database/migrations.
+
 2. Complète les fichiers de migration. L'ia peut t'aider à le faire, mais assures-toi de bien valider ce qui est produit! Le ficher up applique le changement, le fichier down revient en arrière.
 
 Test ensuite ta migration. Si elle échoue, la table schema_migration aura ton numéro de migration et la valeur 1 à isDirty qui montre que ta migration a échouée.
 
 ## Pour annuler une migration
-La commande  `go run main.go migrate down` annule la dernière migration qui a été exécutée.
+La commande 
+```bash
+go run main.go migrate down
+``` 
+annule la dernière migration qui a été exécutée.
 
 ## Si jamais ma migration a tout cassé?
 Le champ isDirty dans schema_migration sera à 1. Le changer pour 0 dans la base de données et re rouler la migration!
@@ -106,7 +88,13 @@ Pour l'utilisation graphique des tests avec l'extension Testing, il faut déacti
 
 
 Pour excécution des tests en ligne de commande:
-`go test -v -count=1 ./...`
+```bash
+go test -v -count=1 ./...
+```
 
 # Démarrage du serveur
+Pour démarrer le serveur exécutez la ligne suivante :
+```bash
 go run main.go
+```
+

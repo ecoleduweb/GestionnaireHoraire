@@ -76,7 +76,7 @@ func prepareTestData() {
 	testProject := DAOs.Project{
 		Name:        "Test Project",
 		Description: "Sample project",
-		Status:      true,
+		Status:      enums.ProjectStatus(enums.InProgress),
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		EndAt:       time.Now(),
@@ -86,7 +86,7 @@ func prepareTestData() {
 	testProject2 := DAOs.Project{
 		Name:        "Test Project 2",
 		Description: "Sample project 2",
-		Status:      true,
+		Status:      enums.ProjectStatus(enums.InProgress),
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		EndAt:       time.Now(),
