@@ -117,3 +117,17 @@ func DeleteActivity(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "La suppression de l'activité est un succès."})
 }
+
+func GetActivitiesFromRange(c *gin.Context) {
+	from := c.Param("from")
+	to := c.Param("to")
+	idUser := c.Param("idUser")
+
+	activities, err := services.GetActivitiesFromRange(from, to, idUser)
+	if err != nil {
+		handleError(c, err, activiteSTR)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"activities": activities})
+}

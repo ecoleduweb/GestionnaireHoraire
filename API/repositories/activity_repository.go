@@ -31,3 +31,9 @@ func UpdateActivity(ActivityDAO *DAOs.Activity) (*DAOs.Activity, error) {
 func DeleteActivity(id string) error {
 	return DBErrorManager(database.DB.Delete(&DAOs.Activity{}, id).Error)
 }
+
+func GetActivitiesFromRange(from, to, idUser string) ([]*DAOs.Activity, error) {
+	var activities []*DAOs.Activity
+	err := database.DB.Where("Start_Date >= ? AND End_Date <= ? AND User_Id = ?", from, to, idUser).Find(&activities).Error
+	return activities, DBErrorManager(err)
+}

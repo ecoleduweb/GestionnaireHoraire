@@ -22,6 +22,7 @@ func RegisterRoutes(r *gin.Engine) {
 	activitiesGroup := r.Group("/activities", middleware.RoleValidationMiddleware(enums.Employee))
 	{
 		activitiesGroup.GET("", controllers.GetAllActivities)
+		activitiesGroup.GET("/:idUser/:from/:to", controllers.GetActivitiesFromRange)
 	}
 
 	/*------------------- Categories -------------------*/

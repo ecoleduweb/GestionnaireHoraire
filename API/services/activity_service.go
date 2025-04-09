@@ -109,3 +109,19 @@ func UpdateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.ActivityDTO, error) {
 func DeleteActivity(id string) error {
 	return repositories.DeleteActivity(id)
 }
+
+func GetActivitiesFromRange(from, to, idUser string) ([]*DTOs.ActivityDTO, error) {
+	activities, err := repositories.GetActivitiesFromRange(from, to, idUser)
+	if err != nil {
+		return nil, err
+	}
+
+	var activitiesDTOs []*DTOs.ActivityDTO
+	for _, activity := range activities {
+		activityDTO := &DTOs.ActivityDTO{}
+		err = copier.Copy(activityDTO, activity)
+		activitiesDTOs = append(activitiesDTOs, activityDTO)
+	}
+
+	return activitiesDTOs, err
+}
