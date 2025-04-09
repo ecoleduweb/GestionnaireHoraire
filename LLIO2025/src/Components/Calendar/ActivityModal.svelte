@@ -38,12 +38,8 @@
   }: Props = $props();
 
   const editMode = activityToEdit !== null;
-  // Utilisateur par défaut pour remplacer temporairement le champ utilisateur
-  const DEFAULT_USER_ID = users && users.length > 0 ? users[0].id : 1;
 
   let initialActivity = activityTemplate.generate();
-  // Définir l'utilisateur par défaut
-  initialActivity.userId = DEFAULT_USER_ID;
 
   let isSubmitting = false;
 
@@ -68,9 +64,6 @@
     time.startMinutes = getMinutesFromDate(activityToEdit.startDate);
     time.endHours = getHoursFromDate(activityToEdit.endDate);
     time.endMinutes = getMinutesFromDate(activityToEdit.endDate);
-  } else {
-    // Pour une nouvelle activité, s'assurer que l'utilisateur par défaut est défini
-    activity.userId = DEFAULT_USER_ID;
   }
 
   const {
@@ -96,11 +89,6 @@
       if (!activity.name || !activity.userId || !activity.projectId || !activity.categoryId) {
         alert('Veuillez remplir tous les champs obligatoires.');
         return;
-      }
-
-      // S'assurer que userId est défini
-      if (!activity.userId) {
-        activity.userId = DEFAULT_USER_ID;
       }
 
       // Créer une nouvelle date de début avec les heures et minutes sélectionnées
