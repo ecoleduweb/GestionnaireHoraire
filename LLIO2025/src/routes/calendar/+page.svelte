@@ -31,6 +31,13 @@
   let activeView = $state('timeGridWeek');
   let currentViewTitle = $state('');
 
+  const timeRanges = [
+  { label: 'Heures de bureau (8h-17h)', start: '08:00:00', end: '17:00:00', default: true },
+  { label: 'Toute la journée (24h)', start: '00:00:00', end: '24:00:00' }
+  ];
+
+  let activeTimeRange = $state(timeRanges.find(range => range.default));
+
   const users = [{ id: 1, name: 'Test ManuDev' }];
   const projects = [{ id: 1, name: 'Projet manudev' }];
   const categories = [{ id: 1, name: 'Categorie Test ManuDev' }];
@@ -80,8 +87,8 @@
         },
         slotDuration: '00:30:00', // Durée de chaque intervalle de temps
         allDaySlot: false,
-        slotMinTime: '06:00:00',
-        slotMaxTime: '20:00:00',
+        slotMinTime: activeTimeRange.start,
+        slotMaxTime: activeTimeRange.end,
         nowIndicator: true,
 
         // Gestion du drag
@@ -238,6 +245,29 @@
     calendarService?.today();
     updateViewTitle();
   }
+  
+  function setTimeRange(range) {
+    activeTimeRange = range;
+    
+    if (calendarService?.calendar) {
+      calendarService.calendar.setOption('slotMinTime', range.start);
+      calendarService.calendar.setOption('slotMaxTime', range.end);
+      calendarService.calendar.render();
+      
+      // Modifier directement les styles
+      const tableElement = calendarEl.querySelector('.fc-timegrid-slots table') as HTMLTableElement;
+      if (tableElement) {
+        tableElement.style.height = range.start === '00:00:00' ? '1200px' : '540px';
+      }
+      
+      // Ajuster la hauteur des cellules
+      const cells = calendarEl.querySelectorAll('.fc-timegrid-slot');
+      const cellHeight = range.start === '00:00:00' ? '20px' : '30px';
+      cells.forEach(cell => {
+        (cell as HTMLElement).style.height = cellHeight;
+      });
+    }
+  }
 
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString('fr-FR', {
@@ -250,12 +280,14 @@
 <!-- CSS supplémentaire pour rendre le calendrier plus compact -->
 <style>
   :global(.fc .fc-timegrid-slot) {
-    height: 25px !important; /* Hauteur réduite des slots */
+    height: 25px !important;
     min-height: 25px !important;
+    max-height: 25px !important;
   }
 
   :global(.fc-timegrid-event) {
     min-height: 20px !important;
+    max-height: none !important;
   }
 
   :global(.fc-timegrid-slot-label) {
@@ -319,6 +351,18 @@
         >
           Mois
         </button>
+      </div>
+      <div class="flex items-center ml-4">
+        {#each timeRanges as range}
+          <button
+            class="px-4 py-2 mx-1 rounded-lg text-sm transition-colors {activeTimeRange.label === range.label
+              ? 'bg-[#015e61] text-white'
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
+            on:click={() => setTimeRange(range)}
+          >
+            {range.label}
+          </button>
+        {/each}
       </div>
 
       <!-- Bouton New Activity -->
