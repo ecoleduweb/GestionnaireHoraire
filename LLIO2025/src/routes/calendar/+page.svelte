@@ -26,7 +26,7 @@
   { label: 'Toute la journée (24h)', start: '00:00:00', end: '24:00:00' }
   ];
 
-  let activeTimeRange = $state(timeRanges.find(range => range.default) || timeRanges[0]);
+  let activeTimeRange = $state(timeRanges.find(range => range.default));
 
   const users = [{ id: 1, name: 'Test ManuDev' }];
   const projects = [{ id: 1, name: 'Projet manudev' }];
@@ -308,13 +308,6 @@
 <div class="w-full h-full bg-white px-4 py-6">
   <div class="max-w-7xl mx-auto">
     <!-- En-tête du calendrier -->
-    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-      <!-- Titre avec icône -->
-      <div class="flex items-center">
-        <svg
-          class="w-6 h-6 mr-2 text-gray-700"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
