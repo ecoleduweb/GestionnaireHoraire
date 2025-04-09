@@ -245,7 +245,6 @@
             e.preventDefault();
           }}
         >
-          <pre>{JSON.stringify(activity)}</pre>
           <!-- Champs de formulaire avec espacement vertical uniforme -->
           <div class="space-y-6">
             <!-- Champ Nom -->
