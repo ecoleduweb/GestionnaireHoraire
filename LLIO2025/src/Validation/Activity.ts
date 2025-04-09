@@ -32,10 +32,10 @@ export const validateActivityForm = (handleSubmit: (values) => void) => {
         await schema.validate(values, { abortEarly: false });
         return {};
       } catch(err) {
-        const errors = err.inner.reduce((res, value) => ({
-          ...res,
-          [value.path]: value.message,
-        }), {});
+        const errors = {};
+        err.inner.forEach(value => {
+          errors[value.path] = value.message;
+        });
         
         return errors;
       }
