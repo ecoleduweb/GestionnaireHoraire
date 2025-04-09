@@ -10,6 +10,7 @@
     applyEndTime as applyEndTimeUtil,
   } from '../../utils/date';
   import '../../style/app.css';
+  import { ChevronDown, X } from 'lucide-svelte';
 
   type Props = {
     show: boolean;
@@ -166,11 +167,7 @@
     padding: 0.75rem 1rem;
     padding-right: 2.5rem;
     color: #4b5563;
-    background-repeat: no-repeat;
     transition: all 0.2s;
-    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="%23606060"%3E%3Cpath stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"%3E%3C/path%3E%3C/svg%3E');
-    background-position: right 0.75rem center;
-    background-size: 1em;
   }
 
   .form-select:focus {
@@ -202,6 +199,20 @@
     border-color: #015e61;
     box-shadow: 0 0 0 3px rgba(1, 94, 97, 0.2);
   }
+
+  .select-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .select-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #606060;
+  }
 </style>
 
 {#if show}
@@ -223,20 +234,7 @@
           {editMode ? "Modifier l'activité" : 'Nouvelle activité'}
         </h2>
         <button type="button" class="text-white hover:text-gray-200" onclick={handleClose}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            ></path>
-          </svg>
+          <X />
         </button>
       </div>
 
@@ -283,16 +281,26 @@
             <div>
               <label class="block text-gray-700 font-medium mb-2">Heure de début*</label>
               <div class="flex gap-3">
-                <select bind:value={time.startHours} class="form-select form-select-flex">
-                  {#each hours as hour}
-                    <option value={hour}>{hour} h</option>
-                  {/each}
-                </select>
-                <select bind:value={time.startMinutes} class="form-select form-select-flex">
-                  {#each minutes as minute}
-                    <option value={minute}>{minute} min</option>
-                  {/each}
-                </select>
+                <div class="select-container form-select-flex">
+                  <select bind:value={time.startHours} class="form-select w-full">
+                    {#each hours as hour}
+                      <option value={hour}>{hour} h</option>
+                    {/each}
+                  </select>
+                  <div class="select-icon">
+                    <ChevronDown size={18} />
+                  </div>
+                </div>
+                <div class="select-container form-select-flex">
+                  <select bind:value={time.startMinutes} class="form-select w-full">
+                    {#each minutes as minute}
+                      <option value={minute}>{minute} min</option>
+                    {/each}
+                  </select>
+                  <div class="select-icon">
+                    <ChevronDown size={18} />
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -300,24 +308,34 @@
             <div>
               <label class="block text-gray-700 font-medium mb-2">Heure de fin*</label>
               <div class="flex gap-3">
-                <select
-                  bind:value={time.endHours}
-                  onchange={applyEndTime}
-                  class="form-select form-select-flex"
-                >
-                  {#each hours as hour}
-                    <option value={hour}>{hour} h</option>
-                  {/each}
-                </select>
-                <select
-                  bind:value={time.endMinutes}
-                  onchange={applyEndTime}
-                  class="form-select form-select-flex"
-                >
-                  {#each minutes as minute}
-                    <option value={minute}>{minute} min</option>
-                  {/each}
-                </select>
+                <div class="select-container form-select-flex">
+                  <select
+                    bind:value={time.endHours}
+                    onchange={applyEndTime}
+                    class="form-select w-full"
+                  >
+                    {#each hours as hour}
+                      <option value={hour}>{hour} h</option>
+                    {/each}
+                  </select>
+                  <div class="select-icon">
+                    <ChevronDown size={18} />
+                  </div>
+                </div>
+                <div class="select-container form-select-flex">
+                  <select
+                    bind:value={time.endMinutes}
+                    onchange={applyEndTime}
+                    class="form-select w-full"
+                  >
+                    {#each minutes as minute}
+                      <option value={minute}>{minute} min</option>
+                    {/each}
+                  </select>
+                  <div class="select-icon">
+                    <ChevronDown size={18} />
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -346,7 +364,7 @@
               <label for="activity-project" class="block text-gray-700 font-medium mb-2"
                 >Projet*</label
               >
-              <div class="relative">
+              <div class="select-container">
                 <select
                   id="activity-project"
                   bind:value={activity.projectId}
@@ -358,6 +376,9 @@
                     <option value={project.id}>{project.name}</option>
                   {/each}
                 </select>
+                <div class="select-icon">
+                  <ChevronDown size={18} />
+                </div>
               </div>
             </div>
 
@@ -366,7 +387,7 @@
               <label for="activity-category" class="block text-gray-700 font-medium mb-2"
                 >Catégorie*</label
               >
-              <div class="relative">
+              <div class="select-container">
                 <select
                   id="activity-category"
                   bind:value={activity.categoryId}
@@ -378,6 +399,9 @@
                     <option value={category.id}>{category.name}</option>
                   {/each}
                 </select>
+                <div class="select-icon">
+                  <ChevronDown size={18} />
+                </div>
               </div>
             </div>
           </div>
