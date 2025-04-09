@@ -180,7 +180,6 @@
             type="text"
             bind:value={activity.name}
             placeholder="Nom de l'activité..."
-            required
             autofocus
             class="w-full py-3 px-3 border border-gray-300 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-gray-500"
           />
@@ -190,7 +189,10 @@
         </div>
 
         <div class="mb-6">
-          <label for="activity-description" class="block text-gray-600 mb-2">Description</label>
+          <label for="activity-description" class="block text-gray-600 mb-2">
+            Description
+            <span class="text-gray-500 text-sm">(optionnel)</span>
+          </label>
           <textarea
             id="activity-description"
             name="description"
@@ -205,7 +207,10 @@
         </div>
         <div class="grid grid-cols-2 gap-4 mb-6">
           <div class="flex flex-col gap-2">
-            <label class="text-gray-600">Heure de début*</label>
+            <label class="text-gray-600">
+              Heure de début
+              <span class="text-red-500">*</span>
+            </label>
             <div class="flex gap-2">
               <select
                 bind:value={time.startHours}
@@ -226,7 +231,10 @@
             </div>
           </div>
           <div class="flex flex-col gap-2">
-            <label class="text-gray-600">Heure de fin*</label>
+            <label class="text-gray-600">
+              Heure de fin
+              <span class="text-red-500">*</span>
+            </label>
             <div class="flex gap-2">
               <select
                 bind:value={time.endHours}
@@ -252,7 +260,10 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div>
-            <label for="activity-user" class="block text-gray-600 mb-2">Utilisateur*</label>
+            <label for="activity-user" class="block text-gray-600 mb-2">
+              Utilisateur
+              <span class="text-red-500">*</span>
+            </label>
             <select
               id="activity-user"
               name="userId"
@@ -271,7 +282,10 @@
           </div>
 
           <div>
-            <label for="activity-project" class="block text-gray-600 mb-2">Projet*</label>
+            <label for="activity-project" class="block text-gray-600 mb-2">
+              Projet
+              <span class="text-red-500">*</span>
+            </label>
             <select
               id="activity-project"
               name="projectId"
@@ -290,7 +304,10 @@
           </div>
 
           <div>
-            <label for="activity-category" class="block text-gray-600 mb-2">Catégorie*</label>
+            <label for="activity-category" class="block text-gray-600 mb-2">
+              Catégorie
+              <span class="text-red-500">*</span>
+            </label>
             <select
               id="activity-category"
               name="categoryId"
