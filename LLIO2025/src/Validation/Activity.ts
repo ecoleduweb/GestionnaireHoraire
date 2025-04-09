@@ -1,4 +1,5 @@
 import { createForm } from 'felte';
+import type { Activity } from '../Models';
 import * as yup from 'yup';
 
 
@@ -25,8 +26,9 @@ const schema = yup.object().shape({
 });
 
 // Fonction qui crée un formulaire avec Felte en utilisant le schéma de validation
-export const validateActivityForm = (handleSubmit: (values) => void) => {
+export const validateActivityForm = (handleSubmit: (values) => void, activity:Activity) => {
   return createForm({
+    initialValues: {...activity},
     validate: async (values) => {
       try {
         await schema.validate(values, { abortEarly: false });

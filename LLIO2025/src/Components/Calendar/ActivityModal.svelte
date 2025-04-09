@@ -88,11 +88,6 @@
     isSubmitting = true;
 
     try {
-      if (!activity.name || !activity.projectId || !activity.categoryId) {
-        alert('Veuillez remplir tous les champs obligatoires.');
-        return;
-      }
-
       // Créer une nouvelle date de début avec les heures et minutes sélectionnées
       const updatedStartDate = createDateWithTime(
         activity.startDate,
@@ -141,7 +136,7 @@
     onClose();
   };
 
-  const { form, errors } = validateActivityForm(handleSubmit);
+  const { form, errors } = validateActivityForm(handleSubmit, activity);
 </script>
 
 <style>
@@ -244,45 +239,60 @@
       <!-- Contenu du formulaire - espace vertical ajusté -->
       <div class="p-6 flex-grow">
         <form
+          class="flex flex-col h-full"
+          use:form
           onsubmit={(e) => {
             e.preventDefault();
-            handleSubmit();
           }}
-          class="flex flex-col h-full"
         >
+          <pre>{JSON.stringify(activity)}</pre>
           <!-- Champs de formulaire avec espacement vertical uniforme -->
           <div class="space-y-6">
             <!-- Champ Nom -->
             <div>
-              <label for="activity-name" class="block text-gray-700 font-medium mb-2">Nom*</label>
+              <label for="activity-name" class="block text-gray-700 font-medium mb-2">
+                Nom
+                <span class="text-red-500">*</span>
+              </label>
               <input
                 id="activity-name"
+                name="name"
                 type="text"
                 bind:value={activity.name}
                 placeholder="Nom de l'activité..."
-                required
                 autofocus
                 class="form-input"
               />
+              {#if $errors.name}
+                <span class="text-red-500 text-sm">{$errors.name}</span>
+              {/if}
             </div>
 
             <!-- Champ Description -->
             <div>
-              <label for="activity-description" class="block text-gray-700 font-medium mb-2"
-                >Description*</label
-              >
+              <label for="activity-description" class="block text-gray-700 font-medium mb-2">
+                Description
+                <span class="text-gray-400">(optionnel)</span>
+              </label>
               <textarea
                 id="activity-description"
+                name="description"
                 bind:value={activity.description}
-                required
+                placeholder="Description de l'activité..."
                 rows="3"
                 class="form-input"
               ></textarea>
+              {#if $errors.description}
+                <span class="text-red-500 text-sm">{$errors.description}</span>
+              {/if}
             </div>
 
             <!-- Sélecteurs d'heure côte à côte -->
             <div>
-              <label class="block text-gray-700 font-medium mb-2">Heure de début*</label>
+              <label class="block text-gray-700 font-medium mb-2">
+                Heure de début
+                <span class="text-red-500">*</span>
+              </label>
               <div class="flex gap-3">
                 <div class="select-container form-select-flex">
                   <select bind:value={time.startHours} class="form-select w-full">
@@ -309,7 +319,10 @@
 
             <!-- Sélecteurs d'heure de fin -->
             <div>
-              <label class="block text-gray-700 font-medium mb-2">Heure de fin*</label>
+              <label class="block text-gray-700 font-medium mb-2">
+                Heure de fin
+                <span class="text-red-500">*</span>
+              </label>
               <div class="flex gap-3">
                 <div class="select-container form-select-flex">
                   <select
@@ -364,12 +377,14 @@
 
             <!-- Projet -->
             <div>
-              <label for="activity-project" class="block text-gray-700 font-medium mb-2"
-                >Projet*</label
-              >
+              <label for="activity-project" class="block text-gray-700 font-medium mb-2">
+                Projet
+                <span class="text-red-500">*</span>
+              </label>
               <div class="select-container">
                 <select
                   id="activity-project"
+                  name="projectId"
                   bind:value={activity.projectId}
                   required
                   class="form-select w-full"
@@ -382,17 +397,22 @@
                 <div class="select-icon">
                   <ChevronDown size={18} />
                 </div>
+                {#if $errors.projectId}
+                  <span class="text-red-500 text-sm">{$errors.projectId}</span>
+                {/if}
               </div>
             </div>
 
             <!-- Catégorie -->
             <div>
-              <label for="activity-category" class="block text-gray-700 font-medium mb-2"
-                >Catégorie*</label
-              >
+              <label for="activity-category" class="block text-gray-700 font-medium mb-2">
+                Catégorie
+                <span class="text-red-500">*</span>
+              </label>
               <div class="select-container">
                 <select
                   id="activity-category"
+                  name="categoryId"
                   bind:value={activity.categoryId}
                   required
                   class="form-select w-full"
@@ -405,6 +425,9 @@
                 <div class="select-icon">
                   <ChevronDown size={18} />
                 </div>
+                {#if $errors.categoryId}
+                  <span class="text-red-500 text-sm">{$errors.categoryId}</span>
+                {/if}
               </div>
             </div>
           </div>
