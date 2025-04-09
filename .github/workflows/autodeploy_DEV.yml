@@ -1,9 +1,8 @@
-name: Deployer LLIO test final
+name: Deployer LLIO
 on:
   push:
     branches:
       - main
-      - JL_FixAutoDeployDev
 
 jobs:
   deploy:
