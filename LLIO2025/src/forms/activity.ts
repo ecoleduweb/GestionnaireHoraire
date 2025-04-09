@@ -7,7 +7,7 @@ export const activityTemplate = {
     return {
       name: '',
       description: '',
-      userId: 0,
+      userId: 1,
       projectId: 0,
       categoryId: 0,
       startDate,

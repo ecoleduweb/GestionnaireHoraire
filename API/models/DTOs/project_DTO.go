@@ -9,7 +9,7 @@ type ProjectDTO struct {
 	Id          int                 `json:"id"`
 	Name        string              `json:"name" binding:"required,max=50"`
 	Description string              `json:"description" binding:"required"`
-	Status      enums.ProjectStatus `json:"status"`
+	Status      enums.ProjectStatus `json:"status"` // Status du projet( si le projet est en cours ou fini)
 	Billable    bool                `json:"billable"`
 	Activities  []ActivityDTO       `json:"activities"`
 	Categories  []CategoryDTO       `json:"categories"`
