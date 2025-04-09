@@ -10,6 +10,7 @@ type Project struct {
 	Description string     `json:"description" gorm:"type:text;not null"`
 	Status      bool       `json:"status" gorm:"type:boolean;not null;default:true"`
 	Activities  []Activity `json:"activities" gorm:"foreignKey:ProjectId;references:Id"`
+	Categories  []Category `json:"categories" gorm:"foreignKey:ProjectId;references:Id"`
 	CreatedAt   time.Time  `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt   time.Time  `json:"updated_at" gorm:"autoUpdateTime"`
 	EndAt       time.Time  `json:"end_at"`
