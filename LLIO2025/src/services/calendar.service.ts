@@ -26,11 +26,6 @@ export class CalendarService {
       allDaySlot: false,
       height: 'auto',
       expandRows: true,
-      businessHours: {
-        daysOfWeek: [1, 2, 3, 4, 5], // Lundi - Vendredi
-        startTime: '08:00',
-        endTime: '18:00',
-      },
       dayHeaderFormat: { weekday: 'short', month: 'numeric', day: 'numeric', omitCommas: true },
       eventTimeFormat: {
         hour: '2-digit',
