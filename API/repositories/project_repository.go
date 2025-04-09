@@ -11,9 +11,9 @@ func CreateProject(project *DAOs.Project) (*DAOs.Project, error) {
 }
 
 func GetProjects() ([]*DAOs.Project, error) {
-	var categories []*DAOs.Project
-	err := database.DB.Find(&categories).Error
-	return categories, DBErrorManager(err)
+	var projets []*DAOs.Project
+	err := database.DB.Find(&projets).Error
+	return projets, DBErrorManager(err)
 }
 
 func GetProjectById(id string) (*DAOs.Project, error) {
