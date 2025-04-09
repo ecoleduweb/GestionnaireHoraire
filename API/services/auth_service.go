@@ -11,7 +11,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func ValidateTokenAndExtractUser(accessToken string) (*DTOs.User, error) {
+func ValidateTokenAndExtractUser(accessToken string) (*DTOs.UserDTO, error) {
 	useful.LoadEnv()
 
 	// Validate the token and extract claims
@@ -29,7 +29,7 @@ func ValidateTokenAndExtractUser(accessToken string) (*DTOs.User, error) {
 		return nil, errors.New("token invalide")
 	}
 
-	user := &DTOs.User{
+	user := &DTOs.UserDTO{
 		Email:     claims["email"].(string),
 		FirstName: claims["first_name"].(string),
 		LastName:  claims["last_name"].(string),

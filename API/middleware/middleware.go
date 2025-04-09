@@ -41,7 +41,7 @@ func RoleValidationMiddleware(requiredRole enums.UserRole) gin.HandlerFunc {
 	}
 }
 
-func setUserToContextAndValidate(c *gin.Context, user *DTOs.User) (*DTOs.User, bool) {
+func setUserToContextAndValidate(c *gin.Context, user *DTOs.UserDTO) (*DTOs.UserDTO, bool) {
 	c.Set("current_user", user)
 
 	currentUser, exists := c.Get("current_user")
@@ -51,7 +51,7 @@ func setUserToContextAndValidate(c *gin.Context, user *DTOs.User) (*DTOs.User, b
 		return nil, true
 	}
 
-	user, ok := currentUser.(*DTOs.User)
+	user, ok := currentUser.(*DTOs.UserDTO)
 	if !ok {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur interne du serveur"})
 		c.Abort()
