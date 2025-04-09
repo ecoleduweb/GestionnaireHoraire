@@ -155,21 +155,10 @@
     animation: slideIn 0.3s forwards;
   }
 
-  /* Classe pour les flèches de sélection */
   .select-arrow {
     background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="%23606060"%3E%3Cpath stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"%3E%3C/path%3E%3C/svg%3E');
     background-position: right 0.75rem center;
     background-size: 1em;
-    background-repeat: no-repeat;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    padding-right: 2.5rem; /* Espace pour la flèche */
-  }
-
-  /* Supprimer la flèche par défaut sur IE */
-  .select-arrow::-ms-expand {
-    display: none;
   }
 </style>
 
