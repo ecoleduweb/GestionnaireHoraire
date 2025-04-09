@@ -11,22 +11,15 @@ const schema = yup.object().shape({
     .required("Le nom de l'activité est requis"),
   description: yup
     .string()
-    .max(100, "La description de l'activité ne doit pas dépasser 100 caractères"),
+    .max(20000, "La description de l'activité ne doit pas dépasser 20000 caractères"),
 
-  // Validation des information utilisateur, projet et catégorie
-  userId: yup
-    .number() 
-    .typeError('Veuillez sélectionner un utilisateur'),
+  // Validation des informations projet et catégorie
   projectId: yup
     .number()
-    .min(1, 'Veuillez sélectionner un projet')
-    .typeError('Veuillez sélectionner un projet')
-    .required('Veuillez sélectionner un projet'),
+    .min(1, 'Veuillez sélectionner un projet'),
   categoryId: yup
     .number()
-    .min(1, 'Veuillez sélectionner une catégorie')
-    .typeError('Veuillez sélectionner une catégorie')
-    .required('Veuillez sélectionner une catégorie'),
+    .min(1, 'Veuillez sélectionner une catégorie'),
 });
 
 // Fonction qui crée un formulaire avec Felte en utilisant le schéma de validation
