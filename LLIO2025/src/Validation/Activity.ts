@@ -1,7 +1,9 @@
-import type { Activity } from 'lucide-svelte';
+import { createForm } from 'felte';
 import * as yup from 'yup';
 
-const ActivityValidationSchema = yup.object().shape({
+
+// Schéma de validation Yup
+const schema = yup.object().shape({
   // Validation des informations de l'activité
   name: yup
     .string()
@@ -27,4 +29,22 @@ const ActivityValidationSchema = yup.object().shape({
     .required('Veuillez sélectionner une catégorie'),
 });
 
-export default ActivityValidationSchema;
+// Fonction qui crée un formulaire avec Felte en utilisant le schéma de validation
+export const validateActivityForm = (handleSubmit: (values) => void) => {
+  return createForm({
+    validate: async (values) => {
+      try {
+        await schema.validate(values, { abortEarly: false });
+        return {};
+      } catch(err) {
+        const errors = err.inner.reduce((res, value) => ({
+          ...res,
+          [value.path]: value.message,
+        }), {});
+        
+        return errors;
+      }
+    },
+    onSubmit: handleSubmit,
+  });
+};

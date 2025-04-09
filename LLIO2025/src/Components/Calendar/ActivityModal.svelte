@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { createForm } from 'felte'
-  import ActivityValidationSchema from '../../Validation/Activity';
+  import { validateActivityForm } from '../../Validation/Activity';
   import type { Activity, User, Project, Category } from '../../Models';
   import { activityTemplate } from '../../forms/activity';
   import { ActivityApiService } from '../../services/ActivityApiService';
@@ -84,22 +83,6 @@
     time.endMinutes = result.endMinutes;
   };
 
-  const { form, errors } = createForm({
-    validate: async (values) => {
-      try {
-        await ActivityValidationSchema.validate(values, { abortEarly: false });
-      } catch(err) {
-        
-        const errors = err.inner.reduce((res, value) => ({
-          [value.path]: value.message,
-          ...res,
-        }), {});
-        
-        return errors;
-      }
-    }
-  });
-
   const handleSubmit = async () => {
     if (isSubmitting) return; // Empêche les soumissions multiples
     isSubmitting = true;
@@ -157,6 +140,8 @@
   const handleClose = () => {
     onClose();
   };
+
+  const { form, errors } = validateActivityForm(handleSubmit);
 </script>
 
 {#if show}
@@ -168,7 +153,7 @@
       <h2 class="text-2xl text-gray-800 font-medium mb-6">
         {editMode ? "Modifier l'activité" : 'Nouvelle tâche'}
       </h2>
-      <form use:form on:submit|preventDefault={handleSubmit}>
+      <form use:form on:submit|preventDefault>
         <div class="mb-6">
           <label for="activity-name" class="block text-gray-600 mb-2">
             Nom
