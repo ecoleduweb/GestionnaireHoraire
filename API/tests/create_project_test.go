@@ -8,6 +8,7 @@ import (
 
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
+	"llio-api/models/enums"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -20,7 +21,7 @@ func TestCreateProject(t *testing.T) {
 		Status:      true,
 	}
 
-	w := sendRequest(router, "POST", "/project", project)
+	w := sendRequest(router, "POST", "/project", project, enums.Administrator)
 	assertResponse(t, w, http.StatusCreated, nil)
 
 	var responseBody struct {
@@ -42,7 +43,7 @@ func TestDoNotCreateProjectWithoutName(t *testing.T) {
 		Status:      true,
 	}
 
-	w := sendRequest(router, "POST", "/project", project)
+	w := sendRequest(router, "POST", "/project", project, enums.Administrator)
 	expectedErrors := []DTOs.FieldErrorDTO{
 		{Field: "name", Message: "Le champ name est invalide ou manquant"},
 	}
@@ -56,7 +57,7 @@ func TestDoNotCreateProjectWithInvalidName(t *testing.T) {
 		Status:      true,
 	}
 
-	w := sendRequest(router, "POST", "/project", project)
+	w := sendRequest(router, "POST", "/project", project, enums.Administrator)
 	expectedErrors := []DTOs.FieldErrorDTO{
 		{Field: "name", Message: "Le champ name est invalide ou manquant"},
 	}
@@ -70,7 +71,7 @@ func TestDoNotCreateProjectWithoutDescription(t *testing.T) {
 		Status:      true,
 	}
 
-	w := sendRequest(router, "POST", "/project", project)
+	w := sendRequest(router, "POST", "/project", project, enums.Administrator)
 	expectedErrors := []DTOs.FieldErrorDTO{
 		{Field: "description", Message: "Le champ description est invalide ou manquant"},
 	}
@@ -88,7 +89,7 @@ func TestDoNotCreateProjectWithInconsistentDates(t *testing.T) {
 		EndAt:       now.Add(-24 * time.Hour), // Un jour avant CreatedAt
 	}
 
-	w := sendRequest(router, "POST", "/project", project)
+	w := sendRequest(router, "POST", "/project", project, enums.Administrator)
 	expectedErrors := []DTOs.FieldErrorDTO{
 		{Field: "endAt", Message: "La date de fin doit être après la date de création"},
 	}
@@ -108,7 +109,7 @@ func TestCreateProjectWithConsistentDates(t *testing.T) {
 		EndAt:       now.Add(7 * 24 * time.Hour), // Une semaine plus tard
 	}
 
-	w := sendRequest(router, "POST", "/project", project)
+	w := sendRequest(router, "POST", "/project", project, enums.Administrator)
 	assertResponse(t, w, http.StatusCreated, nil)
 
 	var responseBody struct {

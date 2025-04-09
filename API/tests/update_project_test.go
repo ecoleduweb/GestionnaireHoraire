@@ -8,6 +8,7 @@ import (
 
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
+	"llio-api/models/enums"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -21,7 +22,7 @@ func TestUpdateProject(t *testing.T) {
 		// On laisse les autres champs tels quels
 	}
 
-	w := sendRequest(router, "PUT", "/project", updatedProject)
+	w := sendRequest(router, "PUT", "/project", updatedProject, enums.Administrator)
 	assertResponse(t, w, http.StatusOK, nil)
 
 	var responseBody struct {
@@ -42,7 +43,7 @@ func TestUpdateProjectStatus(t *testing.T) {
 		Status:      false,
 	}
 
-	w := sendRequest(router, "PUT", "/project", updatedProject)
+	w := sendRequest(router, "PUT", "/project", updatedProject, enums.Administrator)
 	assertResponse(t, w, http.StatusOK, nil)
 
 	var responseBody struct {
@@ -66,7 +67,7 @@ func TestUpdateProjectEndDate(t *testing.T) {
 		EndAt:       endDate,
 	}
 
-	w := sendRequest(router, "PUT", "/project", updatedProject)
+	w := sendRequest(router, "PUT", "/project", updatedProject, enums.Administrator)
 	assertResponse(t, w, http.StatusOK, nil)
 
 	var responseBody struct {
@@ -85,7 +86,7 @@ func TestDoNotUpdateProjectWithNonExistingId(t *testing.T) {
 		Status:      true,
 	}
 
-	w := sendRequest(router, "PUT", "/project", nonExistingProject)
+	w := sendRequest(router, "PUT", "/project", nonExistingProject, enums.Administrator)
 	assertResponse(t, w, http.StatusNotFound, nil)
 }
 
@@ -99,7 +100,7 @@ func TestDoNotUpdateProjectWithInvalidName(t *testing.T) {
 		Status:      doNotDeleteProject2.Status,
 	}
 
-	w := sendRequest(router, "PUT", "/project", updatedProject)
+	w := sendRequest(router, "PUT", "/project", updatedProject, enums.Administrator)
 	expectedErrors := []DTOs.FieldErrorDTO{
 		{Field: "name", Message: "Le champ name est invalide ou manquant"},
 	}
@@ -116,7 +117,7 @@ func TestDoNotUpdateProjectWithInvalidDescription(t *testing.T) {
 		Status:      doNotDeleteProject2.Status,
 	}
 
-	w := sendRequest(router, "PUT", "/project", updatedProject)
+	w := sendRequest(router, "PUT", "/project", updatedProject, enums.Administrator)
 	expectedErrors := []DTOs.FieldErrorDTO{
 		{Field: "description", Message: "Le champ description est invalide ou manquant"},
 	}
@@ -137,7 +138,7 @@ func TestDoNotUpdateProjectWithInconsistentDates(t *testing.T) {
 		EndAt:       now.Add(-24 * time.Hour), // Un jour avant CreatedAt
 	}
 
-	w := sendRequest(router, "PUT", "/project", updatedProject)
+	w := sendRequest(router, "PUT", "/project", updatedProject, enums.Administrator)
 	expectedErrors := []DTOs.FieldErrorDTO{
 		{Field: "endAt", Message: "La date de fin doit être après la date de création"},
 	}
