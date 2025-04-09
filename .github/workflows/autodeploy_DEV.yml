@@ -24,6 +24,12 @@ jobs:
             sudo systemctl stop llio-api.service || echo "API service not running"
             sudo systemctl stop llio-frontend.service || echo "Frontend service not running"
 
+            # Copie du fichier de logs
+            echo 'Moving logs file to logs backup folder'
+            mkdir /root/logs
+            DATE=$(date +'%Y-%m-%d_%H-%M')
+            cp /root/ProjetLLIO2025/GestionnaireHoraire/API/logs.txt /root/logs/logs_llio_$DATE.txt
+
             # Suppression et récréation du répertoire GestionnaireHoraire
             echo "Refreshing project directory..."
             cd /root/ProjetLLIO2025
