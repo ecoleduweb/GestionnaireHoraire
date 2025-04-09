@@ -88,7 +88,7 @@
     isSubmitting = true;
 
     try {
-      if (!activity.name || !activity.userId || !activity.projectId || !activity.categoryId) {
+      if (!activity.name || !activity.projectId || !activity.categoryId) {
         alert('Veuillez remplir tous les champs obligatoires.');
         return;
       }
