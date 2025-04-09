@@ -18,7 +18,7 @@ func TestUpdateProject(t *testing.T) {
 		Id:          doNotDeleteProject2.Id,
 		Name:        "Projet mis à jour",
 		Description: "Description mise à jour du projet",
-		Status:      true,
+		Status:      enums.ProjectStatus(enums.InProgress),
 		// On laisse les autres champs tels quels
 	}
 
@@ -40,7 +40,7 @@ func TestUpdateProjectStatus(t *testing.T) {
 		Id:          doNotDeleteProject2.Id,
 		Name:        doNotDeleteProject2.Name,
 		Description: doNotDeleteProject2.Description,
-		Status:      false,
+		Status:      enums.ProjectStatus(enums.Finish),
 	}
 
 	w := sendRequest(router, "PUT", "/project", updatedProject, enums.Administrator)
@@ -51,7 +51,7 @@ func TestUpdateProjectStatus(t *testing.T) {
 	}
 	err := json.Unmarshal(w.Body.Bytes(), &responseBody)
 	assert.NoError(t, err)
-	assert.Equal(t, false, responseBody.UpdatedProject.Status)
+	assert.Equal(t, enums.ProjectStatus(enums.Finish), responseBody.UpdatedProject.Status)
 }
 
 func TestUpdateProjectEndDate(t *testing.T) {
@@ -83,7 +83,7 @@ func TestDoNotUpdateProjectWithNonExistingId(t *testing.T) {
 		Id:          999999, // ID qui n'existe probablement pas
 		Name:        "Projet inexistant",
 		Description: "Description d'un projet inexistant",
-		Status:      true,
+		Status:      enums.ProjectStatus(enums.InProgress),
 	}
 
 	w := sendRequest(router, "PUT", "/project", nonExistingProject, enums.Administrator)
