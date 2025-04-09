@@ -47,7 +47,7 @@ func main() {
 
 	// Configuration CORS
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{frontendAddress, "https://telemetry.edwrdl.ca"},
+		AllowOrigins:     []string{frontendAddress},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "Accept", "traceparent", "tracestate"},
 		ExposeHeaders:    []string{"Content-Length"},
