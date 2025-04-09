@@ -9,7 +9,7 @@ const handleResponse = async <T>(response: Response, redirectToLoginOn401 = true
     if (!response.ok) {
         const statusCodeRedirects = {
             500: "/500",
-            401: "/login",
+            401: "/",
         }
 
         if (redirectToLoginOn401 && statusCodeRedirects[response.status]) {
@@ -33,6 +33,7 @@ async function request<T>(
     try {
         const options: RequestInit = {
             method,
+            credentials: 'include',
             headers: getHeaders(),
         }
 

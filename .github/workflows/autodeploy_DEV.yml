@@ -50,6 +50,7 @@ jobs:
             SESSION_MAX_AGE=${{ secrets.SESSION_MAX_AGE }}
             SESSION_SECRET=${{ secrets.SESSION_SECRET }}
             FRONTEND_URL=${{ secrets.FRONTEND_URL }}
+            JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
             EOF
 
             echo "Building API..."
@@ -60,6 +61,7 @@ jobs:
             cd /root/ProjetLLIO2025/GestionnaireHoraire/LLIO2025
             cat > .env << EOF
             VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
+            BASE_PATH=/llio-frontend
             EOF
 
             echo "Building Frontend..."
