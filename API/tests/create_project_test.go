@@ -18,7 +18,7 @@ func TestCreateProject(t *testing.T) {
 	project := DTOs.ProjectDTO{
 		Name:        "Nouveau Projet",
 		Description: "Description de test",
-		Status:      true,
+		Status:      enums.ProjectStatus(enums.InProgress),
 	}
 
 	w := sendRequest(router, "POST", "/project", project, enums.Administrator)
@@ -40,7 +40,7 @@ func TestDoNotCreateProjectWithoutName(t *testing.T) {
 	project := DTOs.ProjectDTO{
 		Name:        "",
 		Description: "Description de test",
-		Status:      true,
+		Status:      enums.ProjectStatus(enums.InProgress),
 	}
 
 	w := sendRequest(router, "POST", "/project", project, enums.Administrator)
@@ -54,7 +54,7 @@ func TestDoNotCreateProjectWithInvalidName(t *testing.T) {
 	project := DTOs.ProjectDTO{
 		Name:        "Ceci est un très long nom de projet qui dépasse largement la limite de 50 caractères et qui devrait donc être rejeté par la validation",
 		Description: "Description de test",
-		Status:      true,
+		Status:      enums.ProjectStatus(enums.InProgress),
 	}
 
 	w := sendRequest(router, "POST", "/project", project, enums.Administrator)
@@ -68,7 +68,7 @@ func TestDoNotCreateProjectWithoutDescription(t *testing.T) {
 	project := DTOs.ProjectDTO{
 		Name:        "Test Project",
 		Description: "",
-		Status:      true,
+		Status:      enums.ProjectStatus(enums.InProgress),
 	}
 
 	w := sendRequest(router, "POST", "/project", project, enums.Administrator)
@@ -84,7 +84,7 @@ func TestDoNotCreateProjectWithInconsistentDates(t *testing.T) {
 	project := DTOs.ProjectDTO{
 		Name:        "Test Project",
 		Description: "Description de test",
-		Status:      true,
+		Status:      enums.ProjectStatus(enums.InProgress),
 		CreatedAt:   now,
 		EndAt:       now.Add(-24 * time.Hour), // Un jour avant CreatedAt
 	}
@@ -104,7 +104,7 @@ func TestCreateProjectWithConsistentDates(t *testing.T) {
 	project := DTOs.ProjectDTO{
 		Name:        "Test Project Dates",
 		Description: "Description avec dates",
-		Status:      true,
+		Status:      enums.ProjectStatus(enums.InProgress),
 		CreatedAt:   now,
 		EndAt:       now.Add(7 * 24 * time.Hour), // Une semaine plus tard
 	}
