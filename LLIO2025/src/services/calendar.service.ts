@@ -116,4 +116,17 @@ export class CalendarService {
       categoryId: eventInfo.event.extendedProps.categoryId,
     };
   }
+
+  loadActivities(activities: Activity[]) {
+    // Ajouter chaque activité au calendrier
+    activities.forEach((activity) => {
+      this.addEvent({
+        id: activity.id.toString(),
+        title: activity.name,
+        start: activity.startDate,
+        end: activity.endDate,
+        extendedProps: { ...activity },
+      });
+    });
+  }
 }
