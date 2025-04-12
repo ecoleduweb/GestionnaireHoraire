@@ -11,17 +11,17 @@
   // Importer FullCalendar en français
   import frLocale from '@fullcalendar/core/locales/fr';
   import { formatViewTitle } from '../../utils/date';
-  import { ClientTelemetry } from "$lib/tracer"
-  import { env } from "$env/dynamic/public"
+  import { ClientTelemetry } from '$lib/tracer';
+  import { env } from '$env/dynamic/public';
   import { Plus, Calendar, ChevronLeft, ChevronRight } from 'lucide-svelte';
 
-  const ENABLED_TELEMETRY = env.PUBLIC_ENABLED_TELEMETRY === "true";
+  const ENABLED_TELEMETRY = env.PUBLIC_ENABLED_TELEMETRY === 'true';
 
   if (ENABLED_TELEMETRY) {
-      const telemetry = ClientTelemetry.getInstance()
-      telemetry.start()
+    const telemetry = ClientTelemetry.getInstance();
+    telemetry.start();
   }
-  
+
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
   let showModal = $state(false);
@@ -70,17 +70,9 @@
     try {
       const activities = await ActivityApiService.getAllActivites();
 
-      // Ajouter chaque activité au calendrier
+      // Utiliser la méthode du service pour ajouter les activités au calendrier
       if (activities && calendarService) {
-        activities.forEach((activity) => {
-          calendarService.addEvent({
-            id: activity.id.toString(),
-            title: activity.name,
-            start: activity.startDate,
-            end: activity.endDate,
-            extendedProps: { ...activity },
-          });
-        });
+        calendarService.loadActivities(activities);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des activités:', error);

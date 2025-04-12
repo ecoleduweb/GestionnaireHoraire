@@ -78,10 +78,12 @@ const getAllActivites = async () => {
             return response.activities.map(transformActivityStringToDates);
         } else {
             console.error("Format de réponse inattendu :", response);
+            alert("Erreur: Format de réponse inattendu lors de la récupération des tâches.");
             return []; // Retourner un tableau vide en cas de problème
         }
     } catch (error) {
         console.error("Erreur lors de la récupération des tâches", error);
+        alert("Erreur lors de la récupération des tâches. Veuillez réessayer plus tard.");
         throw error;
     }
 };
