@@ -64,6 +64,7 @@ jobs:
 
             echo "Building API..."
             /usr/local/go/bin/go mod tidy
+            /usr/local/go/bin/go build -o app
 
             # Configuration Frontend
             echo "Configuring Frontend..."
