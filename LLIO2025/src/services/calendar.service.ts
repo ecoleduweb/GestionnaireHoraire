@@ -26,11 +26,6 @@ export class CalendarService {
       allDaySlot: false,
       height: 'auto',
       expandRows: true,
-      businessHours: {
-        daysOfWeek: [1, 2, 3, 4, 5], // Lundi - Vendredi
-        startTime: '08:00',
-        endTime: '18:00',
-      },
       dayHeaderFormat: { weekday: 'short', month: 'numeric', day: 'numeric', omitCommas: true },
       eventTimeFormat: {
         hour: '2-digit',
@@ -120,5 +115,18 @@ export class CalendarService {
       projectId: eventInfo.event.extendedProps.projectId,
       categoryId: eventInfo.event.extendedProps.categoryId,
     };
+  }
+
+  loadActivities(activities: Activity[]) {
+    // Ajouter chaque activité au calendrier
+    activities.forEach((activity) => {
+      this.addEvent({
+        id: activity.id.toString(),
+        title: activity.name,
+        start: activity.startDate,
+        end: activity.endDate,
+        extendedProps: { ...activity },
+      });
+    });
   }
 }

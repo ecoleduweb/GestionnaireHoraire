@@ -26,9 +26,9 @@ jobs:
 
             # Copie du fichier de logs
             echo 'Moving logs file to logs backup folder'
-            mkdir /root/logs
+            mkdir -p /root/logs
             DATE=$(date +'%Y-%m-%d_%H-%M')
-            cp /root/ProjetLLIO2025/GestionnaireHoraire/API/logs.txt /root/logs/logs_llio_$DATE.txt
+            [ -f "/root/ProjetLLIO2025/GestionnaireHoraire/API/logs.txt" ] && cp /root/ProjetLLIO2025/GestionnaireHoraire/API/logs.txt /root/logs/logs_llio_$DATE.txt
 
             # Suppression et récréation du répertoire GestionnaireHoraire
             echo "Refreshing project directory..."
@@ -64,6 +64,7 @@ jobs:
 
             echo "Building API..."
             /usr/local/go/bin/go mod tidy
+            /usr/local/go/bin/go build -o app
 
             # Configuration Frontend
             echo "Configuring Frontend..."
