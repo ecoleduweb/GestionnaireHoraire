@@ -25,3 +25,9 @@ func TestGetNotFoundActivity(t *testing.T) {
 	assertResponse(t, w, http.StatusNotFound, nil)
 	assert.NotNil(t, w.Body)
 }
+
+func TestGetFromToActivities(t *testing.T) {
+	w := sendRequest(router, "GET", fmt.Sprintf("/activities/%d", doNotDeleteUser.Id), nil)
+	assertResponse(t, w, http.StatusNotFound, nil)
+	assert.NotNil(t, w.Body)
+}
