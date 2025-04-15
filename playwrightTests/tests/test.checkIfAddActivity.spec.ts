@@ -35,7 +35,9 @@ test.describe('checkAddActivity', () => {
 
         await page.getByText ('Créer').click();
 
-        await expect(page.getByText('Fête de Jean-Félix et Sherlock')).toBeVisible(), { timeout: 5000 };
+        
+
+        await expect(page.getByText('Fête de Jean-Félix et Sherlock')).toBeVisible();
         
 
     });
