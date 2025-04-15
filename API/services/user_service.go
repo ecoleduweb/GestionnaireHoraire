@@ -8,14 +8,14 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-func CreateUser(userDTO *DTOs.UserDTO) (*DTOs.UserDTO, error) {
+func FirstOrCreateUser(userDTO *DTOs.UserDTO) (*DTOs.UserDTO, error) {
 
 	user := &DAOs.User{}
 	err := copier.Copy(user, userDTO)
 	if err != nil {
 		return nil, err
 	}
-	userDAOAdded, err := repositories.CreateUser(user)
+	userDAOAdded, err := repositories.FirstOrCreateUser(user)
 	if err != nil {
 		return nil, err
 	}

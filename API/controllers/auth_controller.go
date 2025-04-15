@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"llio-api/customs_errors"
 	"llio-api/models/DTOs"
 	"llio-api/models/enums"
 	"llio-api/services"
@@ -26,20 +25,16 @@ func GetAuthCallback(c *gin.Context) {
 	}
 
 	var dbUser DTOs.UserDTO
-	_, err = services.GetUserByEmail(userAzure.Email)
-	// if the user is not yet in the DB, we add in
-	if err == customs_errors.ErrNotFound {
-		dbUser.FirstName = userAzure.FirstName
-		dbUser.LastName = userAzure.LastName
-		dbUser.Email = userAzure.Email
-		dbUser.Role = enums.Employee
+	dbUser.FirstName = userAzure.FirstName
+	dbUser.LastName = userAzure.LastName
+	dbUser.Email = userAzure.Email
+	dbUser.Role = enums.Employee
 
-		_, err := services.CreateUser(&dbUser)
-		if err != nil {
-			log.Printf("Impossible d'ajouter l'utilisateur à la base de données: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible d'ajouter l'utilisateur à la base de données."})
-			return
-		}
+	_, err = services.FirstOrCreateUser(&dbUser)
+	if err != nil {
+		log.Printf("Impossible d'interagir avec l'utilisateur dans la base de données: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible d'ajouter l'utilisateur à la base de données."})
+		return
 	}
 
 	accessToken, err := services.CreateJWTToken(userAzure.Email, userAzure.FirstName, userAzure.LastName, userAzure.ExpiresAt, dbUser.Role)

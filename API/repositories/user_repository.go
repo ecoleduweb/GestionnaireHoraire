@@ -5,8 +5,8 @@ import (
 	"llio-api/models/DAOs"
 )
 
-func CreateUser(user *DAOs.User) (*DAOs.User, error) {
-	err := database.DB.Create(user).Error
+func FirstOrCreateUser(user *DAOs.User) (*DAOs.User, error) {
+	err := database.DB.FirstOrCreate(user).Error
 	return user, DBErrorManager(err)
 }
 
