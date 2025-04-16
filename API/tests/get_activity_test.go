@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetActivities(t *testing.T) {
-	w := sendRequest(router, "GET", "/activities", nil)
+func TestUsersActivities(t *testing.T) {
+	w := sendRequest(router, "GET", "/activities/me", nil)
 	assertResponse(t, w, http.StatusOK, nil)
 	assert.NotNil(t, w.Body)
 }
