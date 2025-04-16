@@ -1,8 +1,9 @@
-name: Deployer LLIO DEV
+name: Deployer LLIO PROD
 on:
   push:
     branches:
-      - main
+      - prod
+      - JL_AutoDeployProd
 
 jobs:
   deploy:
@@ -11,9 +12,9 @@ jobs:
       - name: Deploy Full Application
         uses: appleboy/ssh-action@v0.1.2
         with:
-          host: ${{secrets.DEV_SSH_HOST}}
-          key: ${{secrets.DEV_SSH_KEY}}
-          username: ${{ secrets.SSH_USERNAME}}
+          host: ${{secrets.PROD_SSH_HOST}}
+          key: ${{secrets.PROD_SSH_KEY}}
+          username: ${{ secrets.PROD_SSH_USERNAME}}
           debug: true
           script: |
             set -e # Exit immediately if a command exits with a non-zero status.
@@ -28,38 +29,37 @@ jobs:
             echo 'Moving logs file to logs backup folder'
             mkdir -p /root/logs
             DATE=$(date +'%Y-%m-%d_%H-%M')
-            [ -f "/root/ProjetLLIO2025/GestionnaireHoraire/API/logs.txt" ] && cp /root/ProjetLLIO2025/GestionnaireHoraire/API/logs.txt /root/logs/logs_llio_$DATE.txt
+            [ -f "/root/var/www/GestionnaireHoraire/API/logs.txt" ] && cp /root/var/www/GestionnaireHoraire/API/logs.txt /root/logs/logs_llio_$DATE.txt
 
             # Suppression et récréation du répertoire GestionnaireHoraire
             echo "Refreshing project directory..."
-            cd /root/ProjetLLIO2025
+            cd /root/var/www
             rm -rf GestionnaireHoraire
 
             # Clone du projet (plus propre qu'un pull)
             echo "Cloning fresh repository..."
-            git clone https://github.com/ecoleduweb/GestionnaireHoraire.git
+            git clone -b prod https://github.com/ecoleduweb/GestionnaireHoraire.git
 
             # Configuration API
             echo "Configuring API..."
-            cd /root/ProjetLLIO2025/GestionnaireHoraire/API
+            cd /root/var/www/GestionnaireHoraire/API
             cat > .env << EOF
-            DB_USER=${{ secrets.DB_USER }}
-            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-            DB_HOST=${{ secrets.DB_HOST }}
-            DB_PORT=${{ secrets.DB_PORT }}
-            DB_NAME_RUN=${{ secrets.DB_NAME_RUN }}
-            DB_NAME_TEST=${{ secrets.DB_NAME_TEST }}
-            ENV=${{ secrets.ENV }}
-            AZUREAD_CLIENT_ID=${{ secrets.AZUREAD_CLIENT_ID }}
-            AZUREAD_CLIENT_SECRET=${{ secrets.AZUREAD_CLIENT_SECRET }}
-            AZUREAD_CALLBACK_URL=${{ secrets.AZUREAD_CALLBACK_URL }}
+            DB_USER=${{ secrets.PROD_DB_USER }}
+            DB_PASSWORD=${{ secrets.PROD_DB_PASSWORD }}
+            DB_HOST=${{ secrets.PROD_DB_HOST }}
+            DB_PORT=${{ secrets.PROD_DB_PORT }}
+            DB_NAME_RUN=${{ secrets.PROD_DB_NAME_RUN }}
+            ENV=${{ secrets.PROD_ENV }}
+            AZUREAD_CLIENT_ID=${{ secrets.PROD_AZUREAD_CLIENT_ID }}
+            AZUREAD_CLIENT_SECRET=${{ secrets.PROD_AZUREAD_CLIENT_SECRET }}
+            AZUREAD_CALLBACK_URL=${{ secrets.PROD_AZUREAD_CALLBACK_URL }}
             SESSION_MAX_AGE=${{ secrets.SESSION_MAX_AGE }}
-            SESSION_SECRET=${{ secrets.SESSION_SECRET }}
-            FRONTEND_URL=${{ secrets.FRONTEND_URL }}
+            SESSION_SECRET=${{ secrets.PROD_SESSION_SECRET }}
+            FRONTEND_URL=${{ secrets.PROD_FRONTEND_URL }}
             ENABLE_TRACING=true
             TRACE_URL=https://telemetry.edwrdl.ca/traces
-            APPLICATION_NAME=API_LLIO_DEV
-            JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+            APPLICATION_NAME=API_LLIO_PROD
+            JWT_SECRET_KEY=${{ secrets.PROD_JWT_SECRET_KEY }}
             EOF
 
             echo "Building API..."
@@ -73,8 +73,7 @@ jobs:
             VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
             PUBLIC_ENABLED_TELEMETRY=true
             PUBLIC_TRACE_URL=https://telemetry.edwrdl.ca/traces
-            PUBLIC_APPLICATION_NAME=LLIO_DEV
-            BASE_PATH=/llio-frontend
+            PUBLIC_APPLICATION_NAME=LLIO_PROD
             EOF
 
             echo "Building Frontend..."
