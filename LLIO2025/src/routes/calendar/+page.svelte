@@ -3,7 +3,7 @@
   import { CalendarService as CS } from '../../services/calendar.service';
   import { onMount } from 'svelte';
   import ActivityModal from '../../Components/Calendar/ActivityModal.svelte';
-  import DashboardModal from '../../Components/Calendar/DashboardModal.svelte';
+  import DashboardModal from '../../Components/Calendar/DashboardLeftPane.svelte';
   import { ActivityApiService } from '../../services/ActivityApiService';
   import type { Activity } from '../../Models/index.ts';
   // Importez le fichier CSS
