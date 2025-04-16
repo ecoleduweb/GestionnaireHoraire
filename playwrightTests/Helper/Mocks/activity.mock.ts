@@ -15,9 +15,15 @@ export const activityMocks = {
         response: {
             status: 200,
             json: {"activity":
-                {"id":1,"name":"A","description":"aaa",
-                 "endDate":"2025-02-05T07:25:47-05:00",
-                 "userId":1,"projectId":1,"categoryId":1}
+                {"id": 1,
+                    "name": "Fête de Jean-Félix et Sherlock",
+                    "description": "Fête de Jean-Félix et Sherlock",
+                    "startDate": "2025-03-22T18:04:00Z",
+                    "endDate": "2025-03-22T20:34:00Z",
+                    "userId": 1,
+                    "projectId": 1,
+                    "categoryId": 1
+                }
             }
         }
     },

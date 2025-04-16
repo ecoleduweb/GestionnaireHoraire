@@ -15,7 +15,7 @@ test.describe('checkAddActivity', () => {
         ])
             .apply();
         await page.clock.install({ time: new Date('2025-03-22T08:00:00') });
-        await page.goto('http://localhost:5002/calendar');
+        await page.goto('http://localhost:5002/llio-frontend/calendar');
         await page.waitForLoadState('networkidle');
     });
 
@@ -37,8 +37,7 @@ test.describe('checkAddActivity', () => {
 
         await page.waitForTimeout(1000);
 
-        //await expect(page.getByText('Fête de Jean-Félix et Sherlock')).toBeVisible();
-        await expect(page.getByText('Fête de Jean-Félix et Sherlock')).toHaveCount(1);
+        await expect(page.getByText('Fête de Jean-Félix et Sherlock')).toBeVisible();
         
 
     });
