@@ -1,7 +1,4 @@
 <script lang="ts">
-  export let show = true;
-
-  export let onClose = () => {};
 </script>
 
 <style>
@@ -43,32 +40,30 @@
   }
 </style>
 
-{#if show}
-  <div class="dashboard-panel">
-    <!-- En-tête du dashboard -->
-    <div class="dashboard-header">Dashboard</div>
+<div class="dashboard-panel">
+  <!-- En-tête du dashboard -->
+  <div class="dashboard-header">Dashboard</div>
 
-    <!-- Contenu du dashboard -->
-    <div class="dashboard-content">
-      <!-- Éléments du dashboard -->
-      <div class="dashboard-item">
-        <div class="text-gray-600">Contenu du dashboard à venir...</div>
-      </div>
+  <!-- Contenu du dashboard -->
+  <div class="dashboard-content">
+    <!-- Éléments du dashboard -->
+    <div class="dashboard-item">
+      <div class="text-gray-600">Contenu du dashboard à venir...</div>
+    </div>
 
-      <div class="dashboard-item">
-        <div class="font-medium text-gray-700 mb-2">Statistiques</div>
-        <div class="text-gray-500 text-sm">Aucune statistique disponible pour le moment.</div>
-      </div>
+    <div class="dashboard-item">
+      <div class="font-medium text-gray-700 mb-2">Statistiques</div>
+      <div class="text-gray-500 text-sm">Aucune statistique disponible pour le moment.</div>
+    </div>
 
-      <div class="dashboard-item">
-        <div class="font-medium text-gray-700 mb-2">Activités récentes</div>
-        <div class="text-gray-500 text-sm">Aucune activité récente.</div>
-      </div>
+    <div class="dashboard-item">
+      <div class="font-medium text-gray-700 mb-2">Activités récentes</div>
+      <div class="text-gray-500 text-sm">Aucune activité récente.</div>
+    </div>
 
-      <div class="dashboard-item">
-        <div class="font-medium text-gray-700 mb-2">Projets</div>
-        <div class="text-gray-500 text-sm">Aucun projet disponible.</div>
-      </div>
+    <div class="dashboard-item">
+      <div class="font-medium text-gray-700 mb-2">Projets</div>
+      <div class="text-gray-500 text-sm">Aucun projet disponible.</div>
     </div>
   </div>
-{/if}
+</div>

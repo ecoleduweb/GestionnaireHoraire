@@ -32,7 +32,6 @@
   let activeView = $state('timeGridWeek');
   let currentViewTitle = $state('');
   let isLoading = $state(false);
-  let showDashboard = $state(true);
 
   const timeRanges = [
     { label: 'Heures de bureau (8h-17h)', start: '08:00:00', end: '17:00:00', default: true },
@@ -438,7 +437,7 @@
   </div>
 </div>
 
-<DashboardModal show={showDashboard} onClose={() => (showDashboard = false)} />
+<DashboardModal />
 
 <!-- Modal d'activité qui s'affiche par-dessus tout le reste -->
 {#if showModal}
