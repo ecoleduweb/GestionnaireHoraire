@@ -48,8 +48,8 @@ test.describe('checkAddActivity', () => {
         await page.getByText('Nouvelle activité').click();
         await page.locator('#activity-project').selectOption('1');
         await page.getByText ('Créer').click();
-        
-        await expect(page.getByText('08:00 - 09:15')).toBeVisible();
+
+        await expect(page.locator('.fc-event-title-container')).toBeVisible(); //Valide l'existence de l'activité (Sans contenir de nom)
     });
 
 

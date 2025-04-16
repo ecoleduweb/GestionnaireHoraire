@@ -57,8 +57,8 @@ export const activityMocks = {
                     "id": 1,
                     "name": "",
                     "description": "",
-                    "startDate": "2025-03-22T12:00:00Z",
-                    "endDate": "2025-03-22T13:15:00Z",
+                    "startDate": "2025-03-22T13:00:00Z",
+                    "endDate": "2025-03-22T14:15:00Z",
                     "userId": 1,
                     "projectId": 1,
                     "categoryId": 1
