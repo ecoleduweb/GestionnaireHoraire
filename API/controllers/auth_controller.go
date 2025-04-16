@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"llio-api/models/DTOs"
 	"llio-api/models/enums"
 	"llio-api/services"
 	"llio-api/useful"
@@ -16,17 +17,27 @@ func GetAuthCallback(c *gin.Context) {
 	useful.LoadEnv()
 	frontendURL := os.Getenv("FRONTEND_URL")
 	useful.SetupAuthProvider(c)
-	user, err := gothic.CompleteUserAuth(c.Writer, c.Request)
+	userAzure, err := gothic.CompleteUserAuth(c.Writer, c.Request)
 	if err != nil {
 		log.Printf("Erreur lors de l'authentification: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	// TODO : vérifier si l'utilisateur existe dans la base de données et aller chercher son role.
-	// Si le user n'existe pas, le créer avec le role par défaut (user).
+	var dbUser DTOs.UserDTO
+	dbUser.FirstName = userAzure.FirstName
+	dbUser.LastName = userAzure.LastName
+	dbUser.Email = userAzure.Email
+	dbUser.Role = enums.Employee
 
-	accessToken, err := services.CreateJWTToken(user.Email, user.FirstName, user.LastName, user.ExpiresAt, enums.Employee)
+	_, err = services.FirstOrCreateUser(&dbUser)
+	if err != nil {
+		log.Printf("Impossible d'interagir avec l'utilisateur dans la base de données: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible d'ajouter l'utilisateur à la base de données."})
+		return
+	}
+
+	accessToken, err := services.CreateJWTToken(userAzure.Email, userAzure.FirstName, userAzure.LastName, userAzure.ExpiresAt, dbUser.Role)
 	if err != nil {
 		log.Printf("Erreur lors de l'authentification: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
