@@ -1,4 +1,4 @@
-name: Deployer LLIO PROD allo
+name: Deployer LLIO PROD
 on:
   push:
     branches:
