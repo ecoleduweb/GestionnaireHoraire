@@ -15,7 +15,7 @@ test.describe('checkAddActivity', () => {
         ])
             .apply();
         await page.clock.install({ time: new Date('2025-03-22T08:00:00') });
-        await page.goto('http://localhost:5002/llio-frontend/calendar');
+        await page.goto('http://localhost:5002/calendar');
         await page.waitForLoadState('networkidle');
     });
 
