@@ -33,7 +33,7 @@ jobs:
 
             # Suppression et récréation du répertoire GestionnaireHoraire
             echo "Refreshing project directory..."
-            cd /root/var/www
+            cd /var/www
             rm -rf GestionnaireHoraire
 
             # Clone du projet (plus propre qu'un pull)
@@ -42,7 +42,7 @@ jobs:
 
             # Configuration API
             echo "Configuring API..."
-            cd /root/var/www/GestionnaireHoraire/API
+            cd /var/www/GestionnaireHoraire/API
             cat > .env << EOF
             DB_USER=${{ secrets.PROD_DB_USER }}
             DB_PASSWORD=${{ secrets.PROD_DB_PASSWORD }}
@@ -68,7 +68,7 @@ jobs:
 
             # Configuration Frontend
             echo "Configuring Frontend..."
-            cd /root/ProjetLLIO2025/GestionnaireHoraire/LLIO2025
+            cd /var/www/GestionnaireHoraire/LLIO2025
             cat > .env << EOF
             VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
             PUBLIC_ENABLED_TELEMETRY=true
