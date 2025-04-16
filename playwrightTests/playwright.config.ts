@@ -33,11 +33,22 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     
-    viewport: { width: 1920, height: 108000 },
-    
     launchOptions: {
-      args: ['--window-size=1920,108000']
-    }
+      args: [
+        '--window-size=3000,3000',
+        '--start-maximized',
+        '--disable-infobars',
+        '--disable-dev-shm-usage',
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-gpu',
+        '--force-device-scale-factor=1',
+        '--display=:99'
+      ],
+      ignoreDefaultArgs: ['--hide-scrollbars']
+    },
+    // Définir un viewport extrêmement large
+    viewport: { width: 3000, height: 3000 }
   },
 
   /* Configure projects for major browsers */
