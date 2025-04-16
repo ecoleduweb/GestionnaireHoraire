@@ -47,6 +47,26 @@ export const activityMocks = {
             }
         }
     },
+    addActivitySuccessNoNameNoDescription: {
+        url: '*/**/activity',
+        method: 'POST',
+        response: {
+            status: 201,
+            json: {
+                "activity": {
+                    "id": 1,
+                    "name": "",
+                    "description": "",
+                    "startDate": "2025-03-22T12:00:00Z",
+                    "endDate": "2025-03-22T13:15:00Z",
+                    "userId": 1,
+                    "projectId": 1,
+                    "categoryId": 1
+                },
+                "reponse": "L'activité a bien été ajoutée à la base de données."
+            }
+        }
+    },
     addActivityFailEndDateBeforeStartDate: {
         url: '*/**/activity',
         method: 'POST',

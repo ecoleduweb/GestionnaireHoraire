@@ -30,14 +30,26 @@ test.describe('checkAddActivity', () => {
         await page.getByPlaceholder('Nom de l\'activité...').fill('asd');
         await page.locator("#activity-description").fill('asd');
         await page.locator('#activity-project').selectOption('1');
-        await page.locator('#activity-category').selectOption('1');
-
 
         await page.getByText ('Créer').click();
         
         await expect(page.getByText('Fête de Jean-Félix et Sherlock')).toBeVisible();
         
 
+    });
+
+    test('ajouterUneActiviteSansNomDescription', async ({ page }) => {
+        const apiMocker = new ApiMocker(page);
+        await apiMocker.addMocks([
+            activityMocks.addActivitySuccessNoNameNoDescription,
+        ]).apply();
+        
+        
+        await page.getByText('Nouvelle activité').click();
+        await page.locator('#activity-project').selectOption('1');
+        await page.getByText ('Créer').click();
+        
+        await expect(page.getByText('08:00 - 09:15')).toBeVisible();
     });
 
 
