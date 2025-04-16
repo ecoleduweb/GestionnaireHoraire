@@ -9,7 +9,8 @@
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"format": "prettier --write --plugin prettier-plugin-svelte .",
-		"format:check": "prettier --check --plugin prettier-plugin-svelte ."
+		"format:check": "prettier --check --plugin prettier-plugin-svelte .",
+		"playwright": "vite dev --port 5002 "
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^4.0.0",
@@ -25,10 +26,10 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
-		"@fullcalendar/core": "^6.1.15",
-		"@fullcalendar/daygrid": "^6.1.15",
-		"@fullcalendar/interaction": "^6.1.15",
-		"@fullcalendar/timegrid": "^6.1.15",
+		"@fullcalendar/core": "^6.1.17",
+		"@fullcalendar/daygrid": "^6.1.17",
+		"@fullcalendar/interaction": "^6.1.17",
+		"@fullcalendar/timegrid": "^6.1.17",
 		"@opentelemetry/auto-instrumentations-web": "^0.45.1",
 		"@opentelemetry/context-zone": "^1.30.1",
 		"@opentelemetry/exporter-trace-otlp-http": "^0.57.2",
