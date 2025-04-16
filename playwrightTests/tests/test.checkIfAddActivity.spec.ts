@@ -34,7 +34,7 @@ test.describe('checkAddActivity', () => {
 
 
         await page.getByText ('Créer').click();
-
+        await page.evaluate(() => window.scrollTo(0, 0));
 
         await expect(page.getByText('Fête de Jean-Félix et Sherlock')).toBeVisible();
         
