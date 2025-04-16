@@ -1,4 +1,4 @@
-name: Deployer LLIO PROD
+name: Deployer LLIO PROD tests
 on:
   push:
     branches:
