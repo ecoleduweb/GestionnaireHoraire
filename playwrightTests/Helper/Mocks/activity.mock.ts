@@ -37,8 +37,8 @@ export const activityMocks = {
                     "id": 1,
                     "name": "Fête de Jean-Félix et Sherlock",
                     "description": "Fête de Jean-Félix et Sherlock",
-                    "startDate": "2025-03-22T18:04:00Z",
-                    "endDate": "2025-03-22T20:34:00Z",
+                    "startDate": "2025-03-22T12:04:00Z",
+                    "endDate": "2025-03-22T14:34:00Z",
                     "userId": 1,
                     "projectId": 1,
                     "categoryId": 1
