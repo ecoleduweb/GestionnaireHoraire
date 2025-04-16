@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - prod
+      - JL_AutoDeployProd
 
 jobs:
   deploy:
