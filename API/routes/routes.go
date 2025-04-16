@@ -32,7 +32,13 @@ func RegisterRoutes(r *gin.Engine) {
 
 	activitiesGroup := r.Group("/activities", middleware.RoleValidationMiddleware(enums.Employee))
 	{
-		activitiesGroup.GET("", controllers.GetAllActivities)
+		usersActivitiesGroup := activitiesGroup.Group("/me")
+		{
+			usersActivitiesGroup.GET("", controllers.GetUsersActivities)
+			// "/projects/:idProjet"
+			// "/categoies/:idCategory"
+		}
+
 	}
 
 	/*------------------- Categories -------------------*/

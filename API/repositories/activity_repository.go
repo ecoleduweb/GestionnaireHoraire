@@ -10,9 +10,10 @@ func CreateActivity(activity *DAOs.Activity) (*DAOs.Activity, error) {
 	return activity, DBErrorManager(err)
 }
 
-func GetAllActivities() ([]*DAOs.Activity, error) {
+func GetUsersActivities(userId int) ([]*DAOs.Activity, error) {
 	var activities []*DAOs.Activity
-	err := database.DB.Find(&activities).Error
+
+	err := database.DB.Where("user_id = ?", userId).Find(&activities).Error
 	return activities, DBErrorManager(err)
 }
 
