@@ -14,6 +14,11 @@ export interface User {
     name: string;
 }
 
+export interface UserInfo {	
+    first_name: string;
+    last_name: string;
+}
+
 export interface Project {
     id: number;
     name: string;
