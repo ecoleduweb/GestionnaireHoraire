@@ -33,10 +33,10 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     
-    viewport: { width: 1920, height: 1080 },
+    viewport: { width: 1920, height: 108000 },
     
     launchOptions: {
-      args: ['--window-size=1920,1080']
+      args: ['--window-size=1920,108000']
     }
   },
 
@@ -45,7 +45,7 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'],
-      viewport: { width: 1920, height: 1080 }
+      viewport: { width: 1920, height: 108000 }
      },
     }
     /* Test against mobile viewports. */
