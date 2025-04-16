@@ -15,8 +15,8 @@ export interface User {
 }
 
 export interface UserInfo {	
-    first_name: string;
-    last_name: string;
+    firstName: string;
+    lastName: string;
 }
 
 export interface Project {

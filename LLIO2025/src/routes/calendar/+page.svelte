@@ -354,7 +354,13 @@
       <!-- Affichage nom d'utilisateur -->
       <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
         Bonjour, 
-        <span class="text-[#015e61] font-bold">{currentUser ? `${currentUser.first_name} ${currentUser.last_name}` : ''}</span>
+        <span class="text-[#015e61] font-bold">
+          {#if currentUser}
+          {currentUser.firstName} {currentUser.lastName}
+          {:else}
+          <span class="inline-block w-24 h-6 bg-gray-200 animate-pulse rounded"></span>
+          {/if}
+        </span>
         <button 
           class="ml-2 mt-1 p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-[#015e61] transition-colors" 
           title="Se déconnecter">

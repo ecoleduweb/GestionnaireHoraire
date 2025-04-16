@@ -29,5 +29,5 @@ func GetUserInfo(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"first_name": user.FirstName, "last_name": user.LastName})
+	c.JSON(http.StatusOK, gin.H{"firstName": user.FirstName, "lastName": user.LastName})
 }
