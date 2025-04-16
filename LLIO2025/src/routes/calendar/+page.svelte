@@ -383,7 +383,7 @@
       <!-- Titre avec icône -->
       <div class="flex items-center">
         <Calendar class="mr-2" />
-        <p class="text-md text-gray-600">Aujourd'hui, {formattedDate}</p>
+        <p class="text-md text-gray-600 text-xl font-semibold">Aujourd'hui, {formattedDate}</p>
       </div>
 
       <!-- Boutons de vue alignés au centre -->
