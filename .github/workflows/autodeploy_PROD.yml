@@ -69,7 +69,7 @@ jobs:
             echo "Configuring Frontend..."
             cd /var/www/GestionnaireHoraire/LLIO2025
             cat > .env << EOF
-            VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
+            VITE_API_BASE_URL=${{ secrets.PROD_VITE_API_BASE_URL }}
             PUBLIC_ENABLED_TELEMETRY=true
             PUBLIC_TRACE_URL=https://telemetry.edwrdl.ca/traces
             PUBLIC_APPLICATION_NAME=LLIO_PROD
