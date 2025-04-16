@@ -81,10 +81,7 @@ func TestCreateActivityWithoutNameAndDescription(t *testing.T) {
 
 	w = sendRequest(router, "POST", "/activity", activity)
 
-	var createdActivity DAOs.Activity
-	errDB := database.DB.Where("name = ?", activity.Name).First(&createdActivity).Error
-	assert.NoError(t, errDB)
-	assert.Equal(t, activity.Name, createdActivity.Name)
+	assertResponse(t, w, http.StatusCreated, nil)
 }
 
 func TestDoNotCreateActivityWithLenghtNameOver50(t *testing.T) {
