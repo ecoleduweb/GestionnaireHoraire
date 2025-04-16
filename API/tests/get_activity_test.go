@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -27,7 +28,12 @@ func TestGetNotFoundActivity(t *testing.T) {
 }
 
 func TestGetFromToActivities(t *testing.T) {
-	w := sendRequest(router, "GET", fmt.Sprintf("/activities/%d", doNotDeleteUser.Id), nil)
+	startDate := time.Now().Format("2006-01-02")
+	endDate := time.Now().AddDate(0, 0, 7).Format("2006-01-02")
+
+	url := fmt.Sprintf("/activities/%d/%s/%s", doNotDeleteUser.Id, startDate, endDate)
+
+	w := sendRequest(router, "GET", url, nil)
 	assertResponse(t, w, http.StatusNotFound, nil)
 	assert.NotNil(t, w.Body)
 }

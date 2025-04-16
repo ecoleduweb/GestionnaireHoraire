@@ -121,7 +121,20 @@ func DeleteActivity(c *gin.Context) {
 func GetActivitiesFromRange(c *gin.Context) {
 	from := c.Param("from")
 	to := c.Param("to")
-	idUser := c.Param("idUser")
+
+	currentUser, exists := c.Get("current_user")
+	if !exists {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Échec lors de la sauvegarde de l'utilisateur dans la session"})
+		return
+	}
+
+	user, ok := currentUser.(*DTOs.UserDTO)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur interne du serveur"})
+		return
+	}
+
+	idUser := strconv.Itoa(user.Id)
 
 	activities, err := services.GetActivitiesFromRange(from, to, idUser)
 	if err != nil {

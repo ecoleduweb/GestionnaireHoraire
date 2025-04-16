@@ -17,12 +17,22 @@ func RegisterRoutes(r *gin.Engine) {
 		activityGroup.GET("/:id", controllers.GetActivityById)
 		activityGroup.PUT("", controllers.UpdateActivity)
 		activityGroup.DELETE("/:id", controllers.DeleteActivity)
+
+		activitiesGroup := r.Group("/activities", middleware.RoleValidationMiddleware(enums.Employee))
+		{
+			usersActivitiesGroup := activitiesGroup.Group("/me")
+			{
+				//usersActivitiesGroup.GET("", controllers.GetUsersActivities)
+				// route de Vincent /me/:from/:to
+				usersActivitiesGroup.GET("/:from/:to", controllers.GetActivitiesFromRange)
+			}
+
+		}
 	}
 
 	activitiesGroup := r.Group("/activities", middleware.RoleValidationMiddleware(enums.Employee))
 	{
 		activitiesGroup.GET("", controllers.GetAllActivities)
-		activitiesGroup.GET("/:idUser/:from/:to", controllers.GetActivitiesFromRange)
 	}
 
 	/*------------------- Categories -------------------*/
