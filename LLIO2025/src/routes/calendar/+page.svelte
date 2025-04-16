@@ -366,7 +366,7 @@
       <div class="flex items-center">
         {#each timeRanges as range, index}
           <button
-            class="py-2 px-4 text-sm transition-colors
+            class="py-2 px-4 text-sm transition-colors font-semibold
               {index === 0 ? 'rounded-l-lg rounded-r-none' : index === timeRanges.length - 1 ? 'rounded-r-lg rounded-l-none' : 'rounded-none border-x border-white/20'}
               {activeTimeRange.label === range.label
                 ? 'bg-[#015e61] text-white'
