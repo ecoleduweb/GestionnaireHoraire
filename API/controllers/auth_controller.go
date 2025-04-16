@@ -37,7 +37,7 @@ func GetAuthCallback(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := services.CreateJWTToken(userAzure.Email, userAzure.FirstName, userAzure.LastName, userAzure.ExpiresAt, dbUser.Role)
+	accessToken, err := services.CreateJWTToken(dbUser.Id, userAzure.Email, userAzure.FirstName, userAzure.LastName, userAzure.ExpiresAt, dbUser.Role)
 	if err != nil {
 		log.Printf("Erreur lors de l'authentification: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

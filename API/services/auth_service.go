@@ -38,10 +38,11 @@ func ValidateTokenAndExtractUser(accessToken string) (*DTOs.UserDTO, error) {
 	return user, nil
 }
 
-func CreateJWTToken(userEmail string, fisrtName string, lastName string, expiresAt time.Time, userRole enums.UserRole) (string, error) {
+func CreateJWTToken(userId int, userEmail string, fisrtName string, lastName string, expiresAt time.Time, userRole enums.UserRole) (string, error) {
 	// Define the claims for the token
 	secretKey := os.Getenv("JWT_SECRET_KEY")
 	claims := jwt.MapClaims{
+		"user_id":    userId,
 		"email":      userEmail,
 		"first_name": fisrtName,
 		"last_name":  lastName,
