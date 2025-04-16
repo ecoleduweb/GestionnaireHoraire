@@ -34,8 +34,8 @@
   let isLoading = $state(false);
 
   const timeRanges = [
-    { label: 'Heures de bureau (8h-17h)', start: '08:00:00', end: '17:00:00', default: true },
-    { label: 'Toute la journée (24h)', start: '00:00:00', end: '24:00:00' },
+    { label: 'Heures de bureau', start: '06:00:00', end: '19:00:00', default: true },
+    { label: 'Toute la journée', start: '00:00:00', end: '24:00:00' },
   ];
 
   let activeTimeRange = $state(timeRanges.find((range) => range.default));
@@ -362,14 +362,16 @@
         </button>
       </h1>
 
-      <!-- Boutons pour changer les heures à droite -->
+      <!-- Boutons pour changer les heures -->
       <div class="flex items-center">
-        {#each timeRanges as range}
+        {#each timeRanges as range, index}
           <button
-            class="px-4 py-2 mx-1 rounded-lg text-sm transition-colors {activeTimeRange.label ===
-            range.label
-              ? 'bg-[#015e61] text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
+            class="py-2 px-4 text-sm transition-colors
+              {index === 0 ? 'rounded-l-lg rounded-r-none' : index === timeRanges.length - 1 ? 'rounded-r-lg rounded-l-none' : 'rounded-none border-x border-white/20'}
+              {activeTimeRange.label === range.label
+                ? 'bg-[#015e61] text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}
+              "
             onclick={() => setTimeRange(range)}
           >
             {range.label}
