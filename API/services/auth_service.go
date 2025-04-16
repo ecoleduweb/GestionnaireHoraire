@@ -30,6 +30,7 @@ func ValidateTokenAndExtractUser(accessToken string) (*DTOs.UserDTO, error) {
 	}
 
 	user := &DTOs.UserDTO{
+		Id:        int(claims["user_id"].(float64)),
 		Email:     claims["email"].(string),
 		FirstName: claims["first_name"].(string),
 		LastName:  claims["last_name"].(string),
@@ -40,6 +41,7 @@ func ValidateTokenAndExtractUser(accessToken string) (*DTOs.UserDTO, error) {
 
 func CreateJWTToken(userId int, userEmail string, fisrtName string, lastName string, expiresAt time.Time, userRole enums.UserRole) (string, error) {
 	// Define the claims for the token
+	useful.LoadEnv()
 	secretKey := os.Getenv("JWT_SECRET_KEY")
 	claims := jwt.MapClaims{
 		"user_id":    userId,

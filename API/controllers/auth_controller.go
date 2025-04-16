@@ -30,14 +30,14 @@ func GetAuthCallback(c *gin.Context) {
 	dbUser.Email = userAzure.Email
 	dbUser.Role = enums.Employee
 
-	_, err = services.FirstOrCreateUser(&dbUser)
+	userInDb, err := services.FirstOrCreateUser(&dbUser)
 	if err != nil {
 		log.Printf("Impossible d'interagir avec l'utilisateur dans la base de données: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Impossible d'ajouter l'utilisateur à la base de données."})
 		return
 	}
 
-	accessToken, err := services.CreateJWTToken(dbUser.Id, userAzure.Email, userAzure.FirstName, userAzure.LastName, userAzure.ExpiresAt, dbUser.Role)
+	accessToken, err := services.CreateJWTToken(userInDb.Id, userAzure.Email, userAzure.FirstName, userAzure.LastName, userAzure.ExpiresAt, userInDb.Role)
 	if err != nil {
 		log.Printf("Erreur lors de l'authentification: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
