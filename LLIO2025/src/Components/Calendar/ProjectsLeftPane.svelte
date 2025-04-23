@@ -123,6 +123,12 @@
           Projets
         </button>
       </div>
+      <button 
+          type="button" 
+          class="ml-6 px-3 py-2 text-sm transition-colors font-semibold bg-[#014446] text-white rounded-lg"
+          >
+          Créer
+        </button>
     </div>
 
     <div class="overflow-y-auto max-h-[calc(100vh-250px)]">
