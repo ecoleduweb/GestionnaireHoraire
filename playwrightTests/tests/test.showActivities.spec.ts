@@ -10,8 +10,6 @@ test.describe('showActivities', () => {
     test.beforeEach(async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
-            activityMocks.getByIdSuccess,      
-            activityMocks.getAllActivityEmpty,      
         ])
             .apply();
         await page.clock.install({ time: new Date('2025-03-22T08:00:00') });
@@ -22,12 +20,73 @@ test.describe('showActivities', () => {
     test('showActivitiesWeek', async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
-            activityMocks.addActivitySuccess,
+           activityMocks.getAllActivitiesDefaultWeekSuccess
         ]).apply();
-        
-        
+        // Load la page et fait la requête de base 
+        await page.goto('http://localhost:5002/calendar');
+        await page.waitForLoadState('networkidle');
+        // Vérifie les activités de la semaine
+        let activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(2);
+        await page.getByText('Toute la journée').click();
+        // remets le tableau vide
+        activities = []; 
+        activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(3);
 
     });
+
+    test('showActivitiesDay', async ({ page }) => {
+        const apiMocker = new ApiMocker(page);
+        await apiMocker.addMocks([
+            activityMocks.getAllActivitiesDaySuccess,
+            activityMocks.getAllActivitiesDefaultWeekSuccess
+        ]).apply();
+        // Load la page et fait la requête de base 
+        await page.goto('http://localhost:5002/calendar');
+        await page.waitForLoadState('networkidle');
+        await page.getByRole('button', { name: 'Jour', exact : true }).click();
+        // Vérifie les activités de la journee
+        let activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(1);
+        await page.getByText('Toute la journée').click();
+        // remets le tableau vide
+        activities = []; 
+        activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(2);
+
+    });
+    test('showActivitiesMonth', async ({ page }) => {
+        const apiMocker = new ApiMocker(page);
+        await apiMocker.addMocks([
+            activityMocks.getAllActivitiesMonthSuccess,
+            activityMocks.getAllActivitiesDefaultWeekSuccess
+        ]).apply();
+        // Load la page et fait la requête de base 
+        await page.goto('http://localhost:5002/calendar');
+        await page.waitForLoadState('networkidle');
+        await page.getByRole('button', { name: 'Mois', exact : true }).click();
+        // Vérifie les activités de la mois
+        let activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(5);
+    
+    });
+    test('showActivitiesPreviousWeek', async ({ page }) => {
+        const apiMocker = new ApiMocker(page);
+        await apiMocker.addMocks([
+            activityMocks.getAllActivitiesPreviousWeekSuccess,
+            activityMocks.getAllActivitiesDefaultWeekSuccess
+        ]).apply();
+        // Load la page et fait la requête de base 
+        await page.goto('http://localhost:5002/calendar');
+        await page.waitForLoadState('networkidle');
+        await page.locator('button:has(.lucide-chevron-left)').click();
+        // Vérifie les activités de la semaine
+        let activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(1);
+    
+    });
+
 
 
 });
