@@ -195,7 +195,7 @@
         editMode = true;
         editActivity = {
           id: info.event.extendedProps.id,
-          name: info.event.title,
+          name: info.event.extendedProps.name,
           description: info.event.extendedProps.description,
           userId: info.event.extendedProps.userId,
           projectId: info.event.extendedProps.projectId,
@@ -240,7 +240,7 @@
   async function handleActivitySubmit(activityData: Activity) {
     calendarService.addEvent({
       id: activityData.id.toString(),
-      title: activityData.name,
+      title: activityData.projectName,
       start: activityData.startDate,
       end: activityData.endDate,
       extendedProps: { ...activityData },

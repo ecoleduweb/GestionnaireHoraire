@@ -71,9 +71,10 @@ export class CalendarService {
     const event = this.calendar?.getEventById(activity.id.toString());
     if (event) {
       // Mettre à jour les propriétés de l'événement
-      event.setProp('title', activity.name);
+      event.setProp('title', activity.projectName);
       event.setStart(activity.startDate);
       event.setEnd(activity.endDate);
+      event.setExtendedProp('name', activity.name);
       event.setExtendedProp('description', activity.description);
       event.setExtendedProp('userId', activity.userId);
       event.setExtendedProp('projectId', activity.projectId);
@@ -107,12 +108,13 @@ export class CalendarService {
   eventToActivity(eventInfo: any): Activity {
     return {
       id: parseInt(eventInfo.event.id),
-      name: eventInfo.event.title,
+      name: eventInfo.event.extendedProps.name,
       description: eventInfo.event.extendedProps.description,
       startDate: eventInfo.event.start,
       endDate: eventInfo.event.end,
       userId: eventInfo.event.extendedProps.userId,
       projectId: eventInfo.event.extendedProps.projectId,
+      projectName: eventInfo.event.title,
       categoryId: eventInfo.event.extendedProps.categoryId,
     };
   }
@@ -122,7 +124,7 @@ export class CalendarService {
     activities.forEach((activity) => {
       this.addEvent({
         id: activity.id.toString(),
-        title: activity.name,
+        title: activity.projectName,
         start: activity.startDate,
         end: activity.endDate,
         extendedProps: { ...activity },

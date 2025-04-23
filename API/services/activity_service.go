@@ -4,6 +4,7 @@ import (
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
 	"llio-api/repositories"
+	"strconv"
 
 	"github.com/jinzhu/copier"
 )
@@ -102,6 +103,10 @@ func UpdateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.ActivityDTO, error) {
 	}
 
 	activityDTOResponse := &DTOs.ActivityDTO{}
+	project, err := GetProjectById(strconv.Itoa(activity.ProjectId))
+		if err == nil && project != nil {
+			activityDTO.ProjectName = project.Name
+		}
 	err = copier.Copy(activityDTOResponse, activityDAOUpdated)
 	return activityDTOResponse, err
 }
@@ -120,8 +125,16 @@ func GetActivitiesFromRange(from, to, idUser string) ([]*DTOs.ActivityDTO, error
 	for _, activity := range activities {
 		activityDTO := &DTOs.ActivityDTO{}
 		err = copier.Copy(activityDTO, activity)
+		if err != nil {
+			return nil, err
+		}
+
+		project, err := GetProjectById(strconv.Itoa(activity.ProjectId))
+		if err == nil && project != nil {
+			activityDTO.ProjectName = project.Name
+		}
 		activitiesDTOs = append(activitiesDTOs, activityDTO)
 	}
 
-	return activitiesDTOs, err
+	return activitiesDTOs, nil
 }

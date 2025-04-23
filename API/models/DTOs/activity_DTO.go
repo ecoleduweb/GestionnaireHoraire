@@ -11,5 +11,6 @@ type ActivityDTO struct {
 	EndDate     time.Time `json:"endDate" binding:"required"`
 	UserId      int       `json:"userId" `
 	ProjectId   int       `json:"projectId" `
+	ProjectName string    `json:"projectName" `
 	CategoryId  int       `json:"categoryId" `
 }
