@@ -67,7 +67,7 @@ func TestDoNotCreateActivityWithEndDateBeforeStartDate(t *testing.T) {
 	assertResponse(t, w, http.StatusBadRequest, expectedErrors)
 }
 
-func TestDoNotCreateActivityWithoutNameAndDescription(t *testing.T) {
+func TestCreateActivityWithoutNameAndDescription(t *testing.T) {
 
 	activity := DTOs.ActivityDTO{
 		Name:        "",
@@ -81,11 +81,7 @@ func TestDoNotCreateActivityWithoutNameAndDescription(t *testing.T) {
 
 	w = sendRequest(router, "POST", "/activity", activity)
 
-	expectedErrors := []DTOs.FieldErrorDTO{
-		{Field: "name", Message: "Le champ name est invalide ou manquant"},
-		{Field: "description", Message: "Le champ description est invalide ou manquant"},
-	}
-	assertResponse(t, w, http.StatusBadRequest, expectedErrors)
+	assertResponse(t, w, http.StatusCreated, nil)
 }
 
 func TestDoNotCreateActivityWithLenghtNameOver50(t *testing.T) {

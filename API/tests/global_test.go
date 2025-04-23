@@ -41,7 +41,7 @@ var accessToken string
 
 func createAndSetAccessToken(role enums.UserRole) {
 	// Create a JWT token for the test user
-	token, err := services.CreateJWTToken(doNotDeleteUser.Email, doNotDeleteUser.FirstName, doNotDeleteUser.LastName, time.Now().Add(time.Hour), role)
+	token, err := services.CreateJWTToken(doNotDeleteActivity.Id, doNotDeleteUser.Email, doNotDeleteUser.FirstName, doNotDeleteUser.LastName, time.Now().Add(time.Hour), role)
 	if err != nil {
 		log.Fatalf("Failed to create JWT token: %v", err)
 	}

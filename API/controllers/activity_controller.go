@@ -44,11 +44,29 @@ func CreateActivity(c *gin.Context) {
 	})
 }
 
-func GetAllActivities(c *gin.Context) {
+func GetUsersActivities(c *gin.Context) {
 
-	activities, err := services.GetAllActivities()
+	currentUser, exists := c.Get("current_user")
+	if !exists {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Échec lors de la sauvegarde de l'utilisateur dans la session"})
+		return
+	}
+
+	user, ok := currentUser.(*DTOs.UserDTO)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur interne du serveur"})
+		return
+	}
+	activities, err := services.GetUsersActivities(user.Id)
 	if err != nil {
 		handleError(c, err, activiteSTR)
+		return
+	}
+
+	// Retourne une liste vide plutôt que null pour être compatible avec les vérifiacations du frontend
+	if activities == nil {
+		// Retourner une liste vide au lieu de null
+		c.JSON(http.StatusOK, gin.H{"activities": []DTOs.ActivityDTO{}})
 		return
 	}
 

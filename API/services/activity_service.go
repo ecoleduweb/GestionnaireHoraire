@@ -60,8 +60,8 @@ func CreateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.ActivityDTO, error) {
 	return activityDTOResponse, err
 }
 
-func GetAllActivities() ([]*DTOs.ActivityDTO, error) {
-	activities, err := repositories.GetAllActivities()
+func GetUsersActivities(userId int) ([]*DTOs.ActivityDTO, error) {
+	activities, err := repositories.GetUsersActivities(userId)
 	if err != nil {
 		return nil, err
 	}
