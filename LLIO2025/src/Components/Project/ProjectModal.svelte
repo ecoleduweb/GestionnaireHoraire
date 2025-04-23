@@ -31,14 +31,14 @@
   const project = $state<CreateProject>(initialProject);
 
     if (projectToEdit) {
-    Object.assign(project, projectToEdit);
+      Object.assign(project, projectToEdit);
   }
   
   const handleClose = () => {
     onClose();
   }
   
-  const handleSubmit = async() => {
+  const handleSubmit = async () => {
     if (isSubmitting) return; // Empêche les soumissions multiples
     isSubmitting = true;
 
