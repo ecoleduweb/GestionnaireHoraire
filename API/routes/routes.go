@@ -10,6 +10,12 @@ import (
 
 // Importation du middleware
 func RegisterRoutes(r *gin.Engine) {
+	/*------------------- Users -------------------*/
+	userGroup := r.Group("/user", middleware.RoleValidationMiddleware(enums.Employee))
+	{
+		userGroup.GET("/me", controllers.GetUserInfo)
+	}
+
 	/*------------------- Activities -------------------*/
 	activityGroup := r.Group("/activity", middleware.RoleValidationMiddleware((enums.Employee)))
 	{

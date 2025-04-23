@@ -1,11 +1,12 @@
 <script lang="ts">
   import type { CalendarService } from '../../services/calendar.service';
+  import { UserApiService } from '../../services/UserApiService';
   import { CalendarService as CS } from '../../services/calendar.service';
   import { onMount } from 'svelte';
   import ActivityModal from '../../Components/Calendar/ActivityModal.svelte';
   import DashboardModal from '../../Components/Calendar/DashboardLeftPane.svelte';
   import { ActivityApiService } from '../../services/ActivityApiService';
-  import type { Activity } from '../../Models/index.ts';
+  import type { Activity, UserInfo } from '../../Models/index.ts';
   // Importez le fichier CSS
   import '../../style/modern-calendar.css';
   import { getDateOrDefault } from '../../utils/date';
@@ -14,7 +15,7 @@
   import { formatViewTitle } from '../../utils/date';
   import { ClientTelemetry } from '$lib/tracer';
   import { env } from '$env/dynamic/public';
-  import { Plus, Calendar, ChevronLeft, ChevronRight } from 'lucide-svelte';
+  import { Plus, Calendar, ChevronLeft, ChevronRight, LogOut } from 'lucide-svelte';
 
   const ENABLED_TELEMETRY = env.PUBLIC_ENABLED_TELEMETRY === 'true';
 
@@ -34,11 +35,13 @@
   let isLoading = $state(false);
 
   const timeRanges = [
-    { label: 'Heures de bureau (8h-17h)', start: '08:00:00', end: '17:00:00', default: true },
-    { label: 'Toute la journée (24h)', start: '00:00:00', end: '24:00:00' },
+    { label: 'Heures de bureau', start: '06:00:00', end: '19:00:00', default: true },
+    { label: 'Toute la journée', start: '00:00:00', end: '24:00:00' },
   ];
 
   let activeTimeRange = $state(timeRanges.find((range) => range.default));
+
+  let currentUser = $state<UserInfo | null>(null);
 
   const users = [{ id: 1, name: 'Test ManuDev' }];
   const projects = [{ id: 1, name: 'Projet manudev' }];
@@ -164,6 +167,13 @@
         };
         showModal = true;
       };
+
+      // Charger les informations utilisateur
+      try {
+        currentUser = await UserApiService.getUserInfo();
+      } catch (error) {
+        console.error('Erreur lors du chargement des informations utilisateur:', error);
+      }
 
       // Initialiser avec les options personnalisées
       calendarService.initialize(calendarEl, calendarOptions);
@@ -340,12 +350,49 @@
 
 <div class="w-full h-full bg-white px-4 py-6">
   <div class="max-w-7xl mx-auto">
-    <!-- En-tête du calendrier -->
+    <!-- Nouvelle section avec salutation et boutons d'heures -->
+    <div class="flex justify-between items-center mb-6">
+      <!-- Affichage nom d'utilisateur -->
+      <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+        Bonjour, 
+        <span class="text-[#015e61] font-bold">
+          {#if currentUser}
+          {currentUser.firstName} {currentUser.lastName}
+          {:else}
+          <span class="inline-block w-24 h-6 bg-gray-200 animate-pulse rounded"></span>
+          {/if}
+        </span>
+        <button 
+          class="ml-2 mt-1 p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-[#015e61] transition-colors" 
+          title="Se déconnecter">
+          <LogOut class="w-5 h-5" />
+        </button>
+      </h1>
+
+      <!-- Boutons pour changer les heures -->
+      <div class="flex items-center">
+        {#each timeRanges as range, index}
+          <button
+            class="py-2 px-4 text-sm transition-colors font-semibold
+              {index === 0 ? 'rounded-l-lg rounded-r-none' : index === timeRanges.length - 1 ? 'rounded-r-lg rounded-l-none' : 'rounded-none border-x border-white/20'}
+              {activeTimeRange.label === range.label
+                ? 'bg-[#015e61] text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}
+              "
+            onclick={() => setTimeRange(range)}
+          >
+            {range.label}
+          </button>
+        {/each}
+      </div>
+    </div>
+
+    <!-- Informations de date et contrôles du calendrier -->
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
       <!-- Titre avec icône -->
       <div class="flex items-center">
         <Calendar class="mr-2" />
-        <h1 class="text-xl font-semibold text-gray-800">Aujourd'hui, {formattedDate}</h1>
+        <p class="text-md text-gray-600 text-xl font-semibold">Aujourd'hui, {formattedDate}</p>
       </div>
 
       <!-- Boutons de vue alignés au centre -->
@@ -374,19 +421,6 @@
         >
           Mois
         </button>
-      </div>
-      <div class="flex items-center ml-4">
-        {#each timeRanges as range}
-          <button
-            class="px-4 py-2 mx-1 rounded-lg text-sm transition-colors {activeTimeRange.label ===
-            range.label
-              ? 'bg-[#015e61] text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
-            onclick={() => setTimeRange(range)}
-          >
-            {range.label}
-          </button>
-        {/each}
       </div>
 
       <!-- Bouton New Activity -->
