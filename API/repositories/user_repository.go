@@ -6,7 +6,7 @@ import (
 )
 
 func FirstOrCreateUser(user *DAOs.User) (*DAOs.User, error) {
-	err := database.DB.FirstOrCreate(user).Error
+	err := database.DB.Where("email = ?", user.Email).FirstOrCreate(user).Error
 	return user, DBErrorManager(err)
 }
 
