@@ -1,4 +1,5 @@
 // ProjectApiService.ts
+import { ProjectStatus } from "$lib/types/enums";
 import type { CreateProject } from "../Models/index";
 import { POST } from "../ts/server";
 
@@ -7,7 +8,9 @@ interface ProjectResponse {
 }
 
 const createProject = async (project: CreateProject): Promise<CreateProject> => {
-    project.status = 0
+    if (project.status === undefined) {
+      project.status = ProjectStatus.InProgress;
+  }
   try {
     const response = await POST<CreateProject, ProjectResponse>("/project", project);
     return response.project;
