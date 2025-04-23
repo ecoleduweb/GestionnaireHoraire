@@ -1,4 +1,4 @@
-name: Deployer LLIO
+name: Deployer LLIO DEV
 on:
   push:
     branches:

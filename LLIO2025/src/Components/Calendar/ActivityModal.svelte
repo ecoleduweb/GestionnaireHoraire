@@ -41,7 +41,7 @@
 
   const editMode = activityToEdit !== null;
 
-  let initialActivity = activityTemplate.generate();
+  let initialActivity = activityTemplate.generate(categories);
 
   let isSubmitting = false;
 
@@ -143,7 +143,7 @@
   /* Animation pour le panneau latéral - ne peut pas être fait en Tailwind standard */
   @keyframes slideIn {
     from {
-      transform: translateX(100%);
+      transform: translateX(-100%);
     }
     to {
       transform: translateX(0);
@@ -211,11 +211,15 @@
     pointer-events: none;
     color: #606060;
   }
+
+  .fixed {
+    z-index: 40; /* Plus élevé que le dashboard */
+  }
 </style>
 
 {#if show}
   <!-- Structure principale avec Tailwind -->
-  <div class="fixed inset-0 z-40 flex justify-end">
+  <div class="fixed inset-0 z-40 flex justify-start">
     <!-- Overlay semi-transparent avec opacité à 40% comme dans l'original -->
     <div
       class="absolute inset-0 bg-gray bg-opacity-40 transition-opacity"
@@ -224,7 +228,7 @@
 
     <!-- Panneau latéral avec bordure et ombre à gauche pour délimiter -->
     <div
-      class="w-full max-w-[480px] bg-white h-full overflow-y-auto relative flex flex-col z-50 animate-slideIn border-l border-gray-300 shadow-xl"
+      class="w-full max-w-[300px] bg-white h-full overflow-y-auto relative flex flex-col z-50 animate-slideIn border-r border-gray-300 shadow-xl"
     >
       <!-- En-tête avec titre et bouton de fermeture -->
       <div class="flex items-center justify-between bg-[#015e61] text-white px-6 py-4">
@@ -247,43 +251,33 @@
         >
           <!-- Champs de formulaire avec espacement vertical uniforme -->
           <div class="space-y-6">
-            <!-- Champ Nom -->
+
+            <!-- Projet -->
             <div>
-              <label for="activity-name" class="block text-gray-700 font-medium mb-2">
-                Nom
+              <label for="activity-project" class="block text-gray-700 font-medium mb-2">
+                Projet
                 <span class="text-red-500">*</span>
               </label>
-              <input
-                id="activity-name"
-                name="name"
-                type="text"
-                bind:value={activity.name}
-                placeholder="Nom de l'activité..."
-                autofocus
-                class="form-input"
-              />
-              {#if $errors.name}
-                <span class="text-red-500 text-sm">{$errors.name}</span>
-              {/if}
-            </div>
-
-            <!-- Champ Description -->
-            <div>
-              <label for="activity-description" class="block text-gray-700 font-medium mb-2">
-                Description
-                <span class="text-gray-400">(optionnel)</span>
-              </label>
-              <textarea
-                id="activity-description"
-                name="description"
-                bind:value={activity.description}
-                placeholder="Description de l'activité..."
-                rows="3"
-                class="form-input"
-              ></textarea>
-              {#if $errors.description}
-                <span class="text-red-500 text-sm">{$errors.description}</span>
-              {/if}
+              <div class="select-container">
+                <select
+                  id="activity-project"
+                  name="projectId"
+                  bind:value={activity.projectId}
+                  required
+                  class="form-select w-full"
+                >
+                  <option value="">Sélectionner un projet...</option>
+                  {#each projects as project}
+                    <option value={project.id}>{project.name}</option>
+                  {/each}
+                </select>
+                <div class="select-icon">
+                  <ChevronDown size={18} />
+                </div>
+                {#if $errors.projectId}
+                  <span class="text-red-500 text-sm">{$errors.projectId}</span>
+                {/if}
+              </div>
             </div>
 
             <!-- Sélecteurs d'heure côte à côte -->
@@ -354,6 +348,44 @@
               </div>
             </div>
 
+            <!-- Champ Nom -->
+            <div>
+              <label for="activity-name" class="block text-gray-700 font-medium mb-2">
+                Nom
+                <span class="text-gray-400">(optionnel)</span>
+              </label>
+              <input
+                id="activity-name"
+                name="name"
+                type="text"
+                bind:value={activity.name}
+                placeholder="Nom de l'activité..."
+                class="form-input"
+              />
+              {#if $errors.name}
+                <span class="text-red-500 text-sm">{$errors.name}</span>
+              {/if}
+            </div>
+
+            <!-- Champ Description -->
+            <div>
+              <label for="activity-description" class="block text-gray-700 font-medium mb-2">
+                Description
+                <span class="text-gray-400">(optionnel)</span>
+              </label>
+              <textarea
+                id="activity-description"
+                name="description"
+                bind:value={activity.description}
+                placeholder="Description de l'activité..."
+                rows="3"
+                class="form-input"
+              ></textarea>
+              {#if $errors.description}
+                <span class="text-red-500 text-sm">{$errors.description}</span>
+              {/if}
+            </div>
+
             <!-- Utilisateur -->
             <!-- <div>
                 <label for="activity-user" class="block text-gray-700 font-medium mb-2"
@@ -374,34 +406,6 @@
                 </div>
               </div> -->
 
-            <!-- Projet -->
-            <div>
-              <label for="activity-project" class="block text-gray-700 font-medium mb-2">
-                Projet
-                <span class="text-red-500">*</span>
-              </label>
-              <div class="select-container">
-                <select
-                  id="activity-project"
-                  name="projectId"
-                  bind:value={activity.projectId}
-                  required
-                  class="form-select w-full"
-                >
-                  <option value="">Sélectionner un projet...</option>
-                  {#each projects as project}
-                    <option value={project.id}>{project.name}</option>
-                  {/each}
-                </select>
-                <div class="select-icon">
-                  <ChevronDown size={18} />
-                </div>
-                {#if $errors.projectId}
-                  <span class="text-red-500 text-sm">{$errors.projectId}</span>
-                {/if}
-              </div>
-            </div>
-
             <!-- Catégorie -->
             <div>
               <label for="activity-category" class="block text-gray-700 font-medium mb-2">
@@ -416,7 +420,6 @@
                   required
                   class="form-select w-full"
                 >
-                  <option value="">Sélectionner une catégorie...</option>
                   {#each categories as category}
                     <option value={category.id}>{category.name}</option>
                   {/each}
@@ -437,7 +440,7 @@
             <div class="border-t border-gray-200 my-6"></div>
 
             <!-- Actions en bas du formulaire -->
-            <div class="flex justify-end gap-3">
+            <div class="flex justify-center gap-5">
               {#if editMode}
                 <button
                   type="button"
