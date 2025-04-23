@@ -51,15 +51,15 @@
     <div class="dashboard-item">
       <div class="inline-flex rounded-md shadow-xs" role="group">
         <button 
+          onclick={() => goto('/calendar')}
           type="button" 
-          class="px-4 py-2 text-sm transition-colors font-semibold bg-[#014446] text-white rounded-l-lg"
+          class="py-2 px-4 text-sm transition-colors font-semibold bg-gray-200 text-gray-900 rounded-l-lg hover:bg-[#014446] hover:text-white cursor-pointer"
           >
           Calendrier
         </button>
         <button 
-          onclick={() => goto('/projects')}
           type="button" 
-          class="py-2 px-4 text-sm transition-colors font-semibold bg-gray-200 text-gray-900 rounded-r-lg hover:bg-[#014446] hover:text-white cursor-pointer"
+          class="px-4 py-2 text-sm transition-colors font-semibold bg-[#014446] text-white rounded-r-lg"
           >
           Projets
         </button>
