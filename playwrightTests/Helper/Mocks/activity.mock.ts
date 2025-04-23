@@ -85,4 +85,7 @@ export const activityMocks = {
             json: {"activities":[]}
         }
     },
+    getAllActivityWeekSuccess: {
+        
+
 } satisfies Record<string, MockConfig>;

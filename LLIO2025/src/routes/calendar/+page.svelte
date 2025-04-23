@@ -85,13 +85,13 @@
       switch (activeView)
       {
         case 'dayGridMonth':
-          dateDebut = new Date();
+          dateDebut = calendarService.calendar.getDate()
           dateDebut.setDate(1); // Premier jour du mois
           dateFin = new Date(dateDebut.getFullYear(), dateDebut.getMonth() + 1, 0); // Dernier jour du mois
           break;  
         
         case 'timeGridWeek':
-              dateDebut = new Date();
+              dateDebut = calendarService.calendar.getDate()
               day = dateDebut.getDay();
               diff = dateDebut.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
               dateDebut.setDate(diff);
@@ -101,25 +101,26 @@
               break;
         case 'timeGridDay':
           
-          dateDebut = new Date();
+          dateDebut = calendarService.calendar.getDate()
           dateFin = new Date(dateDebut);
           break;
         default:
-        dateDebut = new Date();
-              day = dateDebut.getDay();
-              diff = dateDebut.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
-              dateDebut.setDate(diff);
+          dateDebut = calendarService.calendar.getDate()
+          day = dateDebut.getDay();
+          diff = dateDebut.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
+          dateDebut.setDate(diff);
 
-              dateFin = new Date(dateDebut);
-              dateFin.setDate(dateDebut.getDate() + 6);
-              break;
+          dateFin = new Date(dateDebut);
+          dateFin.setDate(dateDebut.getDate() + 6);
+          break;
       }
 
       dateDebut = formatDate(dateDebut);
       dateFin = formatDate(dateFin);
       console.log('dateDebut', dateDebut);
       console.log('dateFin', dateFin);
-      const activities = await ActivityApiService.getAllActivitesFromRange(dateDebut, dateFin);
+      let activities = [];
+      activities = await ActivityApiService.getAllActivitesFromRange(dateDebut, dateFin);
       console.log('activities', activities);
       // const activities = await ActivityApiService.getAllActivites();
 
@@ -234,6 +235,7 @@
       calendarService.setView(viewName);
       activeView = viewName;
       updateViewTitle();
+      loadActivities();
     }
   }
 
@@ -309,16 +311,19 @@
   function prevPeriod() {
     calendarService?.prev();
     updateViewTitle();
+    loadActivities();
   }
 
   function nextPeriod() {
     calendarService?.next();
     updateViewTitle();
+    loadActivities();
   }
 
   function goToday() {
     calendarService?.today();
     updateViewTitle();
+    loadActivities();
   }
 
   function setTimeRange(range) {

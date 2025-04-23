@@ -34,7 +34,17 @@ func DeleteActivity(id string) error {
 }
 
 func GetActivitiesFromRange(from, to, idUser string) ([]*DAOs.Activity, error) {
+	// Si c'est la même journée, ajuster "to" pour inclure toute la journée
+	fromDate := from
+	toDate := to
+
+	if from == to {
+		toDate = to + " 23:59:59"
+		fromDate = from + " 00:00:00"
+	}
+
 	var activities []*DAOs.Activity
-	err := database.DB.Where("Start_Date >= ? AND End_Date <= ? AND User_Id = ?", from, to, idUser).Find(&activities).Error
+	err := database.DB.Where("Start_Date >= ? AND End_Date <= ? AND User_Id = ?",
+		fromDate, toDate, idUser).Find(&activities).Error
 	return activities, DBErrorManager(err)
 }

@@ -4,6 +4,7 @@ import (
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
 	"llio-api/repositories"
+	"log"
 
 	"github.com/jinzhu/copier"
 )
@@ -121,6 +122,10 @@ func GetActivitiesFromRange(from, to, idUser string) ([]*DTOs.ActivityDTO, error
 		activityDTO := &DTOs.ActivityDTO{}
 		err = copier.Copy(activityDTO, activity)
 		activitiesDTOs = append(activitiesDTOs, activityDTO)
+	}
+	if activitiesDTOs == nil {
+		log.Printf("Aucune activité trouvée dans la plage de dates spécifiée.")
+		return []*DTOs.ActivityDTO{}, err
 	}
 
 	return activitiesDTOs, err
