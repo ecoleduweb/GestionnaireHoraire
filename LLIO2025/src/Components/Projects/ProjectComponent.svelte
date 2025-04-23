@@ -92,7 +92,7 @@
               </div>
               {#each project.employees as employee, index}
                 <button
-                  class="w-full p-2 flex items-center justify-between hover:bg-gray-50 mt-1"
+                  class="w-full p-2 flex items-center justify-between hover:bg-gray-50 mt-1 cursor-pointer"
                   onclick={() => (isDetailsVisible[index] = !isDetailsVisible[index])}
                 >
                   <span class="text-sm text-left w-1/2">{employee.name}</span>
