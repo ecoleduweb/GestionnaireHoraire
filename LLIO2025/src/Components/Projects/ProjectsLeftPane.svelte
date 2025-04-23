@@ -12,9 +12,11 @@
     return hours ? `${hours}h00` : "-";
   };
 
-  function fetchProjects() {
-    
-  }
+  /*const fetchProjects = async () => {
+    const allProjects = await ProjectApiService.getProjects();
+    projects = allProjects.filter(project => !project.archived);
+    archivedProjects = allProjects.filter(project => project.archived);
+  }*/
 
   function mockProjects() {
     return [
