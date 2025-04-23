@@ -64,7 +64,6 @@
           Projets
         </button>
       </div>
-      <div class="text-gray-600">Contenu du dashboard à venir...</div>
     </div>
 
     <div class="dashboard-item">
