@@ -1,14 +1,17 @@
 <script lang="ts">
   import { goto } from "$app/navigation"
-  import { LogOut } from "lucide-svelte";
+  import { Plus, LogOut } from "lucide-svelte";
   import { onMount } from "svelte";
-  import AddProjectModal from "../Project/AddProjectModal.svelte";
+  import ProjectModal from "../Project/ProjectModal.svelte";
   import type { CreateProject } from "../../Models";
   import { ProjectApiService } from "../../services/ProjectApiService";
 
 
 
   let projects = [];
+  let showModal = $state(false);
+  let editMode = $state(false);
+  let editProject = $state(null);
 
   const formatHours = (hours) => {
     return hours ? `${hours}h00` : "-";
@@ -54,36 +57,19 @@
       }
     ];
   }
-
-  let isModalOpen = false;
-  let isLoading = false;
-  let error: string | null = null;
   
-  const openModal = () => {
-    isModalOpen = true;
+  async function handleProjectSubmit(projectData: CreateProject) {
+    //
   }
-  
-  const handleClose = () => {
-    isModalOpen = false;
-  }
-  
-  const handleSubmit = async (event) => {
-    const projectData: CreateProject = event.detail;
-    isLoading = true;
-    error = null;
-    
-    try {
-      const newProject = await ProjectApiService.createProject(projectData);
-      
-      projects = [...projects, newProject];
 
-      handleClose();
-    } catch (err) {
-      error = "Erreur lors de la création du projet. Veuillez réessayer.";
-      console.error("Erreur:", err);
-    } finally {
-      isLoading = false;
-    }
+  async function handleProjectUpdate(projectData: CreateProject) {
+    //
+  }
+
+  function handleNewProject() {
+    editMode = false;
+    editProject = null;
+    showModal = true;
   }
 
   onMount(() => {
@@ -161,10 +147,10 @@
       </div>
       <button 
           type="button" 
-          onclick={openModal}
-          class="ml-6 px-3 py-2 text-sm transition-colors font-semibold bg-[#014446] text-white rounded-lg"
+          onclick={handleNewProject}
+          class="ml-12 px-3 py-2 text-sm transition-colors font-semibold  bg-gray-200 text-gray-900 rounded-lg hover:bg-[#014446] hover:text-white cursor-pointer"
           >
-          Créer
+          <Plus class="h-4 w-4" />
         </button>
     </div>
 
@@ -209,9 +195,15 @@
   </div>
 </div>
 
-
-<AddProjectModal 
-  isOpen={isModalOpen} 
-  on:close={handleClose}
-  on:submit={handleSubmit}
-/>
+<!-- Modal du projet qui s'affiche par-dessus tout le reste -->
+{#if showModal}
+  <ProjectModal
+    show={showModal}
+    projectToEdit={editProject}
+    onSubmit={handleProjectSubmit}
+    onUpdate={handleProjectUpdate}
+    onClose={() => {
+      showModal = false;
+    }}
+  />
+{/if}
