@@ -1,5 +1,57 @@
 <script lang="ts">
   import { goto } from "$app/navigation"
+  import { onMount } from "svelte";
+
+  let projects = [];
+
+  const formatHours = (hours) => {
+    return hours ? `${hours}h00` : "-";
+  };
+
+  function mockProjects() {
+    return [
+      {
+        id: "AT-123",
+        name: "Nommer le projet",
+        color: "blue",
+        lead: "Katell Arnault de la Ménardière",
+        timeSpent: 205,
+        timeEstimated: 300,
+        timeRemaining: 95
+      },
+      {
+        id: "AT-456",
+        name: "Le projet de Marie Amélie",
+        color: "pink",
+        lead: "Katell Arnault de la Ménardière",
+        timeSpent: 85,
+        timeEstimated: 450,
+        timeRemaining: 365
+      },
+      {
+        id: "FO-115",
+        name: "Graphisme 101",
+        color: "yellow",
+        lead: "Katell Arnault de la Ménardière",
+        timeSpent: 40,
+        timeEstimated: 0,
+        timeRemaining: 0
+      },
+      {
+        id: "RA-224",
+        name: "Noisette Steve",
+        color: "red",
+        lead: "Katell Arnault de la Ménardière",
+        timeSpent: 450,
+        timeEstimated: 400,
+        timeRemaining: -50
+      }
+    ];
+  }
+
+  onMount(() => {
+    projects = mockProjects();
+  });
 </script>
 
 <style>
@@ -43,7 +95,7 @@
 
 <div class="dashboard-panel">
   <!-- En-tête du dashboard -->
-  <div class="dashboard-header">Dashboard</div>
+  <div class="dashboard-header">Tableau de bord</div>
 
   <!-- Contenu du dashboard -->
   <div class="dashboard-content">
@@ -65,20 +117,42 @@
         </button>
       </div>
     </div>
-
-    <div class="dashboard-item">
-      <div class="font-medium text-gray-700 mb-2">Statistiques</div>
-      <div class="text-gray-500 text-sm">Aucune statistique disponible pour le moment.</div>
-    </div>
-
-    <div class="dashboard-item">
-      <div class="font-medium text-gray-700 mb-2">Activités récentes</div>
-      <div class="text-gray-500 text-sm">Aucune activité récente.</div>
-    </div>
-
-    <div class="dashboard-item">
-      <div class="font-medium text-gray-700 mb-2">Projets</div>
-      <div class="text-gray-500 text-sm">Aucun projet disponible.</div>
+    <div class="overflow-y-auto max-h-[calc(100vh-250px)]">
+      {#each projects as project}
+        <div 
+          class="border-l-10 hover:bg-gray-50 cursor-pointer border-b" 
+          style="border-left-color: {project.color}"
+        >
+          <div class="p-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <span class="font-medium text-black">{project.id}</span>
+                <span class="text-gray-500 ml-2">|</span>
+                <span class="text-gray-500 ml-2">{project.name}</span>
+              </div>
+            </div>
+            
+            <div class="mt-2 flex items-center text-xs text-gray-500">
+              <div class="mr-16">
+                <div class="font-bold text-black">Total</div>
+              </div>
+              <div class="mr-4">
+                <div class="font-bold text-black">{formatHours(project.timeSpent)}</div>
+              </div>
+              <div class="mr-4">
+                <div class="text-gray-400">{formatHours(project.timeEstimated)}</div>
+              </div>
+              <div>
+                {#if project.timeRemaining < 0}
+                <div class="font-medium text-red-700">{formatHours(project.timeRemaining)}</div>
+                {:else}
+                <div class="text-gray-400">{formatHours(project.timeRemaining)}</div>
+                {/if}
+              </div>
+            </div>
+          </div>
+        </div>
+      {/each}
     </div>
   </div>
 </div>

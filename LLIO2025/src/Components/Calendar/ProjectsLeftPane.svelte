@@ -1,6 +1,5 @@
 <script lang="ts">
   import { goto } from "$app/navigation"
-  import { LogOut } from "lucide-svelte";
   import { onMount } from "svelte";
 
   let projects = [];
@@ -96,13 +95,7 @@
 
 <div class="dashboard-panel">
   <!-- En-tête du dashboard -->
-  <div class="dashboard-header">Dashboard
-    <button 
-          class="ml-2 mt-1 p-1.5 rounded-full hover:bg-gray-100 text-gray-600 text-[#015e61] transition-colors" 
-          title="Se déconnecter">
-          <LogOut class="w-5 h-5" />
-        </button>
-  </div>
+  <div class="dashboard-header">Tableau de bord</div>
 
   <!-- Contenu du dashboard -->
   <div class="dashboard-content">
@@ -128,34 +121,38 @@
     <div class="overflow-y-auto max-h-[calc(100vh-250px)]">
       {#each projects as project}
         <div 
-          class="border-l-4 hover:bg-gray-50 cursor-pointer border-b" 
+          class="border-l-10 hover:bg-gray-50 cursor-pointer border-b" 
           style="border-left-color: {project.color}"
         >
           <div class="p-4">
             <div class="flex justify-between items-center">
               <div>
-                <span class="text-sm font-medium text-gray-600">{project.id}</span>
-                <span class="text-xs text-gray-500 ml-2">|</span>
-                <span class="text-xs text-gray-500 ml-2">{project.lead}</span>
+                <span class="font-medium text-black">{project.id}</span>
+                <span class="text-gray-500 ml-2">|</span>
+                <span class="font-medium text-black ml-2">{project.lead}</span>
+                <span class="text-gray-500 ml-2">|</span>
+                <span class="text-gray-500 ml-2">{project.name}</span>
               </div>
             </div>
-            <div class="mt-1 text-sm font-medium">{project.name}</div>
             
             <div class="mt-2 flex items-center text-xs text-gray-500">
-              <div class="mr-4">
+              <div class="mr-3">
                 <span>Temps passé</span>
-                <div class="font-medium text-gray-700">{formatHours(project.timeSpent)}</div>
+                <hr class="my-1">
+                <div class="font-bold text-black mr-4">{formatHours(project.timeSpent)}</div>
               </div>
-              <div class="mr-4">
+              <div class="mr-3">
                 <span>Temps estimé</span>
-                <div class="font-medium text-black-700">{formatHours(project.timeEstimated)}</div>
+                <hr class="my-1">
+                <div class="text-gray-400">{formatHours(project.timeEstimated)}</div>
               </div>
               <div>
                 <span>Temps restant</span>
+                <hr class="my-1">
                 {#if project.timeRemaining < 0}
                 <div class="font-medium text-red-700">{formatHours(project.timeRemaining)}</div>
                 {:else}
-                <div class="font-medium text-black-700">{formatHours(project.timeRemaining)}</div>
+                <div class="text-gray-400">{formatHours(project.timeRemaining)}</div>
                 {/if}
               </div>
             </div>
