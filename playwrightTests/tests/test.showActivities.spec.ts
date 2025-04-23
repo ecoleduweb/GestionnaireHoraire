@@ -13,8 +13,7 @@ test.describe('showActivities', () => {
         ])
             .apply();
         await page.clock.install({ time: new Date('2025-03-22T08:00:00') });
-        await page.goto('http://localhost:5002/calendar');
-        await page.waitForLoadState('networkidle');
+        
     });
 
     test('showActivitiesWeek', async ({ page }) => {
@@ -24,7 +23,8 @@ test.describe('showActivities', () => {
         ]).apply();
         // Load la page et fait la requête de base 
         await page.goto('http://localhost:5002/calendar');
-        await page.waitForLoadState('networkidle');
+        await page.waitForSelector('.fc-event', { state: 'visible' });
+
         // Vérifie les activités de la semaine
         let activities = await page.locator('.fc-event').all();
         expect(activities.length).toBe(2);
@@ -44,7 +44,7 @@ test.describe('showActivities', () => {
         ]).apply();
         // Load la page et fait la requête de base 
         await page.goto('http://localhost:5002/calendar');
-        await page.waitForLoadState('networkidle');
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         await page.getByRole('button', { name: 'Jour', exact : true }).click();
         // Vérifie les activités de la journee
         let activities = await page.locator('.fc-event').all();
@@ -64,7 +64,7 @@ test.describe('showActivities', () => {
         ]).apply();
         // Load la page et fait la requête de base 
         await page.goto('http://localhost:5002/calendar');
-        await page.waitForLoadState('networkidle');
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         await page.getByRole('button', { name: 'Mois', exact : true }).click();
         // Vérifie les activités de la mois
         let activities = await page.locator('.fc-event').all();
@@ -79,7 +79,7 @@ test.describe('showActivities', () => {
         ]).apply();
         // Load la page et fait la requête de base 
         await page.goto('http://localhost:5002/calendar');
-        await page.waitForLoadState('networkidle');
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         await page.locator('button:has(.lucide-chevron-left)').click();
         // Vérifie les activités de la semaine
         let activities = await page.locator('.fc-event').all();
@@ -94,7 +94,7 @@ test.describe('showActivities', () => {
         ]).apply();
         // Load la page et fait la requête de base 
         await page.goto('http://localhost:5002/calendar');
-        await page.waitForLoadState('networkidle');
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         await page.locator('button:has(.lucide-chevron-right)').click();
         // Vérifie les activités de la semaine
         let activities = await page.locator('.fc-event').all();
@@ -109,11 +109,12 @@ test.describe('showActivities', () => {
         ]).apply();
         // Load la page et fait la requête de base 
         await page.goto('http://localhost:5002/calendar');
-        await page.waitForLoadState('networkidle');
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         await page.getByRole('button', { name: 'Mois', exact : true }).click();
         await page.locator('button:has(.lucide-chevron-left)').click();
 
         // Vérifie les activités de la mois
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         let activities = await page.locator('.fc-event').all();
         expect(activities.length).toBe(1);
     
@@ -126,11 +127,12 @@ test.describe('showActivities', () => {
         ]).apply();
         // Load la page et fait la requête de base 
         await page.goto('http://localhost:5002/calendar');
-        await page.waitForLoadState('networkidle');
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         await page.getByRole('button', { name: 'Mois', exact : true }).click();
         await page.locator('button:has(.lucide-chevron-right)').click();
 
         // Vérifie les activités de la mois
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         let activities = await page.locator('.fc-event').all();
         expect(activities.length).toBe(1);
     
@@ -143,15 +145,17 @@ test.describe('showActivities', () => {
         ]).apply();
         // Load la page et fait la requête de base 
         await page.goto('http://localhost:5002/calendar');
-        await page.waitForLoadState('networkidle');
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         await page.getByRole('button', { name: 'Jour', exact : true }).click();
         await page.locator('button:has(.lucide-chevron-left)').click();
         
         // Vérifie les activités de la journee
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         let activities = await page.locator('.fc-event').all();
         expect(activities.length).toBe(1);
         await page.getByText('Toute la journée').click();
         // remets le tableau vide
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         activities = []; 
         activities = await page.locator('.fc-event').all();
         expect(activities.length).toBe(2);
@@ -165,14 +169,16 @@ test.describe('showActivities', () => {
         ]).apply();
         // Load la page et fait la requête de base 
         await page.goto('http://localhost:5002/calendar');
-        await page.waitForLoadState('networkidle');
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         await page.getByRole('button', { name: 'Jour', exact : true }).click();
         await page.locator('button:has(.lucide-chevron-right)').click();
         // Vérifie les activités de la journee
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         let activities = await page.locator('.fc-event').all();
         expect(activities.length).toBe(1);
         await page.getByText('Toute la journée').click();
         // remets le tableau vide
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         activities = []; 
         activities = await page.locator('.fc-event').all();
         expect(activities.length).toBe(2);
@@ -186,20 +192,23 @@ test.describe('showActivities', () => {
         ]).apply();
         // Load la page et fait la requête de base 
         await page.goto('http://localhost:5002/calendar');
-        await page.waitForLoadState('networkidle');
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         await page.locator('button:has(.lucide-chevron-right)').click();
         await page.locator('button:has(.lucide-chevron-right)').click();
+        
         let activities = await page.locator('.fc-event').all();
         expect(activities.length).toBe(0);
     
         await page.getByRole('button', { name: 'Aujourd\'hui', exact : true }).click();
         await page.getByRole('button', { name: 'Jour', exact : true }).click();
         // Vérifie les activités de la journee
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         activities = [];
         activities = await page.locator('.fc-event').all();
         expect(activities.length).toBe(1);
         await page.getByText('Toute la journée').click();
         // remets le tableau vide
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         activities = []; 
         activities = await page.locator('.fc-event').all();
         expect(activities.length).toBe(2);
