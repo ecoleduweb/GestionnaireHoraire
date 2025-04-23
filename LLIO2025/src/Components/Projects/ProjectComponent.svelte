@@ -1,93 +1,67 @@
-<script>
-  // Vous pourriez importer vos données ici ou les recevoir comme props
-  export let projectNumber = "AT-123";
-  export let projectManager = "Kateri Arnault de la Ménardière";
-  export let coProjectManager = "Jean-François Jasmin";
-  
-  export let timeEntries = [
-    {
-      name: "Kateri Arnault de la Ménardière",
-      timeSpent: "80h00",
-      timeRemaining: "150h00",
-      timeAllocated: "20h00"
-    },
-    {
-      name: "Laurie Desjardins",
-      timeSpent: "20h00",
-      timeRemaining: "50h00",
-      timeAllocated: "30h00"
-    },
-    {
-      name: "Jean-François Jasmin",
-      timeSpent: "105h00",
-      timeRemaining: "150h00",
-      timeAllocated: "45h00"
-    }
-  ];
-  
-  // Calculer les totaux
-  $: totalTimeSpent = "205h00"; // Ces valeurs pourraient être calculées dynamiquement
-  $: totalTimeRemaining = "350h00";
-  $: totalTimeAllocated = "95h00";
+<script lang="ts">
+  import { Plus } from 'lucide-svelte';
+  interface Project {
+    id: string;
+    name: string;
+    lead: string;
+    color: string;
+    timeSpent: number;
+    timeEstimated: number;
+    timeRemaining: number;
+  }
+
+  export let project: Project;
+
+  const formatHours = (hours: number | null): string => {
+    return hours !== null ? `${hours}h00` : "-";
+  };
 </script>
 
-<div class="max-w-4xl mx-auto my-8">
-  <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-    <div class="flex">
-      <!-- Sidebar -->
-      <div class="w-32 bg-indigo-100 p-4 border-r border-indigo-200">
-        <div class="mb-6">
-          <div class="font-bold text-gray-700">{projectNumber}</div>
-          <div class="text-xs text-gray-600">Numéro de projet</div>
+<style>
+  .project {
+    width: auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 15px;
+  }
+</style>
+
+<div class="project">
+  <!-- Contenu du dashboard -->
+  <div class="project-content">
+    <div>
+        <!-- Bordure gauche de couleur -->
+        <div class="border-l-12 rounded" style="border-left-color: {project.color}">
+          <div class="p-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <span class="text-xl">{project.id}</span>
+                <span class="text-xl text-gray-500 ml-2">|</span>
+                <span class="text-base text-gray-500 ml-2">{project.name}</span>
+              </div>
+            </div>
+            <div class="flex-col justify-between items-center mt-1">
+              <div class="mt-1 text-xs text-gray-400">Chargé·e de projet</div>
+              <div class="text-sm wrap-normal">{project.lead}</div>
+              <button
+                class="mt-2 inline-flex items-center px-3 py-1.5 bg-gray-100 border border-transparent rounded-4xl shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-grey-500 text-gray-700 text-xs font-medium"
+              >
+                <span class="text-xs">Réattribuer</span>
+              </button>
+              <hr class="mt-2 text-xs text-gray-400"/>
+              <div class="mt-1 text-xs text-gray-400">Co-chargé·e de projet</div>
+              {#each project.coLeads as coLead}
+                <div class="text-sm wrap-normal">{coLead}</div>
+              {/each}
+              <button 
+                class="mt-2 inline-flex items-center  bg-gray-100 border border-transparent rounded-4xl shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-grey-500 text-gray-700 text-xs"
+              >
+                <Plus class="w-3 h-3" />
+              </button>
+            </div>
+          </div>
         </div>
-        
-        <div class="mb-6">
-          <div class="text-xs text-gray-500">Chargé(e) du projet</div>
-          <div class="text-sm text-gray-700">{projectManager}</div>
-        </div>
-        
-        <div class="mb-6">
-          <div class="text-xs text-gray-500">Co-chargé(e) du projet</div>
-          <div class="text-sm text-gray-700">{coProjectManager}</div>
-        </div>
-      </div>
-      
-      <!-- Main content -->
-      <div class="flex-1">
-        <table class="w-full">
-          <thead>
-            <tr class="text-left text-gray-600">
-              <th class="px-4 py-2 w-2/5"></th>
-              <th class="px-4 py-2 text-right">Temps passé</th>
-              <th class="px-4 py-2 text-right">Temps restant</th>
-              <th class="px-4 py-2 text-right">Temps imputé</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each timeEntries as entry}
-              <tr class="border-t border-gray-200">
-                <td class="px-4 py-3">
-                  <div class="flex items-center">
-                    <span class="text-gray-800">{entry.name}</span>
-                    <svg class="w-4 h-4 ml-1 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    </svg>
-                  </div>
-                </td>
-                <td class="px-4 py-3 text-right text-gray-700">{entry.timeSpent}</td>
-                <td class="px-4 py-3 text-right text-gray-700">{entry.timeRemaining}</td>
-                <td class="px-4 py-3 text-right text-gray-700">{entry.timeAllocated}</td>
-              </tr>
-            {/each}
-            <tr class="border-t border-gray-200 font-semibold">
-              <td class="px-4 py-3 text-gray-800">Total</td>
-              <td class="px-4 py-3 text-right text-gray-800">{totalTimeSpent}</td>
-              <td class="px-4 py-3 text-right text-gray-800">{totalTimeRemaining}</td>
-              <td class="px-4 py-3 text-right text-gray-800">{totalTimeAllocated}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </div>
 </div>
