@@ -348,7 +348,7 @@
   }
 
   /* Gestion espace dashboard */
-  .content-with-dashboard {
+  .space-between-dashboard-calendar {
     margin-left: 300px;
   }
 </style>
@@ -358,7 +358,7 @@
   <DashboardLeftPane />
 
   <!-- Contenu principal (calendrier) avec marge pour s'adapter au dashboard -->
-  <div class="content-with-dashboard w-full h-full bg-white px-4 py-6">
+  <div class="space-between-dashboard-calendar w-full h-full bg-white px-4 py-6">
     <div class="max-w-7xl mx-auto">
       <!-- Nouvelle section avec salutation et boutons d'heures -->
       <div class="flex justify-between items-center mb-6">
