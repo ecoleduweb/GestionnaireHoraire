@@ -36,7 +36,7 @@ export interface ActivityUpdateResponse {
     updated_activity: Activity;
 }
 
-export interface Project {
+export interface CreateProject {
     name: string;
     description: string;
     status: ProjectStatus;

@@ -2,6 +2,11 @@
   import { goto } from "$app/navigation"
   import { LogOut } from "lucide-svelte";
   import { onMount } from "svelte";
+  import AddProjectModal from "../Project/AddProjectModal.svelte";
+  import type { CreateProject } from "../../Models";
+  import { ProjectApiService } from "../../services/ProjectApiService";
+
+
 
   let projects = [];
 
@@ -48,6 +53,37 @@
         timeRemaining: -50
       }
     ];
+  }
+
+  let isModalOpen = false;
+  let isLoading = false;
+  let error: string | null = null;
+  
+  function ouvrirModale() {
+    isModalOpen = true;
+  }
+  
+  function handleClose() {
+    isModalOpen = false;
+  }
+  
+  async function handleSubmit(event) {
+    const projectData: CreateProject = event.detail;
+    isLoading = true;
+    error = null;
+    
+    try {
+      const newProject = await ProjectApiService.createProject(projectData);
+      
+      projects = [...projects, newProject];
+
+      handleClose();
+    } catch (err) {
+      error = "Erreur lors de la création du projet. Veuillez réessayer.";
+      console.error("Erreur:", err);
+    } finally {
+      isLoading = false;
+    }
   }
 
   onMount(() => {
@@ -125,6 +161,7 @@
       </div>
       <button 
           type="button" 
+          onclick={ouvrirModale}
           class="ml-6 px-3 py-2 text-sm transition-colors font-semibold bg-[#014446] text-white rounded-lg"
           >
           Créer
@@ -171,3 +208,10 @@
     </div>
   </div>
 </div>
+
+
+<AddProjectModal 
+  isOpen={isModalOpen} 
+  on:close={handleClose}
+  on:submit={handleSubmit}
+/>
