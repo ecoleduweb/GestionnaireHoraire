@@ -30,14 +30,15 @@ func TestCreateActivity(t *testing.T) {
 
 	// Vérification du corps de la réponse
 	var responseBody struct {
-		Reponse  string        `json:"reponse"`
-		Activity DAOs.Activity `json:"activity"`
+		Reponse  string               `json:"reponse"`
+		Activity DTOs.ActivityInfoDTO `json:"activity"`
 	}
 	err := json.Unmarshal(w.Body.Bytes(), &responseBody)
 	assert.NoError(t, err)
 	assert.Equal(t, "L'activité a bien été ajoutée à la base de données.", responseBody.Reponse)
 	assert.Equal(t, activity.Name, responseBody.Activity.Name)
 	assert.Equal(t, activity.Description, responseBody.Activity.Description)
+	assert.Equal(t, doNotDeleteProject.Name, responseBody.Activity.ProjectName)
 
 	// Vérification que l'activité est bien ajoutée dans la base de données
 	var createdActivity DAOs.Activity
