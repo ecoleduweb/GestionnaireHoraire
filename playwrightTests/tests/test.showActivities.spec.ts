@@ -86,6 +86,124 @@ test.describe('showActivities', () => {
         expect(activities.length).toBe(1);
     
     });
+    test('showActivitiesNextWeek', async ({ page }) => {
+        const apiMocker = new ApiMocker(page);
+        await apiMocker.addMocks([
+            activityMocks.getAllActivitiesNextWeekSuccess,
+            activityMocks.getAllActivitiesDefaultWeekSuccess
+        ]).apply();
+        // Load la page et fait la requête de base 
+        await page.goto('http://localhost:5002/calendar');
+        await page.waitForLoadState('networkidle');
+        await page.locator('button:has(.lucide-chevron-right)').click();
+        // Vérifie les activités de la semaine
+        let activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(1);
+    
+    });
+    test('showActivitiesPreviousMonth', async ({ page }) => {
+        const apiMocker = new ApiMocker(page);
+        await apiMocker.addMocks([
+            activityMocks.getAllActivitiesPreviousMonthSuccess,
+            activityMocks.getAllActivitiesDefaultWeekSuccess
+        ]).apply();
+        // Load la page et fait la requête de base 
+        await page.goto('http://localhost:5002/calendar');
+        await page.waitForLoadState('networkidle');
+        await page.getByRole('button', { name: 'Mois', exact : true }).click();
+        await page.locator('button:has(.lucide-chevron-left)').click();
+
+        // Vérifie les activités de la mois
+        let activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(1);
+    
+    });
+    test('showActivitiesNextMonth', async ({ page }) => {
+        const apiMocker = new ApiMocker(page);
+        await apiMocker.addMocks([
+            activityMocks.getAllActivitiesNextMonthSuccess,
+            activityMocks.getAllActivitiesDefaultWeekSuccess
+        ]).apply();
+        // Load la page et fait la requête de base 
+        await page.goto('http://localhost:5002/calendar');
+        await page.waitForLoadState('networkidle');
+        await page.getByRole('button', { name: 'Mois', exact : true }).click();
+        await page.locator('button:has(.lucide-chevron-right)').click();
+
+        // Vérifie les activités de la mois
+        let activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(1);
+    
+    });
+    test('showActivitiesPreviousDay', async ({ page }) => {
+        const apiMocker = new ApiMocker(page);
+        await apiMocker.addMocks([
+            activityMocks.getAllActivitiesPreviousDaySuccess,
+            activityMocks.getAllActivitiesDefaultWeekSuccess
+        ]).apply();
+        // Load la page et fait la requête de base 
+        await page.goto('http://localhost:5002/calendar');
+        await page.waitForLoadState('networkidle');
+        await page.getByRole('button', { name: 'Jour', exact : true }).click();
+        await page.locator('button:has(.lucide-chevron-left)').click();
+        
+        // Vérifie les activités de la journee
+        let activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(1);
+        await page.getByText('Toute la journée').click();
+        // remets le tableau vide
+        activities = []; 
+        activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(2);
+    
+    });
+    test('showActivitiesNextDay', async ({ page }) => {
+        const apiMocker = new ApiMocker(page);
+        await apiMocker.addMocks([
+            activityMocks.getAllActivitiesNextDaySuccess,
+            activityMocks.getAllActivitiesDefaultWeekSuccess
+        ]).apply();
+        // Load la page et fait la requête de base 
+        await page.goto('http://localhost:5002/calendar');
+        await page.waitForLoadState('networkidle');
+        await page.getByRole('button', { name: 'Jour', exact : true }).click();
+        await page.locator('button:has(.lucide-chevron-right)').click();
+        // Vérifie les activités de la journee
+        let activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(1);
+        await page.getByText('Toute la journée').click();
+        // remets le tableau vide
+        activities = []; 
+        activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(2);
+    
+    });
+    test('showActivitiesToday', async ({ page }) => {
+        const apiMocker = new ApiMocker(page);
+        await apiMocker.addMocks([
+            activityMocks.getAllActivitiesDaySuccess,
+            activityMocks.getAllActivitiesDefaultWeekSuccess
+        ]).apply();
+        // Load la page et fait la requête de base 
+        await page.goto('http://localhost:5002/calendar');
+        await page.waitForLoadState('networkidle');
+        await page.locator('button:has(.lucide-chevron-right)').click();
+        await page.locator('button:has(.lucide-chevron-right)').click();
+        let activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(0);
+    
+        await page.getByRole('button', { name: 'Aujourd\'hui', exact : true }).click();
+        await page.getByRole('button', { name: 'Jour', exact : true }).click();
+        // Vérifie les activités de la journee
+        activities = [];
+        activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(1);
+        await page.getByText('Toute la journée').click();
+        // remets le tableau vide
+        activities = []; 
+        activities = await page.locator('.fc-event').all();
+        expect(activities.length).toBe(2);
+    });
 
 
 

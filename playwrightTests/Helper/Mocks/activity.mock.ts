@@ -262,7 +262,136 @@ export const activityMocks = {
                 }
         }
     },
+    getAllActivitiesNextWeekSuccess: {
+        url: '*/**/activities/me/2025-03-24/2025-03-30',
+        method: 'GET',
+        response: {
+                status: 200,
+                json:
+                {
+                    "activities": [
+                        {
+                            "id": 17,
+                            "name": "Party d'après fête ! ",
+                            "description": "Une semaine plus tard :D",
+                            "startDate": "2025-03-29T06:30:00-04:00",
+                            "endDate": "2025-03-29T14:00:00-04:00",
+                            "userId": 1,
+                            "projectId": 1,
+                            "categoryId": 1
+                        }
+                    ]
+                }
+        }
+    },
 
+    getAllActivitiesPreviousMonthSuccess: {
+        url: '*/**/activities/me/2025-02-01/2025-02-28',
+        method: 'GET',
+        response: {
+                status: 200,
+                json:
+                {
+                    "activities": [{
+                        "id": 19,
+                        "name": "Saint-Valentin !",
+                        "description": "La saison des amours",
+                        "startDate": "2025-02-14T03:30:00-04:00",
+                        "endDate": "2025-02-14T08:00:00-04:00",
+                        "userId": 1,
+                        "projectId": 1,
+                        "categoryId": 1
+                        }
+                    ]
+                }
+        }
+    },
+    getAllActivitiesNextMonthSuccess: {
+        url: '*/**/activities/me/2025-04-01/2025-04-30',
+        method: 'GET',
+        response: {
+                status: 200,
+                json:
+                {
+                    "activities": [
+                        {
+                            "id": 17,
+                            "name": "Poisson d'avril !",
+                            "description": "C'est une blague :p",
+                            "startDate": "2025-04-01T06:30:00-04:00",
+                            "endDate": "2025-04-01T14:00:00-04:00",
+                            "userId": 1,
+                            "projectId": 1,
+                            "categoryId": 1
+                        }
+                    ]
+                }
+        }
+    },
+    getAllActivitiesPreviousDaySuccess: {
+        url: '*/**/activities/me/2025-03-21/2025-03-21',
+        method: 'GET',
+        response: {
+                status: 200,
+                json:
+                {
+                    "activities": [
+                        {
+                            "id": 14,
+                            "name": "Veille de la fête ",
+                            "description": "C'est juste avant",
+                            "startDate": "2025-03-21T07:00:00-04:00",
+                            "endDate": "2025-03-21T09:00:00-04:00",
+                            "userId": 1,
+                            "projectId": 1,
+                            "categoryId": 1
+                        },
+                        {
+                            "id": 21,
+                            "name": "La veille mais tard",
+                            "description": "Mais trop tard",
+                            "startDate": "2025-03-21T19:00:00-04:00",
+                            "endDate": "2025-03-21T21:00:00-04:00",
+                            "userId": 1,
+                            "projectId": 1,
+                            "categoryId": 1
+                        }
+                    ]
+                }
+        }
+    },
+    getAllActivitiesNextDaySuccess: {
+        url: '*/**/activities/me/2025-03-23/2025-03-23',
+        method: 'GET',
+        response: {
+                status: 200,
+                json:
+                {
+                    "activities": [
+                        {
+                            "id": 20,
+                            "name": "Lendemain de la fête ",
+                            "description": "adsdf",
+                            "startDate": "2025-03-23T07:30:00-04:00",
+                            "endDate": "2025-03-23T12:00:00-04:00",
+                            "userId": 1,
+                            "projectId": 1,
+                            "categoryId": 1
+                        },
+                        {
+                            "id": 22,
+                            "name": "Le lendemain mais tard",
+                            "description": "Trop tard",
+                            "startDate": "2025-03-23T19:00:00-04:00",
+                            "endDate": "2025-03-23T21:00:00-04:00",
+                            "userId": 1,
+                            "projectId": 1,
+                            "categoryId": 1
+                        }
+                    ]
+                }
+        }
+    },
 
 
 
