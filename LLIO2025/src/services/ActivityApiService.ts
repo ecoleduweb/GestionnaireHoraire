@@ -75,7 +75,7 @@ const deleteActivity = async (id: number): Promise<void> => {
 const getAllActivites = async () => {
   try {
     // La réponse est un objet avec une propriété 'activities'
-    const response = await GET<{ activities: RawActivity[] }>('/activities');
+    const response = await GET<{ activities: RawActivity[] }>('/activities/me');
 
     // Vérifier si la réponse contient la propriété 'activities' et si c'est un tableau
     if (response && response.activities && Array.isArray(response.activities)) {

@@ -63,6 +63,13 @@ func GetUsersActivities(c *gin.Context) {
 		return
 	}
 
+	// Retourne une liste vide plutôt que null pour être compatible avec les vérifiacations du frontend
+	if activities == nil {
+		// Retourner une liste vide au lieu de null
+		c.JSON(http.StatusOK, gin.H{"activities": []DTOs.ActivityDTO{}})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"activities": activities})
 }
 
