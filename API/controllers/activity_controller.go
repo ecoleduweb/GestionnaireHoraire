@@ -57,7 +57,6 @@ func GetUsersActivities(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur interne du serveur"})
 		return
 	}
-	println(user.Id)
 	activities, err := services.GetUsersActivities(user.Id)
 	if err != nil {
 		handleError(c, err, activiteSTR)
