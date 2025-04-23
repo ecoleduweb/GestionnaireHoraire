@@ -7,13 +7,14 @@
   import type { Activity } from '../../Models/index.ts';
   // Importez le fichier CSS
   import '../../style/modern-calendar.css';
-  import { getDateOrDefault } from '../../utils/date';
+  import { getDateOrDefault, formatDate } from '../../utils/date';
   // Importer FullCalendar en français
   import frLocale from '@fullcalendar/core/locales/fr';
   import { formatViewTitle } from '../../utils/date';
   import { ClientTelemetry } from '$lib/tracer';
   import { env } from '$env/dynamic/public';
   import { Plus, Calendar, ChevronLeft, ChevronRight } from 'lucide-svelte';
+  import { date } from 'yup';
 
   const ENABLED_TELEMETRY = env.PUBLIC_ENABLED_TELEMETRY === 'true';
 
@@ -74,8 +75,49 @@
   // Fonction pour charger toutes les activités
   async function loadActivities() {
     isLoading = true;
+   
+    let dateDebut, dateFin, day, diff;
     try {
-      const activities = await ActivityApiService.getAllActivites();
+      switch (activeView)
+      {
+        case 'dayGridMonth':
+          dateDebut = new Date();
+          dateDebut.setDate(1); // Premier jour du mois
+          dateFin = new Date(dateDebut.getFullYear(), dateDebut.getMonth() + 1, 0); // Dernier jour du mois
+          break;  
+        
+        case 'timeGridWeek':
+              dateDebut = new Date();
+              day = dateDebut.getDay();
+              diff = dateDebut.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
+              dateDebut.setDate(diff);
+
+              dateFin = new Date(dateDebut);
+              dateFin.setDate(dateDebut.getDate() + 6);
+              break;
+        case 'timeGridDay':
+          
+          dateDebut = new Date();
+          dateFin = new Date(dateDebut);
+          break;
+        default:
+        dateDebut = new Date();
+              day = dateDebut.getDay();
+              diff = dateDebut.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
+              dateDebut.setDate(diff);
+
+              dateFin = new Date(dateDebut);
+              dateFin.setDate(dateDebut.getDate() + 6);
+              break;
+      }
+
+      dateDebut = formatDate(dateDebut);
+      dateFin = formatDate(dateFin);
+      console.log('dateDebut', dateDebut);
+      console.log('dateFin', dateFin);
+      const activities = await ActivityApiService.getAllActivitesFromRange(dateDebut, dateFin);
+      console.log('activities', activities);
+      // const activities = await ActivityApiService.getAllActivites();
 
       // Utiliser la méthode du service pour ajouter les activités au calendrier
       if (activities && calendarService) {
@@ -209,7 +251,7 @@
       const updatedActivity = await ActivityApiService.updateActivity(activity);
       calendarService.updateEvent(updatedActivity);
     } catch (error) {
-      console.error('Erreur lors de la mise à jour de la tâche', error);
+      console.error('Erreur lors de la mise à jour de l\'activité', error);
 
       alert("Une erreur est survenue lors de la mise à jour de l'activité.");
 
