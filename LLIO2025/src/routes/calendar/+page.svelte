@@ -1,12 +1,14 @@
 <script lang="ts">
   import type { CalendarService } from '../../services/calendar.service';
   import { UserApiService } from '../../services/UserApiService';
+  import { CategoryApiService } from '../../services/CategoryApiService';
+  import { ProjectApiService } from '../../services/ProjectApiService';
   import { CalendarService as CS } from '../../services/calendar.service';
   import { onMount } from 'svelte';
   import ActivityModal from '../../Components/Calendar/ActivityModal.svelte';
   import DashboardLeftPane from '../../Components/Calendar/DashboardLeftPane.svelte';
   import { ActivityApiService } from '../../services/ActivityApiService';
-  import type { Activity, UserInfo } from '../../Models/index.ts';
+  import type { Activity, UserInfo, Category, Project } from '../../Models/index.ts';
   // Importez le fichier CSS
   import '../../style/modern-calendar.css';
   import { getDateOrDefault } from '../../utils/date';
@@ -44,8 +46,9 @@
   let currentUser = $state<UserInfo | null>(null);
 
   const users = [{ id: 1, name: 'Test ManuDev' }];
-  const projects = [{ id: 1, name: 'Projet manudev' }];
-  const categories = [{ id: 1, name: 'Categorie Test ManuDev' }];
+
+  let categories = $state<Category[]>([]);
+  let projects = $state<Project[]>([]);
 
   // Fonction pour attribuer une couleur à chaque événement
   function getEventClassName(eventInfo: any) {
@@ -90,6 +93,33 @@
       alert('Une erreur est survenue lors du chargement des activités.');
     } finally {
       isLoading = false;
+    }
+  }
+
+  // Fonction pour charger les catégories
+  async function loadCategories() {
+    try {
+      categories = await CategoryApiService.getAllCategories();
+    } catch (error) {
+      console.error('Erreur lors du chargement des catégories:', error);
+      // Utiliser des données de repli en cas d'échec
+      categories = [
+        { id: 1, name: 'Categorie Test ManuDev' },
+        { id: 2, name: 'Categorie Test Antoine' },
+        { id: 3, name: 'Categorie Test CAnaDiEns' },
+        { id: 4, name: 'Categorie Test test' },
+      ];
+    }
+  }
+
+  // Fonction pour charger les projets
+  async function loadProjects() {
+    try {
+      projects = await ProjectApiService.getAllProjects();
+    } catch (error) {
+      console.error('Erreur lors du chargement des projets:', error);
+      // Données de secours en cas d'erreur
+      projects = [{ id: 1, name: 'Projet manudev' }];
     }
   }
 
@@ -182,8 +212,11 @@
       // Mettre à jour le titre initial
       updateViewTitle();
 
-      // Charger les activités
       await loadActivities();
+
+      await loadCategories();
+
+      await loadProjects();
     }
   });
 
