@@ -32,6 +32,7 @@ test.describe('showActivities', () => {
         expect(activities.length).toBe(2);
         await page.getByText('Toute la journée').click();
         // remets le tableau vide
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         activities = []; 
         activities = await page.locator('.fc-event').all();
         expect(activities.length).toBe(3);
