@@ -219,7 +219,7 @@
       <!-- Projets archivés -->
       <div>
         <button
-          class="w-full p-4 flex items-center justify-between text-gray-600 hover:bg-gray-50"
+          class="w-full p-4 flex items-center justify-between text-gray-600 hover:bg-gray-50 cursor-pointer"
           onclick={() => (isArchivedVisible = !isArchivedVisible)}
         >
           <span class="font-medium">Projets archivés ({archivedProjects.length})</span>
@@ -238,7 +238,7 @@
           <div transition:slide={{ duration: 300, easing: quintOut }}>
             {#each archivedProjects as project}
               <div 
-                class="border-l-10 hover:bg-gray-50 cursor-pointer border-b" 
+                class="border-l-10 border-b" 
                 style="border-left-color: {project.color}"
               >
                 <div class="p-4">
