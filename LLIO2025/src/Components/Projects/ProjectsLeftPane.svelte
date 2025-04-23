@@ -177,7 +177,7 @@
     <div class="overflow-y-auto max-h-[calc(100vh-150px)]">
       {#each projects as project}
         <div 
-          class="border-l-10 hover:bg-gray-50 cursor-pointer border-b" 
+          class="border-l-10 border-b" 
           style="border-left-color: {project.color}"
         >
           <div class="p-4">
