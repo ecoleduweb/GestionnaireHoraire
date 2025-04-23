@@ -35,6 +35,7 @@ test.describe('showActivities', () => {
         await page.waitForSelector('.fc-event', { state: 'visible' });
         activities = []; 
         activities = await page.locator('.fc-event').all();
+        console.log(activities.length);
         expect(activities.length).toBe(3);
 
     });
