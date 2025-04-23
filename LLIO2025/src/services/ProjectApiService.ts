@@ -7,6 +7,7 @@ interface ProjectResponse {
 }
 
 const createProject = async (project: CreateProject): Promise<CreateProject> => {
+    project.status = 0
   try {
     const response = await POST<CreateProject, ProjectResponse>("/project", project);
     return response.project;
