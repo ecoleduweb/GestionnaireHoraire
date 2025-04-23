@@ -1,5 +1,5 @@
 import { bool } from "yup";
-import { ProjectStatus } from "../types/enums";
+import { ProjectStatus } from "../lib/types/enums";
 
 export interface Activity {
     id?: number;
