@@ -440,7 +440,7 @@
             <div class="border-t border-gray-200 my-6"></div>
 
             <!-- Actions en bas du formulaire -->
-            <div class="flex justify-end gap-3">
+            <div class="flex justify-center gap-5">
               {#if editMode}
                 <button
                   type="button"

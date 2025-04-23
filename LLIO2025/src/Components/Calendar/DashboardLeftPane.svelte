@@ -55,18 +55,19 @@
 </script>
 
 <style>
-  .dashboard-panel {
+  .dashboard-container {
     width: 300px;
     height: 100vh;
     background-color: white;
     border-right: 1px solid #e5e7eb;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
-    overflow-y: auto;
     position: fixed;
     left: 0;
     top: 0;
     bottom: 0;
     z-index: 30;
+    display: flex;
+    flex-direction: column;
   }
 
   .dashboard-header {
@@ -79,7 +80,8 @@
   }
 
   .dashboard-content {
-    padding: 0px;
+    flex: 1;
+    overflow-y: auto;
   }
 
   .dashboard-item {
@@ -93,26 +95,26 @@
   }
 </style>
 
-<div class="dashboard-panel">
+<div class="dashboard-container">
   <!-- En-tête du dashboard -->
   <div class="dashboard-header">Tableau de bord</div>
 
   <!-- Contenu du dashboard -->
   <div class="dashboard-content">
-    <!-- Éléments du dashboard -->
+    <!-- Contenu à venir -->
     <div class="dashboard-item">
       <div class="inline-flex rounded-md shadow-xs" role="group">
-        <button 
-          type="button" 
+        <button
+          type="button"
           class="px-4 py-2 text-sm transition-colors font-semibold bg-[#014446] text-white rounded-l-lg"
-          >
+        >
           Calendrier
         </button>
-        <button 
+        <button
           onclick={() => goto('/projects')}
-          type="button" 
+          type="button"
           class="py-2 px-4 text-sm transition-colors font-semibold bg-gray-200 text-gray-900 rounded-r-lg hover:bg-[#014446] hover:text-white cursor-pointer"
-          >
+        >
           Projets
         </button>
       </div>
