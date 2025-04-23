@@ -29,7 +29,7 @@ jobs:
             echo 'Moving logs file to logs backup folder'
             mkdir -p /root/logs
             DATE=$(date +'%Y-%m-%d_%H-%M')
-            [ -f "/root/var/www/GestionnaireHoraire/API/logs.txt" ] && cp /root/var/www/GestionnaireHoraire/API/logs.txt /root/logs/logs_llio_$DATE.txt
+            [ -f "/var/www/GestionnaireHoraire/API/logs.txt" ] && cp "/var/www/GestionnaireHoraire/API/logs.txt" /root/logs/logs_llio_$DATE.txt
 
             # Suppression et récréation du répertoire GestionnaireHoraire
             echo "Refreshing project directory..."
