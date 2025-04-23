@@ -105,8 +105,9 @@
 
   onMount(() => {
     // fetchProjects();
-    projects = mockProjects().filter(project => !project.archived);
-    archivedProjects = mockProjects().filter(project => project.archived);
+    const allProjects = mockProjects();
+    projects = allProjects.filter(project => !project.archived);
+    archivedProjects = allProjects.filter(project => project.archived);
   });
 </script>
 

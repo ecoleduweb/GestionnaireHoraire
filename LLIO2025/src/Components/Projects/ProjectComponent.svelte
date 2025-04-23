@@ -2,7 +2,6 @@
   import { Plus } from 'lucide-svelte';
   import { slide } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
-  import { onMount } from 'svelte';
 
   interface Category {
     name: string;
@@ -32,11 +31,6 @@
   const formatHours = (hours) => {
     return hours ? `${hours}h00` : '-';
   };
-
-  onMount(() => {
-    // Initialize isDetailsVisible array based on the number of coLeads
-    isDetailsVisible = new Array((project.coLeads || []).length).fill(false);
-  });
 </script>
 
 <style>

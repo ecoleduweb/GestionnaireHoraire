@@ -150,7 +150,7 @@
   });
 </script>
 
-<div class="h-screen bg-gray-100">
+<div class="bg-gray-100">
   <ProjectsLeftPane />
   <div class="flex flex-col" style="padding-left: 300px;">
     <!-- Project Details -->
