@@ -1,3 +1,7 @@
+<script lang="ts">
+  import { goto } from '$app/navigation';
+</script>
+
 <style>
   .dashboard-container {
     width: 300px;
@@ -47,7 +51,21 @@
   <div class="dashboard-content">
     <!-- Contenu à venir -->
     <div class="dashboard-item">
-      <div class="text-gray-500">Contenu du dashboard à venir...</div>
+      <div class="inline-flex rounded-md shadow-xs" role="group">
+        <button
+          type="button"
+          class="px-4 py-2 text-sm transition-colors font-semibold bg-[#014446] text-white rounded-l-lg"
+        >
+          Calendrier
+        </button>
+        <button
+          onclick={() => goto('/projects')}
+          type="button"
+          class="py-2 px-4 text-sm transition-colors font-semibold bg-gray-200 text-gray-900 rounded-r-lg hover:bg-[#014446] hover:text-white cursor-pointer"
+        >
+          Projets
+        </button>
+      </div>
     </div>
 
     <!-- Statistiques -->

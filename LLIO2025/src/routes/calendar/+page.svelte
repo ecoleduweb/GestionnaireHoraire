@@ -4,7 +4,7 @@
   import { CalendarService as CS } from '../../services/calendar.service';
   import { onMount } from 'svelte';
   import ActivityModal from '../../Components/Calendar/ActivityModal.svelte';
-  import DashboardModal from '../../Components/Calendar/DashboardLeftPane.svelte';
+  import DashboardLeftPane from '../../Components/Calendar/DashboardLeftPane.svelte';
   import { ActivityApiService } from '../../services/ActivityApiService';
   import type { Activity, UserInfo } from '../../Models/index.ts';
   // Importez le fichier CSS
@@ -355,7 +355,7 @@
 
 <div class="flex">
   <!-- Dashboard toujours visible à gauche -->
-  <DashboardModal />
+  <DashboardLeftPane />
 
   <!-- Contenu principal (calendrier) avec marge pour s'adapter au dashboard -->
   <div class="content-with-dashboard w-full h-full bg-white px-4 py-6">
