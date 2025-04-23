@@ -59,15 +59,15 @@
   let isLoading = false;
   let error: string | null = null;
   
-  function ouvrirModale() {
+  const openModal = () => {
     isModalOpen = true;
   }
   
-  function handleClose() {
+  const handleClose = () => {
     isModalOpen = false;
   }
   
-  async function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     const projectData: CreateProject = event.detail;
     isLoading = true;
     error = null;
@@ -161,7 +161,7 @@
       </div>
       <button 
           type="button" 
-          onclick={ouvrirModale}
+          onclick={openModal}
           class="ml-6 px-3 py-2 text-sm transition-colors font-semibold bg-[#014446] text-white rounded-lg"
           >
           Créer
