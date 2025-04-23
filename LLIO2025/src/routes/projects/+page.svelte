@@ -3,7 +3,7 @@
   import { ClientTelemetry } from "$lib/tracer"
   import { env } from "$env/dynamic/public"
   import "../../style/app.css"
-  import ProjectsLeftPane from "../../Components/Calendar/ProjectsLeftPane.svelte";
+  import ProjectsLeftPane from "../../Components/Projects/ProjectsLeftPane.svelte";
   import ProjectComponent from "../../Components/Projects/ProjectComponent.svelte";
   const ENABLED_TELEMETRY = env.PUBLIC_ENABLED_TELEMETRY === "true";
 
