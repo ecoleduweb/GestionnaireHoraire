@@ -346,132 +346,146 @@
     border-color: #015e61 !important;
     background-color: #015e61 !important;
   }
+
+  /* Gestion espace dashboard */
+  .content-with-dashboard {
+    margin-left: 300px;
+  }
 </style>
 
-<div class="w-full h-full bg-white px-4 py-6">
-  <div class="max-w-7xl mx-auto">
-    <!-- Nouvelle section avec salutation et boutons d'heures -->
-    <div class="flex justify-between items-center mb-6">
-      <!-- Affichage nom d'utilisateur -->
-      <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-        Bonjour, 
-        <span class="text-[#015e61] font-bold">
-          {#if currentUser}
-          {currentUser.firstName} {currentUser.lastName}
-          {:else}
-          <span class="inline-block w-24 h-6 bg-gray-200 animate-pulse rounded"></span>
-          {/if}
-        </span>
-        <button 
-          class="ml-2 mt-1 p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-[#015e61] transition-colors" 
-          title="Se déconnecter">
-          <LogOut class="w-5 h-5" />
-        </button>
-      </h1>
+<div class="flex">
+  <!-- Dashboard toujours visible à gauche -->
+  <DashboardModal />
 
-      <!-- Boutons pour changer les heures -->
-      <div class="flex items-center">
-        {#each timeRanges as range, index}
+  <!-- Contenu principal (calendrier) avec marge pour s'adapter au dashboard -->
+  <div class="content-with-dashboard w-full h-full bg-white px-4 py-6">
+    <div class="max-w-7xl mx-auto">
+      <!-- Nouvelle section avec salutation et boutons d'heures -->
+      <div class="flex justify-between items-center mb-6">
+        <!-- Affichage nom d'utilisateur -->
+        <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+          Bonjour,
+          <span class="text-[#015e61] font-bold">
+            {#if currentUser}
+              {currentUser.firstName} {currentUser.lastName}
+            {:else}
+              <span class="inline-block w-24 h-6 bg-gray-200 animate-pulse rounded"></span>
+            {/if}
+          </span>
           <button
-            class="py-2 px-4 text-sm transition-colors font-semibold
-              {index === 0 ? 'rounded-l-lg rounded-r-none' : index === timeRanges.length - 1 ? 'rounded-r-lg rounded-l-none' : 'rounded-none border-x border-white/20'}
+            class="ml-2 mt-1 p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-[#015e61] transition-colors"
+            title="Se déconnecter"
+          >
+            <LogOut class="w-5 h-5" />
+          </button>
+        </h1>
+
+        <!-- Boutons pour changer les heures -->
+        <div class="flex items-center">
+          {#each timeRanges as range, index}
+            <button
+              class="py-2 px-4 text-sm transition-colors font-semibold
+              {index === 0
+                ? 'rounded-l-lg rounded-r-none'
+                : index === timeRanges.length - 1
+                  ? 'rounded-r-lg rounded-l-none'
+                  : 'rounded-none border-x border-white/20'}
               {activeTimeRange.label === range.label
                 ? 'bg-[#015e61] text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}
               "
-            onclick={() => setTimeRange(range)}
+              onclick={() => setTimeRange(range)}
+            >
+              {range.label}
+            </button>
+          {/each}
+        </div>
+      </div>
+
+      <!-- Informations de date et contrôles du calendrier -->
+      <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <!-- Titre avec icône -->
+        <div class="flex items-center">
+          <Calendar class="mr-2" />
+          <p class="text-md text-gray-600 text-xl font-semibold">Aujourd'hui, {formattedDate}</p>
+        </div>
+
+        <!-- Boutons de vue alignés au centre -->
+        <div class="flex items-center bg-gray-100 p-1 rounded-lg">
+          <button
+            class="px-5 py-2 rounded-lg transition-colors {activeView === 'timeGridDay'
+              ? 'bg-white text-[#015e61] font-medium'
+              : 'text-gray-500 hover:bg-white hover:text-[#015e61]'}"
+            onclick={() => setView('timeGridDay')}
           >
-            {range.label}
+            Jour
           </button>
-        {/each}
-      </div>
-    </div>
+          <button
+            class="px-5 py-2 rounded-lg transition-colors {activeView === 'timeGridWeek'
+              ? 'bg-white text-[#015e61] font-medium'
+              : 'text-gray-500 hover:bg-white hover:text-[#015e61]'}"
+            onclick={() => setView('timeGridWeek')}
+          >
+            Semaine
+          </button>
+          <button
+            class="px-5 py-2 rounded-lg transition-colors {activeView === 'dayGridMonth'
+              ? 'bg-white text-[#015e61] font-medium'
+              : 'text-gray-500 hover:bg-white hover:text-[#015e61]'}"
+            onclick={() => setView('dayGridMonth')}
+          >
+            Mois
+          </button>
+        </div>
 
-    <!-- Informations de date et contrôles du calendrier -->
-    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-      <!-- Titre avec icône -->
-      <div class="flex items-center">
-        <Calendar class="mr-2" />
-        <p class="text-md text-gray-600 text-xl font-semibold">Aujourd'hui, {formattedDate}</p>
-      </div>
-
-      <!-- Boutons de vue alignés au centre -->
-      <div class="flex items-center bg-gray-100 p-1 rounded-lg">
+        <!-- Bouton New Activity -->
         <button
-          class="px-5 py-2 rounded-lg transition-colors {activeView === 'timeGridDay'
-            ? 'bg-white text-[#015e61] font-medium'
-            : 'text-gray-500 hover:bg-white hover:text-[#015e61]'}"
-          onclick={() => setView('timeGridDay')}
+          onclick={handleNewActivity}
+          class="bg-[#015e61] hover:bg-[#014446] text-white py-2 px-6 rounded-xl flex items-center gap-2 font-semibold transition-colors"
         >
-          Jour
-        </button>
-        <button
-          class="px-5 py-2 rounded-lg transition-colors {activeView === 'timeGridWeek'
-            ? 'bg-white text-[#015e61] font-medium'
-            : 'text-gray-500 hover:bg-white hover:text-[#015e61]'}"
-          onclick={() => setView('timeGridWeek')}
-        >
-          Semaine
-        </button>
-        <button
-          class="px-5 py-2 rounded-lg transition-colors {activeView === 'dayGridMonth'
-            ? 'bg-white text-[#015e61] font-medium'
-            : 'text-gray-500 hover:bg-white hover:text-[#015e61]'}"
-          onclick={() => setView('dayGridMonth')}
-        >
-          Mois
+          <Plus class="h-5 w-5" />
+          Nouvelle activité
         </button>
       </div>
 
-      <!-- Bouton New Activity -->
-      <button
-        onclick={handleNewActivity}
-        class="bg-[#015e61] hover:bg-[#014446] text-white py-2 px-6 rounded-xl flex items-center gap-2 font-semibold transition-colors"
-      >
-        <Plus class="h-5 w-5" />
-        Nouvelle activité
-      </button>
-    </div>
+      <!-- Contrôles de navigation -->
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-3">
+          <button
+            onclick={prevPeriod}
+            class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+          >
+            <ChevronLeft class="w-6 h-6 text-gray-600" />
+          </button>
+          <button
+            onclick={nextPeriod}
+            class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+          >
+            <ChevronRight class="w-6 h-6 text-gray-600" />
+          </button>
+          <button
+            onclick={goToday}
+            class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+          >
+            Aujourd'hui
+          </button>
+        </div>
+        <div class="text-lg font-medium text-gray-700">
+          <!-- Titre dynamique de la période courante -->
+          <span>{currentViewTitle}</span>
+        </div>
+        <div class="w-28">
+          <!-- Élément vide pour maintenir l'alignement -->
+        </div>
+      </div>
 
-    <!-- Contrôles de navigation -->
-    <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center space-x-3">
-        <button
-          onclick={prevPeriod}
-          class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
-        >
-          <ChevronLeft class="w-6 h-6 text-gray-600" />
-        </button>
-        <button
-          onclick={nextPeriod}
-          class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
-        >
-          <ChevronRight class="w-6 h-6 text-gray-600" />
-        </button>
-        <button
-          onclick={goToday}
-          class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
-        >
-          Aujourd'hui
-        </button>
+      <!-- Calendrier -->
+      <div class="border border-gray-200 rounded-lg overflow-hidden">
+        <div bind:this={calendarEl} class="w-full"></div>
       </div>
-      <div class="text-lg font-medium text-gray-700">
-        <!-- Titre dynamique de la période courante -->
-        <span>{currentViewTitle}</span>
-      </div>
-      <div class="w-28">
-        <!-- Élément vide pour maintenir l'alignement -->
-      </div>
-    </div>
-
-    <!-- Calendrier -->
-    <div class="border border-gray-200 rounded-lg overflow-hidden">
-      <div bind:this={calendarEl} class="w-full"></div>
     </div>
   </div>
 </div>
-
-<DashboardModal />
 
 <!-- Modal d'activité qui s'affiche par-dessus tout le reste -->
 {#if showModal}
