@@ -174,7 +174,7 @@
       </div>
     </div>
 
-    <div class="overflow-y-auto max-h-[calc(100vh-250px)]">
+    <div class="overflow-y-auto max-h-[calc(100vh-150px)]">
       {#each projects as project}
         <div 
           class="border-l-10 hover:bg-gray-50 cursor-pointer border-b" 
