@@ -5,6 +5,7 @@
   import { goto } from "$app/navigation"
   import "../../style/app.css"
   import ProjectsLeftPane from "../../Components/Calendar/ProjectsLeftPane.svelte";
+  import ProjectComponent from "../../Components/Projects/ProjectComponent.svelte";
   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
   const ENABLED_TELEMETRY = env.PUBLIC_ENABLED_TELEMETRY === "true";
 
@@ -138,194 +139,18 @@
   });
 </script>
 
-<div class="flex flex-col h-screen bg-gray-100">
+<div class="h-screen bg-gray-100">
   <ProjectsLeftPane />
 
   <!-- Main Content -->
-  <main class="flex-1 container mx-auto p-4 overflow-y-auto">
-    <div class="flex flex-col md:flex-row gap-6">
-      <!-- Projet List -->
-      <div class="w-full md:w-1/3 bg-white rounded-lg shadow-sm">
-        <div class="p-4 border-b">
-          <h2 class="text-lg font-medium text-gray-800">Tableau de bord</h2>
-        </div>
-        
-        {#if loading}
-          <div class="p-4 text-center">Chargement des projets...</div>
-        {:else if error}
-          <div class="p-4 text-center text-red-500">{error}</div>
-        {:else}
-          <div class="overflow-y-auto max-h-[calc(100vh-250px)]">
-            {#each projects as project}
-              <div 
-                class="border-l-4 hover:bg-gray-50 cursor-pointer border-b" 
-                style="border-left-color: {project.color === 'blue' ? '#93c5fd' : project.color === 'pink' ? '#f9a8d4' : project.color === 'yellow' ? '#fde68a' : project.color === 'red' ? '#fca5a5' : '#d1d5db'}"
-                on:click={() => selectProject(project)}
-              >
-                <div class="p-4">
-                  <div class="flex justify-between items-center">
-                    <div>
-                      <span class="text-sm font-medium text-gray-600">{project.id}</span>
-                      <span class="text-xs text-gray-500 ml-2">|</span>
-                      <span class="text-xs text-gray-500 ml-2">{project.lead.includes('Chargé') ? 'Chargé·e de projet' : 'Co-chargé·e de projet'}</span>
-                    </div>
-                  </div>
-                  <div class="mt-1 text-sm font-medium">{project.name}</div>
-                  
-                  <div class="mt-2 flex items-center text-xs text-gray-500">
-                    <div class="mr-4">
-                      <span>Temps passé</span>
-                      <div class="font-medium text-gray-700">{formatHours(project.timeSpent)}</div>
-                    </div>
-                    <div class="mr-4">
-                      <span>Temps estimé</span>
-                      <div class="font-medium text-gray-700">{formatHours(project.timeEstimated)}</div>
-                    </div>
-                    <div>
-                      <span>Temps restant</span>
-                      <div class="font-medium text-gray-700">{formatHours(project.timeRemaining)}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            {/each}
-          </div>
-          
-          <div class="p-4 border-t flex items-center">
-            <button class="text-sm text-gray-500 flex items-center">
-              Projets archivés
-              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-          </div>
-        {/if}
-      </div>
+  <div class="flex flex-col gap-6" style="padding-left: 300px;">
       
-      <!-- Projet Details -->
-      <div class="w-full md:w-2/3">
-        {#if selectedProject}
-          <div class="bg-white rounded-lg shadow-sm mb-6">
-            <div class="p-4 border-b flex items-center justify-between">
-              <div>
-                <div class="flex items-center">
-                  <div 
-                    class="w-6 h-full rounded-l-lg mr-2" 
-                    style="background-color: {selectedProject.color === 'blue' ? '#93c5fd' : selectedProject.color === 'pink' ? '#f9a8d4' : selectedProject.color === 'yellow' ? '#fde68a' : selectedProject.color === 'red' ? '#fca5a5' : '#d1d5db'}"
-                  ></div>
-                  <h2 class="text-lg font-medium text-gray-800">{selectedProject.id}</h2>
-                </div>
-                <p class="text-sm text-gray-500 mt-1">{selectedProject.name}</p>
-              </div>
-            </div>
-            
-            <div class="p-4">
-              <div class="mb-4">
-                <h3 class="text-sm font-medium text-gray-700 mb-2">Chargé·e de projet</h3>
-                <div class="text-sm">{selectedProject.lead}</div>
-              </div>
-              
-              <div class="mb-4">
-                <h3 class="text-sm font-medium text-gray-700 mb-2">Co-chargé·e de projet</h3>
-                {#each selectedProject.collaborators.filter(c => c.role === 'Co-chargé·e de projet') as collaborator}
-                  <div class="flex justify-between items-center mb-2">
-                    <div class="flex items-center">
-                      <div class="text-sm">{collaborator.name}</div>
-                      <button class="ml-2 text-gray-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                      </button>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                      <div class="text-right">
-                        <div class="text-xs text-gray-500">Temps passé</div>
-                        <div class="font-medium text-sm">{formatHours(collaborator.timeSpent)}</div>
-                      </div>
-                      <div class="text-right">
-                        <div class="text-xs text-gray-500">Temps estimé</div>
-                        <div class="font-medium text-sm">{formatHours(collaborator.timeEstimated)}</div>
-                      </div>
-                      <div class="text-right">
-                        <div class="text-xs text-gray-500">Temps restant</div>
-                        <div class="font-medium text-sm">{formatHours(collaborator.timeRemaining)}</div>
-                      </div>
-                    </div>
-                  </div>
-                {/each}
-                <button class="text-sm text-gray-500 mt-2 flex items-center">
-                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                  </svg>
-                  Ajouter
-                </button>
-              </div>
-              
-              <div>
-                <h3 class="text-sm font-medium text-gray-700 mb-2">Collaborateurs</h3>
-                {#each selectedProject.collaborators.filter(c => c.role !== 'Chargé·e de projet' && c.role !== 'Co-chargé·e de projet') as collaborator}
-                  <div class="flex justify-between items-center mb-2">
-                    <div class="flex items-center">
-                      <div class="text-sm">{collaborator.name}</div>
-                      <button class="ml-2 text-gray-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                      </button>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                      <div class="text-right">
-                        <div class="text-xs text-gray-500">Temps passé</div>
-                        <div class="font-medium text-sm">{formatHours(collaborator.timeSpent)}</div>
-                      </div>
-                      <div class="text-right">
-                        <div class="text-xs text-gray-500">Temps estimé</div>
-                        <div class="font-medium text-sm">{formatHours(collaborator.timeEstimated)}</div>
-                      </div>
-                      <div class="text-right">
-                        <div class="text-xs text-gray-500">Temps restant</div>
-                        <div class="font-medium text-sm">{formatHours(collaborator.timeRemaining)}</div>
-                      </div>
-                    </div>
-                  </div>
-                {/each}
-                <button class="text-sm text-gray-500 mt-2 flex items-center">
-                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                  </svg>
-                  Ajouter
-                </button>
-              </div>
-              
-              <div class="mt-6 pt-4 border-t">
-                <div class="flex justify-between items-center">
-                  <h3 class="text-base font-medium">Total</h3>
-                  <div class="flex items-center space-x-4">
-                    <div class="text-right">
-                      <div class="text-xs text-gray-500">Temps passé</div>
-                      <div class="font-medium text-sm">{formatHours(selectedProject.timeSpent)}</div>
-                    </div>
-                    <div class="text-right">
-                      <div class="text-xs text-gray-500">Temps estimé</div>
-                      <div class="font-medium text-sm">{formatHours(selectedProject.timeEstimated)}</div>
-                    </div>
-                    <div class="text-right">
-                      <div class="text-xs text-gray-500">Temps restant</div>
-                      <div class="font-medium text-sm">{formatHours(selectedProject.timeRemaining)}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        {:else}
-          <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-            <p class="text-gray-500">Sélectionnez un projet pour voir les détails</p>
-          </div>
-        {/if}
-      </div>
+    <!-- Project Details -->
+    <div class="p-4 border-b">
+      <h2 class="text-lg font-medium text-gray-800">Vos projets en cours</h2>
     </div>
-  </main>
+    {#each projects as project}
+      <ProjectComponent {project} />
+    {/each}
+  </div>
 </div>
