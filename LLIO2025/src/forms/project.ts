@@ -5,7 +5,19 @@ export const projectTemplate = {
         return {
             name: '',
             description: '',
-            status: 0,
+import type { CreateProject } from "../Models";
+import { ProjectStatus } from "../lib/types/enums";
+
+export const projectTemplate = {
+    generate: (): CreateProject => {
+        return {
+            name: '',
+            description: '',
+            status: ProjectStatus.InProgress,
+            billable: false,
+        };
+    },
+} as const
             billable: false,
         };
     },
