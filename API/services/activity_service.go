@@ -4,7 +4,6 @@ import (
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
 	"llio-api/repositories"
-	"strconv"
 
 	"github.com/jinzhu/copier"
 )
@@ -41,7 +40,7 @@ func VerifyCreateActivityJSON(activityDTO *DTOs.ActivityDTO) []DTOs.FieldErrorDT
 	return errors
 }
 
-func CreateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.ActivityDTO, error) {
+func CreateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.ActivityInfoDTO, error) {
 
 	// Mapper le body vers le modèle Activity
 
@@ -56,7 +55,7 @@ func CreateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.ActivityDTO, error) {
 		return nil, err
 	}
 
-	activityDTOResponse := &DTOs.ActivityDTO{}
+	activityDTOResponse := &DTOs.ActivityInfoDTO{}
 	err = copier.Copy(activityDTOResponse, activityDAOAded)
 	return activityDTOResponse, err
 }
@@ -89,7 +88,7 @@ func GetActivityById(id string) (*DTOs.ActivityDTO, error) {
 	return activityDTO, err
 }
 
-func UpdateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.ActivityDTO, error) {
+func UpdateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.ActivityInfoDTO, error) {
 
 	activityDAO := &DAOs.Activity{}
 	err := copier.Copy(activityDAO, activityDTO)
@@ -102,11 +101,7 @@ func UpdateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.ActivityDTO, error) {
 		return nil, err
 	}
 
-	activityDTOResponse := &DTOs.ActivityDTO{}
-	project, err := GetProjectById(strconv.Itoa(activity.ProjectId))
-		if err == nil && project != nil {
-			activityDTO.ProjectName = project.Name
-		}
+	activityDTOResponse := &DTOs.ActivityInfoDTO{}
 	err = copier.Copy(activityDTOResponse, activityDAOUpdated)
 	return activityDTOResponse, err
 }
@@ -115,26 +110,20 @@ func DeleteActivity(id string) error {
 	return repositories.DeleteActivity(id)
 }
 
-func GetActivitiesFromRange(from, to, idUser string) ([]*DTOs.ActivityDTO, error) {
+func GetActivitiesFromRange(from, to, idUser string) ([]*DTOs.ActivityInfoDTO, error) {
 	activities, err := repositories.GetActivitiesFromRange(from, to, idUser)
 	if err != nil {
 		return nil, err
 	}
 
-	var activitiesDTOs []*DTOs.ActivityDTO
+	var activitiesDTOs []*DTOs.ActivityInfoDTO
 	for _, activity := range activities {
-		activityDTO := &DTOs.ActivityDTO{}
+		activityDTO := &DTOs.ActivityInfoDTO{}
 		err = copier.Copy(activityDTO, activity)
 		if err != nil {
 			return nil, err
 		}
-
-		project, err := GetProjectById(strconv.Itoa(activity.ProjectId))
-		if err == nil && project != nil {
-			activityDTO.ProjectName = project.Name
-		}
 		activitiesDTOs = append(activitiesDTOs, activityDTO)
 	}
-
 	return activitiesDTOs, nil
 }
