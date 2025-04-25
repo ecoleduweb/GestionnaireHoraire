@@ -146,7 +146,7 @@
       totalTimeSpent: 55
       },
       {
-      id: "AT-123",
+      id: "AT-789",
       name: "Nommer le projet",
       color: "blue",
       lead: "Katell Arnault de la Ménardière",
@@ -174,7 +174,7 @@
       totalTimeSpent: 65
       },
       {
-      id: "AT-456",
+      id: "AT-987",
       name: "Le projet de Marie Amélie",
       color: "pink",
       lead: "Katell Arnault de la Ménardière",
@@ -209,7 +209,7 @@
       totalTimeSpent: 52
       },
       {
-      id: "FO-115",
+      id: "FO-789",
       name: "Graphisme 101",
       color: "yellow",
       lead: "Katell Arnault de la Ménardière",
@@ -232,7 +232,7 @@
       totalTimeSpent: 27
       },
       {
-      id: "RA-224",
+      id: "RA-987",
       name: "Noisette Steve",
       color: "red",
       lead: "Steve Joncoux",
