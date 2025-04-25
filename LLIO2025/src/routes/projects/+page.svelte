@@ -151,7 +151,7 @@
 </script>
 
 <div class="bg-gray-100">
-  <ProjectsLeftPane />
+  <ProjectsLeftPane {projects} />
   <div class="flex flex-col" style="padding-left: 300px;">
     <!-- Project Details -->
     <div class="p-4">

@@ -113,3 +113,8 @@ export const formatViewTitle = (viewType: string, date: Date): string => {
     year: 'numeric',
   });
 };
+
+// Fonction pour formater les heures pour l'affichage des projets
+export const formatHours = (hours) => {
+  return hours ? `${Math.floor(hours)}h${(hours-Math.floor(hours) == 0 ? "00": (hours-Math.floor(hours))*60)}` : "-";
+};

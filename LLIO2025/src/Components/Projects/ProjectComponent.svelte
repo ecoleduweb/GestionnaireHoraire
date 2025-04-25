@@ -2,6 +2,7 @@
   import { Plus } from 'lucide-svelte';
   import { slide } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
+  import { formatHours } from '../../utils/date';
 
   interface Category {
     name: string;
@@ -27,21 +28,7 @@
   export let project: Project;
   let isDetailsVisible = [];
   project.coLeads = project.coLeads || [];
-
-  const formatHours = (hours) => {
-    return hours ? `${hours}h00` : '-';
-  };
 </script>
-
-<style>
-  .project {
-    width: auto;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 15px;
-  }
-</style>
 
 <div class="project">
   <!-- Contenu du dashboard -->
@@ -250,3 +237,13 @@
     </div>
   </div>
 </div>
+
+<style>
+  .project {
+    width: auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 15px;
+  }
+</style>

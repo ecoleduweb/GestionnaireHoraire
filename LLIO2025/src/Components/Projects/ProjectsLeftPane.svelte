@@ -1,112 +1,74 @@
 <script lang="ts">
   import { goto } from "$app/navigation"
-  import { onMount } from "svelte";
   import { quintOut } from "svelte/easing";
   import { slide } from "svelte/transition";
   import ProjectItem from "./ProjectPaneItem.svelte";
 
-  let projects = [];
-  let archivedProjects = [];
-  let isArchivedVisible = false;
-
-  /*const fetchProjects = async () => {
-    const allProjects = await ProjectApiService.getProjects();
-    projects = allProjects.filter(project => !project.archived);
-    archivedProjects = allProjects.filter(project => project.archived);
-  }*/
-
-  function mockProjects() {
-    return [
-      {
-        id: "AT-123",
-        name: "Nommer le projet",
-        color: "blue",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 205,
-        timeEstimated: 300,
-        timeRemaining: 95,
-        archived: false
-      },
-      {
-        id: "AT-456",
-        name: "Le projet de Marie Amélie",
-        color: "pink",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 85,
-        timeEstimated: 450,
-        timeRemaining: 365,
-        archived: false
-      },
-      {
-        id: "FO-115",
-        name: "Graphisme 101",
-        color: "yellow",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 40,
-        timeEstimated: 0,
-        timeRemaining: 0,
-        archived: false
-      },
-      {
-        id: "RA-224",
-        name: "Noisette Steve",
-        color: "red",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 450,
-        timeEstimated: 400,
-        timeRemaining: -50,
-        archived: false
-      },
-      {
-        id: "AT-123",
-        name: "Nommer le projet",
-        color: "blue",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 205,
-        timeEstimated: 300,
-        timeRemaining: 95,
-        archived: true
-      },
-      {
-        id: "AT-456",
-        name: "Le projet de Marie Amélie",
-        color: "pink",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 85,
-        timeEstimated: 450,
-        timeRemaining: 365,
-        archived: true
-      },
-      {
-        id: "FO-115",
-        name: "Graphisme 101",
-        color: "yellow",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 40,
-        timeEstimated: 0,
-        timeRemaining: 0,
-        archived: true
-      },
-      {
-        id: "RA-224",
-        name: "Noisette Steve",
-        color: "red",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 550,
-        timeEstimated: 400,
-        timeRemaining: -150,
-        archived: true
-      },
-    ];
-  }
-
-  onMount(() => {
-    //fetchProjects();
-    const allProjects = mockProjects();
-    projects = allProjects.filter(project => !project.archived);
-    archivedProjects = allProjects.filter(project => project.archived);
-  });
+  let { projects } = $props();
+  let isArchivedVisible = $state(false);
 </script>
+
+<div class="dashboard-panel">
+  <!-- En-tête du dashboard -->
+  <div class="dashboard-header">Tableau de bord</div>
+
+  <!-- Contenu du dashboard -->
+  <div class="dashboard-content">
+    <!-- Éléments du dashboard -->
+    <div class="dashboard-item">
+      <div class="inline-flex rounded-md shadow-xs" role="group">
+        <button 
+          onclick={() => goto('./calendar')}
+          type="button" 
+          class="py-2 px-4 text-sm transition-colors font-semibold bg-gray-200 text-gray-900 rounded-l-lg hover:bg-[#014446] hover:text-white cursor-pointer"
+          >
+          Calendrier
+        </button>
+        <button 
+          type="button" 
+          class="px-4 py-2 text-sm transition-colors font-semibold bg-[#014446] text-white rounded-r-lg"
+          >
+          Projets
+        </button>
+      </div>
+    </div>
+
+    <div class="overflow-y-auto max-h-[calc(100vh-150px)]">
+      {#each projects.filter(x => !x.isArchived) as project}
+        <ProjectItem project={project} />
+      {/each}
+
+      <!-- Projets archivés -->
+      {#if projects.some(x => x.isArchived)}
+        <div>
+          <button
+            class="w-full p-4 flex items-center justify-between text-gray-600 hover:bg-gray-50 cursor-pointer"
+            onclick={() => (isArchivedVisible = !isArchivedVisible)}
+          >
+            <span class="font-medium">Projets archivés ({projects.filter(x => x.isArchived).length})</span>
+            <svg
+              class="w-5 h-5 transform transition-transform {isArchivedVisible ? 'rotate-180' : ''}"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </button>
+
+          {#if isArchivedVisible}
+            <div transition:slide={{ duration: 300, easing: quintOut }}>
+              {#each projects.filter(x => x.isArchived) as project}
+                <ProjectItem project={project} />
+              {/each}
+            </div>
+          {/if}
+        </div>
+      {/if}
+    </div>
+  </div>
+</div>
 
 <style>
   .dashboard-panel {
@@ -146,63 +108,3 @@
     background-color: #f5f5f5;
   }
 </style>
-
-<div class="dashboard-panel">
-  <!-- En-tête du dashboard -->
-  <div class="dashboard-header">Tableau de bord</div>
-
-  <!-- Contenu du dashboard -->
-  <div class="dashboard-content">
-    <!-- Éléments du dashboard -->
-    <div class="dashboard-item">
-      <div class="inline-flex rounded-md shadow-xs" role="group">
-        <button 
-          onclick={() => goto('./calendar')}
-          type="button" 
-          class="py-2 px-4 text-sm transition-colors font-semibold bg-gray-200 text-gray-900 rounded-l-lg hover:bg-[#014446] hover:text-white cursor-pointer"
-          >
-          Calendrier
-        </button>
-        <button 
-          type="button" 
-          class="px-4 py-2 text-sm transition-colors font-semibold bg-[#014446] text-white rounded-r-lg"
-          >
-          Projets
-        </button>
-      </div>
-    </div>
-
-    <div class="overflow-y-auto max-h-[calc(100vh-150px)]">
-      {#each projects as project}
-        <ProjectItem project={project} />
-      {/each}
-
-      <!-- Projets archivés -->
-      <div>
-        <button
-          class="w-full p-4 flex items-center justify-between text-gray-600 hover:bg-gray-50 cursor-pointer"
-          onclick={() => (isArchivedVisible = !isArchivedVisible)}
-        >
-          <span class="font-medium">Projets archivés ({archivedProjects.length})</span>
-          <svg
-            class="w-5 h-5 transform transition-transform {isArchivedVisible ? 'rotate-180' : ''}"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"
-            ></path>
-          </svg>
-        </button>
-
-        {#if isArchivedVisible}
-          <div transition:slide={{ duration: 300, easing: quintOut }}>
-            {#each archivedProjects as project}
-              <ProjectItem project={project} />
-            {/each}
-          </div>
-        {/if}
-      </div>
-    </div>
-  </div>
-</div>

@@ -1,9 +1,7 @@
 <script lang="ts">
-  export let project;
-
-  const formatHours = (hours) => {
-    return hours ? `${hours}h00` : '-';
-  };
+  import { formatHours } from "../../utils/date";
+  
+  let { project } = $props();
 </script>
 
 <div class="border-l-10 border-b" style="border-left-color: {project.color}">
