@@ -3,30 +3,9 @@
   import { slide } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
   import { formatHours } from '../../utils/date';
-
-  interface Category {
-    name: string;
-    timeSpent: number;
-    timeEstimated: number;
-  }
-
-  interface Employee {
-    name: string;
-    categories: Category[];
-  }
-
-  interface Project {
-    id: string;
-    name: string;
-    color: string;
-    lead: string;
-    coLeads: string[];
-    employees: Employee[];
-    totalTimeSpent: number;
-  }
-
-  export let project: Project;
-  let isDetailsVisible = [];
+  
+  let { project } = $props();
+  let isDetailsVisible = $state([]);
   project.coLeads = project.coLeads || [];
 </script>
 

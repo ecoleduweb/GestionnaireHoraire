@@ -1,10 +1,11 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
   import { ClientTelemetry } from "$lib/tracer"
   import { env } from "$env/dynamic/public"
   import "../../style/app.css"
   import ProjectsLeftPane from "../../Components/Projects/ProjectsLeftPane.svelte";
   import ProjectComponent from "../../Components/Projects/ProjectComponent.svelte";
+  import type { Project } from '../../Models/index.ts';
   const ENABLED_TELEMETRY = env.PUBLIC_ENABLED_TELEMETRY === "true";
 
   if (ENABLED_TELEMETRY) {
@@ -13,8 +14,8 @@
   }
 
   // État des projets
-  let projects = [];
-  let loading = true;
+  let projects = $state<Project[]>([]);
+  let isLoading = $state(false);
 
   function mockProjects() {
     return [
@@ -277,7 +278,7 @@
 
   onMount(() => {
     projects = mockProjects();
-    loading = false;
+    isLoading = false;
   });
 </script>
 
