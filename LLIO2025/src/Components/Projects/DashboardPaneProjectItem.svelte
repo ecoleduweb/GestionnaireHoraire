@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { formatHours } from "../../utils/date";
-  
+  import { formatHours } from '../../utils/date';
+
   let { project } = $props();
 </script>
 
@@ -14,22 +14,24 @@
       </div>
     </div>
 
-    <div class="mt-2 flex items-center text-xs text-gray-500">
+    <div class="mt-2 flex items-center text-xs">
       <div class="mr-16">
-        <div class="font-bold text-black">Total</div>
+        <div class="font-bold">Total</div>
       </div>
-      <div class="mr-4">
-        <div class="font-bold text-black">{formatHours(project.timeSpent)}</div>
-      </div>
-      <div class="mr-4">
-        <div class="text-gray-400">{formatHours(project.timeEstimated)}</div>
-      </div>
-      <div>
-        {#if project.timeRemaining < 0}
-          <div class="font-medium text-red-700">{formatHours(project.timeRemaining)}</div>
-        {:else}
-          <div class="text-gray-400">{formatHours(project.timeRemaining)}</div>
-        {/if}
+      <div class="flex">
+        <div class="w-14">
+          <div class="font-bold">{formatHours(project.timeSpent)}</div>
+        </div>
+        <div class="w-14">
+          <div class="text-gray-400">{formatHours(project.timeEstimated)}</div>
+        </div>
+        <div>
+          {#if project.timeRemaining < 0}
+            <div class="font-medium text-red-700">{formatHours(project.timeRemaining)}</div>
+          {:else}
+            <div class="text-gray-400">{formatHours(project.timeRemaining)}</div>
+          {/if}
+        </div>
       </div>
     </div>
   </div>

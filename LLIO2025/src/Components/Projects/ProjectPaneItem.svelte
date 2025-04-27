@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatHours } from "../../utils/date";
+  import { formatHours } from '../../utils/date';
 
   let { project } = $props();
 </script>
@@ -25,15 +25,49 @@
       <div class="mr-3">
         <span>Temps estimé</span>
         <hr class="my-1" />
-        <div class="text-gray-400">{formatHours(project.timeEstimated)}</div>
+        <div class="text-gray-400">
+          {formatHours(
+            project.employees.reduce(
+              (sum, emp) =>
+                sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeEstimated, 0),
+              0
+            )
+          )}
+        </div>
       </div>
       <div>
         <span>Temps restant</span>
         <hr class="my-1" />
-        {#if project.timeRemaining < 0}
-          <div class="font-medium text-red-700">{formatHours(project.timeRemaining)}</div>
+        {#if project.employees.reduce((sum, emp) => sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeEstimated, 0), 0) - project.employees.reduce((sum, emp) => sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeSpent, 0), 0) < 0}
+          <div class="font-medium text-red-700">
+            {formatHours(
+              project.employees.reduce(
+                (sum, emp) =>
+                  sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeEstimated, 0),
+                0
+              ) -
+                project.employees.reduce(
+                  (sum, emp) =>
+                    sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeSpent, 0),
+                  0
+                )
+            )}
+          </div>
         {:else}
-          <div class="text-gray-400">{formatHours(project.timeRemaining)}</div>
+          <div class="text-gray-400">
+            {formatHours(
+              project.employees.reduce(
+                (sum, emp) =>
+                  sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeEstimated, 0),
+                0
+              ) -
+                project.employees.reduce(
+                  (sum, emp) =>
+                    sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeSpent, 0),
+                  0
+                )
+            )}
+          </div>
         {/if}
       </div>
     </div>
