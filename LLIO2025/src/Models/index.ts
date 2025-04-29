@@ -27,6 +27,7 @@ export interface Project {
     coLeads: string[];
     employees: Employee[];
     totalTimeSpent: number;
+    isArchived?: boolean;
 }
 
 export interface Employee {

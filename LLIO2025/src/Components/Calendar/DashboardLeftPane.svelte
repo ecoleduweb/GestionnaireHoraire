@@ -18,7 +18,7 @@
         timeSpent: 205.25,
         timeEstimated: 300,
         timeRemaining: 94.75,
-        archived: false
+        isArchived: false
       },
       {
         id: "AT-456",
@@ -28,7 +28,7 @@
         timeSpent: 85.5,
         timeEstimated: 450,
         timeRemaining: 364.5,
-        archived: false
+        isArchived: false
       },
       {
         id: "FO-115",
@@ -38,7 +38,7 @@
         timeSpent: 40,
         timeEstimated: 0,
         timeRemaining: 0,
-        archived: false
+        isArchived: false
       },
       {
         id: "RA-224",
@@ -48,7 +48,7 @@
         timeSpent: 450,
         timeEstimated: 400,
         timeRemaining: -50,
-        archived: false
+        isArchived: false
       },
       {
         id: "AT-123",
@@ -58,7 +58,7 @@
         timeSpent: 205,
         timeEstimated: 300,
         timeRemaining: 95,
-        archived: true
+        isArchived: true
       },
       {
         id: "AT-456",
@@ -68,7 +68,7 @@
         timeSpent: 85,
         timeEstimated: 450,
         timeRemaining: 365,
-        archived: true
+        isArchived: true
       },
       {
         id: "FO-115",
@@ -78,7 +78,7 @@
         timeSpent: 40,
         timeEstimated: 0,
         timeRemaining: 0,
-        archived: true
+        isArchived: true
       },
       {
         id: "RA-224",
@@ -88,7 +88,7 @@
         timeSpent: 550,
         timeEstimated: 400,
         timeRemaining: -150,
-        archived: true
+        isArchived: true
       },
     ];
   }

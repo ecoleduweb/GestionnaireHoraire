@@ -114,7 +114,17 @@ export const formatViewTitle = (viewType: string, date: Date): string => {
   });
 };
 
-// Fonction pour formater les heures pour l'affichage des projets
-export const formatHours = (hours) => {
-  return hours ? `${Math.floor(hours)}h${(hours-Math.floor(hours) == 0 ? "00": (hours-Math.floor(hours))*60)}` : "-";
-};
+export const formatHours = (hours: number | null | undefined): string => {  
+  if (!hours && hours !== 0) return "-";  
+
+  const hoursInt = Math.floor(hours);  
+  const minutes = Math.round((hours - hoursInt) * 60);  
+
+  // Format « h00 », « h05 », « h15 », etc.  
+  return `${hoursInt}h${minutes === 0  
+    ? "00"  
+    : minutes < 10  
+      ? `0${minutes}`  
+      : minutes  
+  }`;  
+};  
