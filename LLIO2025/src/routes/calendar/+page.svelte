@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { CalendarService } from '../../services/calendar.service';
   import { UserApiService } from '../../services/UserApiService';
+  import { CategoryApiService } from '../../services/CategoryApiService';
+  import { ProjectApiService } from '../../services/ProjectApiService';
   import { CalendarService as CS } from '../../services/calendar.service';
   import { onMount } from 'svelte';
   import ActivityModal from '../../Components/Calendar/ActivityModal.svelte';
@@ -94,6 +96,24 @@
     }
   }
 
+  // Fonction pour charger les catégories
+  async function loadCategories() {
+    try {
+      categories = await CategoryApiService.getAllCategories();
+    } catch (error) {
+      console.error('Erreur lors du chargement des catégories:', error);
+    }
+  }
+
+  // Fonction pour charger les projets
+  async function loadProjects() {
+    try {
+      projects = await ProjectApiService.getAllProjects();
+    } catch (error) {
+      console.error('Erreur lors du chargement des projets:', error);
+    }
+  }
+
   onMount(async () => {
     if (calendarEl) {
       calendarService = new CS();
@@ -184,6 +204,10 @@
       updateViewTitle();
 
       await loadActivities();
+
+      await loadCategories();
+
+      await loadProjects();
     }
   });
 
