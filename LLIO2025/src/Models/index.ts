@@ -27,6 +27,8 @@ export interface Project {
 export interface Category {
     id: number;
     name: string;
+    description?: string;
+    billable?: boolean;
 }
 
 export interface ActivityUpdateResponse 

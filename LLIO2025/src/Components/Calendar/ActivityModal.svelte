@@ -3,6 +3,7 @@
   import type { Activity, User, Project, Category } from '../../Models';
   import { activityTemplate } from '../../forms/activity';
   import { ActivityApiService } from '../../services/ActivityApiService';
+  import { CategoryApiService } from '../../services/CategoryApiService';
   import {
     getHoursFromDate,
     getMinutesFromDate,
@@ -11,7 +12,7 @@
     applyEndTime as applyEndTimeUtil,
   } from '../../utils/date';
   import '../../style/app.css';
-  import { ChevronDown, X, Search, Plus } from 'lucide-svelte';
+  import { ChevronDown, X, Plus } from 'lucide-svelte';
   import ConfirmationCreateCategory from './ConfirmationCreateCategory.svelte';
 
   type Props = {
@@ -42,11 +43,12 @@
   const editMode = activityToEdit !== null;
 
   let initialActivity = activityTemplate.generate(categories);
-  initialActivity.projectId = '';
+  initialActivity.projectId = '' as unknown as number;
 
   let isSubmitting = false;
   let showCategoryConfirmModal = $state(false);
   let categoryToAdd = $state('');
+  let shouldRefreshCategories = $state(false);
 
   if (selectedDate && selectedDate.start) {
     const { startDate, endDate } = initializeActivityDates(selectedDate.start);
@@ -100,41 +102,60 @@
       : categories
   );
 
+  // Fonction pour rafraîchir les catégories
+  async function refreshCategories() {
+    try {
+      const updatedCategories = await CategoryApiService.getAllCategories();
+      categories = updatedCategories;
+      return updatedCategories;
+    } catch (error) {
+      console.error('Erreur lors du rafraîchissement des catégories:', error);
+      return categories;
+    }
+  }
+
+  // Rafraîchir les catégories quand le modal s'ouvre
+  $effect(() => {
+    if (show) {
+      // Si le modal est affiché et qu'un rafraîchissement est nécessaire ou si on modifie une activité
+      if (shouldRefreshCategories || activityToEdit) {
+        refreshCategories().then((updatedCategories) => {
+          // Si on modifie une activité, assurez-vous que sa catégorie est dans la liste
+          if (activityToEdit && activityToEdit.categoryId) {
+            const categoryExists = updatedCategories.some(
+              (c) => c.id === activityToEdit.categoryId
+            );
+
+            if (!categoryExists) {
+              // Si la catégorie n'est pas dans la liste, essayez de la récupérer individuellement
+              CategoryApiService.getCategoryById(activityToEdit.categoryId)
+                .then((category) => {
+                  if (category) {
+                    // Ajouter la catégorie à la liste si elle existe
+                    categories = [...updatedCategories, category];
+                  }
+                })
+                .catch((err) => {
+                  console.error(
+                    "Erreur lors de la récupération de la catégorie de l'activité:",
+                    err
+                  );
+                });
+            }
+          }
+
+          // Réinitialiser le flag
+          shouldRefreshCategories = false;
+        });
+      }
+    }
+  });
+
   // Fonction pour sélectionner une catégorie
   function selectCategory(categoryId) {
     activity.categoryId = categoryId;
     searchTerm = '';
     categoryDropdownOpen = false;
-  }
-
-  // Fonction pour ajouter une nouvelle catégorie
-  async function addNewCategory() {
-    if (!searchTerm.trim()) return;
-
-    try {
-      // Ici vous devriez utiliser votre service API pour créer une nouvelle catégorie
-      // Par exemple:
-      // const newCategory = await CategoryApiService.createCategory({ name: searchTerm });
-
-      // Pour cette démo, nous simulons simplement l'ajout d'une nouvelle catégorie
-      const newCategory = {
-        id: `temp-${Date.now()}`,
-        name: searchTerm.trim(),
-      };
-
-      // Ajouter la nouvelle catégorie à la liste existante
-      categories = [...categories, newCategory];
-
-      // Sélectionner la nouvelle catégorie
-      activity.categoryId = newCategory.id;
-
-      // Réinitialiser et fermer le dropdown
-      searchTerm = '';
-      categoryDropdownOpen = false;
-    } catch (error) {
-      console.error("Erreur lors de l'ajout d'une catégorie", error);
-      alert("Erreur lors de l'ajout de la catégorie");
-    }
   }
 
   // Gérer la fermeture du dropdown si on clique ailleurs
@@ -209,15 +230,16 @@
     if (!categoryToAdd.trim()) return;
 
     try {
-      // Ici vous devriez utiliser votre service API pour créer une nouvelle catégorie
-      // Par exemple:
-      // const newCategory = await CategoryApiService.createCategory({ name: categoryToAdd });
+      const selectedProjectId = activity.projectId;
 
-      // Pour cette démo, nous simulons simplement l'ajout d'une nouvelle catégorie
-      const newCategory = {
-        id: `temp-${Date.now()}`,
-        name: categoryToAdd.trim(),
-      };
+      const newCategory = await CategoryApiService.createCategory(
+        {
+          name: categoryToAdd.trim(),
+          description: '',
+          billable: false,
+        },
+        selectedProjectId
+      );
 
       // Ajouter la nouvelle catégorie à la liste existante
       categories = [...categories, newCategory];
@@ -485,7 +507,7 @@
                   required
                   class="form-select w-full"
                 >
-                  <option value="">Sélectionner un projet...</option>
+                  <option value="" disabled selected hidden>Sélectionner un projet...</option>
                   {#each projects as project}
                     <option value={project.id}>{project.name}</option>
                   {/each}
