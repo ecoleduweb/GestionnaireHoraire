@@ -60,11 +60,13 @@ func GetAllUsers() ([]*DTOs.UserDTO, error) {
 	var usersDTOs []*DTOs.UserDTO
 	for _, user := range users {
 		userDTO := &DTOs.UserDTO{}
-		err = copier.Copy(userDTO, user)
+		if copyErr := copier.Copy(userDTO, user); copyErr != nil {
+			return nil, copyErr
+		}
 		usersDTOs = append(usersDTOs, userDTO)
 	}
 
-	return usersDTOs, err
+	return usersDTOs, nil
 }
 
 func UpdateUserRole(userDTO *DTOs.UserDTO) (*DTOs.UserDTO, error) {
