@@ -14,7 +14,6 @@
   import frLocale from '@fullcalendar/core/locales/fr';
   import { formatViewTitle } from '../../utils/date';
   import { Plus, Calendar, ChevronLeft, ChevronRight, LogOut } from 'lucide-svelte';
-  import { date } from 'yup';
 
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
@@ -71,55 +70,51 @@
   async function loadActivities() {
     isLoading = true;
    
-    let dateDebut, dateFin, day, diff;
+    let dateStart, dateEnd, day, diff;
     try {
       switch (activeView)
       {
         case 'dayGridMonth':
-          dateDebut = new Date();
-          dateDebut.setDate(1); // Premier jour du mois
-          dateFin = new Date(dateDebut.getFullYear(), dateDebut.getMonth() + 1, 0); // Dernier jour du mois
+          dateStart = calendarService.calendar.getDate()
+          dateStart.setDate(1); // Premier jour du mois
+          dateEnd = new Date(dateStart.getFullYear(), dateStart.getMonth() + 1, 0); // Dernier jour du mois
           break;  
         
         case 'timeGridWeek':
-              dateDebut = new Date();
-              day = dateDebut.getDay();
-              diff = dateDebut.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
-              dateDebut.setDate(diff);
+              dateStart = calendarService.calendar.getDate()
+              day = dateStart.getDay();
+              diff = dateStart.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
+              dateStart.setDate(diff);
 
-              dateFin = new Date(dateDebut);
-              dateFin.setDate(dateDebut.getDate() + 6);
+              dateEnd = new Date(dateStart);
+              dateEnd.setDate(dateStart.getDate() + 6);
               break;
         case 'timeGridDay':
           
-          dateDebut = new Date();
-          dateFin = new Date(dateDebut);
+          dateStart = calendarService.calendar.getDate()
+          dateEnd = new Date(dateStart);
           break;
         default:
-        dateDebut = new Date();
-              day = dateDebut.getDay();
-              diff = dateDebut.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
-              dateDebut.setDate(diff);
+          dateStart = calendarService.calendar.getDate()
+          day = dateStart.getDay();
+          diff = dateStart.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
+          dateStart.setDate(diff);
 
-              dateFin = new Date(dateDebut);
-              dateFin.setDate(dateDebut.getDate() + 6);
-              break;
+          dateEnd = new Date(dateStart);
+          dateEnd.setDate(dateStart.getDate() + 6);
+          break;
       }
 
-      dateDebut = formatDate(dateDebut);
-      dateFin = formatDate(dateFin);
-      console.log('dateDebut', dateDebut);
-      console.log('dateFin', dateFin);
-      const activities = await ActivityApiService.getAllActivitesFromRange(dateDebut, dateFin);
-      console.log('activities', activities);
-      // const activities = await ActivityApiService.getAllActivites();
+      dateStart = formatDate(dateStart);
+      dateEnd = formatDate(dateEnd);
+      let activities = [];
+      activities = await ActivityApiService.getAllActivitesFromRange(dateStart, dateEnd);
 
       // Utiliser la méthode du service pour ajouter les activités au calendrier
       if (activities && calendarService) {
         calendarService.loadActivities(activities);
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des activités:', error);
       alert('Une erreur est survenue lors du chargement des activités.');
     } finally {
       isLoading = false;
@@ -225,6 +220,7 @@
       calendarService.setView(viewName);
       activeView = viewName;
       updateViewTitle();
+      loadActivities();
     }
   }
 
@@ -300,16 +296,19 @@
   function prevPeriod() {
     calendarService?.prev();
     updateViewTitle();
+    loadActivities();
   }
 
   function nextPeriod() {
     calendarService?.next();
     updateViewTitle();
+    loadActivities();
   }
 
   function goToday() {
     calendarService?.today();
     updateViewTitle();
+    loadActivities();
   }
 
   function setTimeRange(range) {

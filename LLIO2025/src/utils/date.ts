@@ -116,6 +116,25 @@ export const formatViewTitle = (viewType: string, date: Date): string => {
   });
 };
 
+export const startEndDatesForFormat = ()=> {
+  const startDate = new Date();
+  const endDate = new Date(startDate);
+  
+  return {
+    startDate: startDate.toLocaleString('fr-FR', { timeZone: 'UTC' }),
+    endDate: endDate.toLocaleString('fr-FR', { timeZone: 'UTC' })
+  };
+}
+
+export function formatDate(date: Date): string {
+  let laDate = new Date(date);
+  let year = laDate.getFullYear();
+  let month = (laDate.getMonth() + 1).toString(); // Les mois commencent à 0
+  let day = laDate.getDate().toString();
+
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+}
+
 export const formatHours = (hours: number | null | undefined): string => {  
   if (!hours && hours !== 0) return "-";  
 

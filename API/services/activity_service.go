@@ -4,6 +4,7 @@ import (
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
 	"llio-api/repositories"
+	"log"
 
 	"github.com/jinzhu/copier"
 )
