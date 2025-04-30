@@ -14,7 +14,7 @@ test.describe('showActivities', () => {
             UserMocks.userMeSuccess
         ])
             .apply();
-        await page.clock.install({ time: new Date('2025-03-22T012:00:00-04:00') });
+        await page.clock.install({ time: new Date('2025-03-22T12:00:00-04:00') });
         
     });
 
