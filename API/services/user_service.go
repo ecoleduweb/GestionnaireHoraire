@@ -3,6 +3,7 @@ package services
 import (
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
+	"llio-api/models/enums"
 	"llio-api/repositories"
 
 	"github.com/jinzhu/copier"
@@ -51,14 +52,20 @@ func GetUserByEmail(email string) (*DTOs.UserDTO, error) {
 	return userDTO, err
 }
 
-func GetAllUsers() ([]*DTOs.UserDTO, error) {
+func GetAllUsers(userRole *enums.UserRole) ([]*DTOs.UserDTO, error) {
+
 	users, err := repositories.GetAllUsers()
 	if err != nil {
 		return nil, err
 	}
 
 	var usersDTOs []*DTOs.UserDTO
+
 	for _, user := range users {
+		if userRole != nil && user.Role != *userRole {
+			continue
+		}
+
 		userDTO := &DTOs.UserDTO{}
 		if copyErr := copier.Copy(userDTO, user); copyErr != nil {
 			return nil, copyErr
