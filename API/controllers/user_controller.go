@@ -55,6 +55,10 @@ func GetAllUsers(c *gin.Context) {
 		return
 	}
 
+	if users == nil {
+		users = []*DTOs.UserDTO{}
+	}
+
 	c.JSON(http.StatusOK, users)
 }
 

@@ -4,7 +4,7 @@
   import { slide } from 'svelte/transition';
   import ProjectItem from './ProjectPaneItem.svelte';
   import { Plus } from 'lucide-svelte';
-  import ProjectModal from '../Project/ProjectModal.svelte';
+  import ProjectModal from './ProjectModal.svelte';
   import type { CreateProject } from '../../Models';
 
   let { projects } = $props();

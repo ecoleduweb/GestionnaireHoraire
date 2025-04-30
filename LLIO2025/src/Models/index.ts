@@ -1,5 +1,5 @@
 import { bool } from "yup";
-import { ProjectStatus } from "../lib/types/enums";
+import { ProjectStatus, UserRole } from "../lib/types/enums";
 
 export interface Activity {
     id?: number;
@@ -21,6 +21,14 @@ export interface UserInfo {
     firstName: string;
     lastName: string;
 }
+
+export interface User {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    role: UserRole;
+  }
 
 export interface Project {
     id: string;
@@ -49,11 +57,13 @@ export interface ActivityUpdateResponse {
 }
 
 export interface CreateProject {
+    id?: number;
     name: string;
     description: string;
     status: ProjectStatus;
     billable: boolean;
-}
+    manager_id: number; // Ajout du champ manager_id
+  }
 
 export interface UpdateProject {
     name: string;

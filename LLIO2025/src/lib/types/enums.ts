@@ -4,3 +4,9 @@ export enum ProjectStatus {
   Finished = 2,
   NotStarted = 3
 }
+
+export enum UserRole {
+  Employee = 0,
+  ProjectManager = 1,
+  Administrator = 2
+}

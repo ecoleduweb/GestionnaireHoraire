@@ -3,9 +3,12 @@
   import { projectTemplate } from '../../forms/project';
   import { ProjectStatus } from '../../lib/types/enums';
   import { ProjectApiService } from '../../services/ProjectApiService';
-  import type { CreateProject } from '../../Models/index';
+  import { UserApiService } from '../../services/UserApiService';
+  import type { CreateProject, User } from '../../Models/index';
   import '../../style/app.css';
   import { X } from 'lucide-svelte';
+  import { onMount } from 'svelte';
+
   type Props = {
     show: boolean;
     projectToEdit: CreateProject | null;
@@ -21,12 +24,26 @@
   let initialProject = projectTemplate.generate();
 
   let isSubmitting = $state(false);
+  let isLoading = $state(true);
+  let managers = $state<User[]>([]);
+  let error = $state<string | null>(null);
 
   const project = $state<CreateProject>(initialProject);
 
   if (projectToEdit) {
     Object.assign(project, projectToEdit);
   }
+
+  onMount(async () => {
+    try {
+      isLoading = true;
+      managers = await UserApiService.getManagerUsers();
+      isLoading = false;
+    } catch (err) {
+      error = 'Impossible de charger la liste des managers';
+      isLoading = false;
+    }
+  });
 
   const handleClose = () => {
     onClose();
@@ -110,7 +127,8 @@
   }
 
   input,
-  textarea {
+  textarea,
+  select {
     width: 100%;
     padding: 8px 12px;
     border: 1px solid #ccc;
@@ -129,13 +147,19 @@
     gap: 12px;
     margin-top: 24px;
   }
+
+  .error-text {
+    color: #e53e3e;
+    font-size: 14px;
+    margin-top: 4px;
+  }
 </style>
 
 <div class="modal-overlay">
   <div class="modal">
     <div class="modal-header">
-      <h2 class="modal-title">Créer un nouveau projet</h2>
-      <button type="button" class="text-white hover:text-gray-200" onclick={handleClose}>
+      <h2 class="modal-title">{editMode ? 'Modifier le projet' : 'Créer un nouveau projet'}</h2>
+      <button type="button" class="text-black hover:text-gray-600" onclick={handleClose}>
         <X />
       </button>
     </div>
@@ -151,6 +175,35 @@
         <div class="form-group">
           <label for="project-name">Identifiant unique du projet*</label>
           <input id="project-name" name="name" type="text" bind:value={project.name} required />
+        </div>
+
+        <div class="form-group">
+          <label for="project-manager">Manager du projet*</label>
+          {#if isLoading}
+            <div class="py-2 px-4 bg-gray-100 rounded">Chargement des managers...</div>
+          {:else if error}
+            <div class="error-text">{error}</div>
+          {:else}
+            <select id="project-manager" name="manager_id" bind:value={project.manager_id} required>
+              <option value="">-- Sélectionner un manager --</option>
+              {#each managers as manager}
+                <option value={manager.id}>
+                  {manager.first_name}
+                  {manager.last_name}
+                </option>
+              {/each}
+            </select>
+          {/if}
+        </div>
+
+        <div class="form-group">
+          <label for="project-description">Description</label>
+          <textarea
+            id="project-description"
+            name="description"
+            bind:value={project.description}
+            rows="3"
+          ></textarea>
         </div>
 
         <div class="form-group">
@@ -182,7 +235,7 @@
               class="py-3 px-6 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 transition border border-gray-200"
               onclick={handleClose}
             >
-              {editMode ? 'Retour...' : 'Annuler'}
+              Annuler
             </button>
             <button
               type="submit"
