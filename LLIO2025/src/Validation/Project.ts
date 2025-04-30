@@ -7,10 +7,10 @@ const schema = yup.object().shape({
     // Validation des informations du projet
     name: yup
         .string()
-        .max(50, "Le nom de l'activité ne doit pas dépasser 50 caractères"),
+        .max(50, "Le nom du projet ne doit pas dépasser 50 caractères"),
     description: yup
         .string()
-        .max(20000, "La description de l'activité ne doit pas dépasser 20000 caractères"),
+        .max(20000, "La description du projet ne doit pas dépasser 20000 caractères"),
 
     // Validation des informations projet et catégorie
     status: yup

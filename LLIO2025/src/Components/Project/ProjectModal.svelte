@@ -133,76 +133,74 @@
   }
 </style>
 
-{#if show}
-  <div class="modal-overlay">
-    <div class="modal">
-      <div class="modal-header">
-        <h2 class="modal-title">Créer un nouveau projet</h2>
-        <button type="button" class="text-white hover:text-gray-200" onclick={handleClose}>
-          <X />
-        </button>
-      </div>
+<div class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">Créer un nouveau projet</h2>
+      <button type="button" class="text-white hover:text-gray-200" onclick={handleClose}>
+        <X />
+      </button>
+    </div>
 
-      <div class="modal-content">
-        <form
-          class="flex flex-col h-full"
-          use:form
-          onsubmit={(e) => {
-            e.preventDefault();
-          }}
-        >
-          <div class="form-group">
-            <label for="project-name">Identifiant unique du projet*</label>
-            <input id="project-name" name="name" type="text" bind:value={project.name} required />
-          </div>
+    <div class="modal-content">
+      <form
+        class="flex flex-col h-full"
+        use:form
+        onsubmit={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <div class="form-group">
+          <label for="project-name">Identifiant unique du projet*</label>
+          <input id="project-name" name="name" type="text" bind:value={project.name} required />
+        </div>
 
-          <div class="form-group">
-            <label for="project-description">Description</label>
-            <textarea id="project-description" bind:value={project.description} rows="3"></textarea>
-          </div>
+        <div class="form-group">
+          <label for="project-description">Description</label>
+          <textarea id="project-description" bind:value={project.description} rows="3"></textarea>
+        </div>
 
-          <div class="form-group">
-            <label>
-              <input type="checkbox" bind:checked={project.billable} />
-              Facturable
-            </label>
-          </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" bind:checked={project.billable} />
+            Facturable
+          </label>
+        </div>
 
-          <div class="modal-footer">
-            {#if editMode}
-              <button
-                type="button"
-                class="py-3 px-6 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 transition border border-gray-200"
-                onclick={handleClose}
-              >
-                Retour
-              </button>
-              <button
-                type="submit"
-                class="py-3 px-6 bg-[#015e61] text-white rounded-lg font-medium hover:bg-[#014446] hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 transition disabled:opacity-50"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'En cours...' : 'Modifier'}
-              </button>
-            {:else}
-              <button
-                type="button"
-                class="py-3 px-6 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 transition border border-gray-200"
-                onclick={handleClose}
-              >
-                Annuler
-              </button>
-              <button
-                type="submit"
-                class="py-3 px-6 bg-[#015e61] text-white rounded-lg font-medium hover:bg-[#014446] hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 transition disabled:opacity-50"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'En cours...' : 'Créer'}
-              </button>
-            {/if}
-          </div>
-        </form>
-      </div>
+        <div class="modal-footer">
+          {#if editMode}
+            <button
+              type="button"
+              class="py-3 px-6 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 transition border border-gray-200"
+              onclick={handleClose}
+            >
+              Retour
+            </button>
+            <button
+              type="submit"
+              class="py-3 px-6 bg-[#015e61] text-white rounded-lg font-medium hover:bg-[#014446] hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 transition disabled:opacity-50"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'En cours...' : 'Modifier'}
+            </button>
+          {:else}
+            <button
+              type="button"
+              class="py-3 px-6 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 transition border border-gray-200"
+              onclick={handleClose}
+            >
+              {editMode ? 'Retour...' : 'Annuler'}
+            </button>
+            <button
+              type="submit"
+              class="py-3 px-6 bg-[#015e61] text-white rounded-lg font-medium hover:bg-[#014446] hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 transition disabled:opacity-50"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'En cours...' : 'Soumettre'}
+            </button>
+          {/if}
+        </div>
+      </form>
     </div>
   </div>
-{/if}
+</div>
