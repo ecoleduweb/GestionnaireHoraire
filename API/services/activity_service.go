@@ -112,7 +112,15 @@ func DeleteActivity(id string) error {
 }
 
 func GetActivitiesFromRange(from, to, idUser string) ([]*DTOs.ActivityDTO, error) {
-	activities, err := repositories.GetActivitiesFromRange(from, to, idUser)
+	fromDate := from
+	toDate := to
+
+	if from == to {
+		toDate = to + " 23:59:59"
+		fromDate = from + " 00:00:00"
+	}
+
+	activities, err := repositories.GetActivitiesFromRange(fromDate, toDate, idUser)
 	if err != nil {
 		return nil, err
 	}
