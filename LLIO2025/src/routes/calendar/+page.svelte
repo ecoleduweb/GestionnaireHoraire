@@ -108,8 +108,6 @@
 
       dateDebut = formatDate(dateDebut);
       dateFin = formatDate(dateFin);
-      console.log('dateDebut', dateDebut);
-      console.log('dateFin', dateFin);
       let activities = [];
       activities = await ActivityApiService.getAllActivitesFromRange(dateDebut, dateFin);
       console.log('activities', activities);
