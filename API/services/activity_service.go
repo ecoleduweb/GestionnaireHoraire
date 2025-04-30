@@ -111,7 +111,7 @@ func DeleteActivity(id string) error {
 	return repositories.DeleteActivity(id)
 }
 
-func GetActivitiesFromRange(from, to, idUser string) ([]*DTOs.ActivityDTO, error) {
+func GetActivitiesFromRange(from string, to string, idUser int) ([]*DTOs.ActivityDTO, error) {
 	fromDate := from
 	toDate := to
 
