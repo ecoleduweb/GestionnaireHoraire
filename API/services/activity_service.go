@@ -135,6 +135,5 @@ func GetActivitiesFromRange(from string, to string, idUser int) ([]*DTOs.Activit
 		log.Printf("Aucune activité trouvée dans la plage de dates spécifiée.")
 		return []*DTOs.ActivityDTO{}, err
 	}
-
 	return activitiesDTOs, err
 }

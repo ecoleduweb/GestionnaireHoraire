@@ -74,8 +74,9 @@ const deleteActivity = async (id: number): Promise<void> => {
 
 const getAllActivitesFromRange = async (startDate: string, endDate: string) => {
   try {
+    
     const response = await GET<{ activities: RawActivity[] }>(
-      '/activities/me?' + startDate + '&' + endDate
+      '/activities/me?startDate=' + startDate + '&endDate=' + endDate
     );
 
     if (response?.activities && Array.isArray(response.activities)) {
@@ -85,11 +86,14 @@ const getAllActivitesFromRange = async (startDate: string, endDate: string) => {
       alert('Erreur: Format de réponse inattendu lors de la récupération des activités.');
       return [];
     }
+    
   } catch (error) {
     console.error('Erreur lors de la récupération des activités', error);
     alert('Erreur lors de la récupération des activités. Veuillez réessayer plus tard.');
     throw error;
   }
+
+  ;
 };
 
 export const ActivityApiService = {
