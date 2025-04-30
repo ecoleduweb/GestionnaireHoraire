@@ -38,7 +38,8 @@
 
     try {
       if (editMode) {
-        // On appelle le update de l'api
+        const newProject = await ProjectApiService.updateProject(project);
+        onSubmit(newProject);
       } else {
         const newProject = await ProjectApiService.createProject(project);
         onSubmit(newProject);
@@ -47,7 +48,7 @@
       onClose();
     } catch (error) {
       console.error('Erreur lors de la soumission du projet', error);
-      alert('Une erreur est survenue. Veuillez réessayer.');
+      alert('Une erreur est survenue. Veuillez réessayer.\n' + error);
     } finally {
       isSubmitting = false;
     }
@@ -56,6 +57,7 @@
   const { form, errors } = validateProjectForm(handleSubmit, project);
 </script>
 
+<!-- svelte-ignore css_unused_selector -->
 <style>
   .modal-overlay {
     position: fixed;

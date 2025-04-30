@@ -42,3 +42,9 @@ export interface CreateProject {
     status: ProjectStatus;
     billable: boolean;
 }
+
+export interface UpdateProject {
+    name: string;
+    status: ProjectStatus;
+    billable: boolean;
+}

@@ -4,7 +4,6 @@
   import { onMount } from 'svelte';
   import ProjectModal from '../Project/ProjectModal.svelte';
   import type { CreateProject } from '../../Models';
-  import { ProjectApiService } from '../../services/ProjectApiService';
 
   let projects = [];
   let showModal = $state(false);
