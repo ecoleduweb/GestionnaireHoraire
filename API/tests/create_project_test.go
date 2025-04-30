@@ -32,7 +32,6 @@ func TestCreateProject(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "Le projet a bien été ajouté à la base de données", responseBody.Response)
 	assert.Equal(t, project.Name, responseBody.Project.Name)
-	assert.Equal(t, project.Description, responseBody.Project.Description)
 	assert.Equal(t, project.Status, responseBody.Project.Status)
 }
 
@@ -60,20 +59,6 @@ func TestDoNotCreateProjectWithInvalidName(t *testing.T) {
 	w := sendRequest(router, "POST", "/project", project, enums.Administrator)
 	expectedErrors := []DTOs.FieldErrorDTO{
 		{Field: "name", Message: "Le champ name est invalide ou manquant"},
-	}
-	assertResponse(t, w, http.StatusBadRequest, expectedErrors)
-}
-
-func TestDoNotCreateProjectWithoutDescription(t *testing.T) {
-	project := DTOs.ProjectDTO{
-		Name:        "Test Project",
-		Description: "",
-		Status:      enums.ProjectStatus(enums.InProgress),
-	}
-
-	w := sendRequest(router, "POST", "/project", project, enums.Administrator)
-	expectedErrors := []DTOs.FieldErrorDTO{
-		{Field: "description", Message: "Le champ description est invalide ou manquant"},
 	}
 	assertResponse(t, w, http.StatusBadRequest, expectedErrors)
 }

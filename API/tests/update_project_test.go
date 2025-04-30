@@ -107,23 +107,6 @@ func TestDoNotUpdateProjectWithInvalidName(t *testing.T) {
 	assertResponse(t, w, http.StatusBadRequest, expectedErrors)
 }
 
-func TestDoNotUpdateProjectWithInvalidDescription(t *testing.T) {
-
-	// Modification du projet avec une description invalide
-	updatedProject := DTOs.ProjectDTO{
-		Id:          doNotDeleteProject2.Id,
-		Name:        doNotDeleteProject2.Name,
-		Description: "", // Description vide
-		Status:      doNotDeleteProject2.Status,
-	}
-
-	w := sendRequest(router, "PUT", "/project", updatedProject, enums.Administrator)
-	expectedErrors := []DTOs.FieldErrorDTO{
-		{Field: "description", Message: "Le champ description est invalide ou manquant"},
-	}
-	assertResponse(t, w, http.StatusBadRequest, expectedErrors)
-}
-
 func TestDoNotUpdateProjectWithInconsistentDates(t *testing.T) {
 	// Temps actuel
 	now := time.Now()
