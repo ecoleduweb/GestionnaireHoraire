@@ -110,7 +110,6 @@
       dateFin = formatDate(dateFin);
       let activities = [];
       activities = await ActivityApiService.getAllActivitesFromRange(dateDebut, dateFin);
-      console.log('activities', activities);
       // const activities = await ActivityApiService.getAllActivites();
 
       // Utiliser la méthode du service pour ajouter les activités au calendrier
