@@ -135,3 +135,33 @@ func DeleteActivity(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "La suppression de l'activité est un succès."})
 }
+
+func GetActivitiesFromRange(c *gin.Context) {
+	from := c.Query("startDate")
+	to := c.Query("endDate")
+
+	currentUser, exists := c.Get("current_user")
+	if !exists {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Utilisateur non connecté"})
+		return
+	}
+
+	user, ok := currentUser.(*DTOs.UserDTO)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur interne du serveur"})
+		return
+	}
+
+	activities, err := services.GetActivitiesFromRange(from, to, user.Id)
+	if err != nil {
+		handleError(c, err, activiteSTR)
+		return
+	}
+
+	if activities == nil {
+		c.JSON(http.StatusOK, gin.H{"activities": []DTOs.ActivityDTO{}})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"activities": activities})
+}

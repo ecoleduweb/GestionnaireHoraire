@@ -9,7 +9,7 @@
   import type { Activity, UserInfo } from '../../Models/index.ts';
   // Importez le fichier CSS
   import '../../style/modern-calendar.css';
-  import { getDateOrDefault } from '../../utils/date';
+  import { getDateOrDefault, formatDate } from '../../utils/date';
   // Importer FullCalendar en français
   import frLocale from '@fullcalendar/core/locales/fr';
   import { formatViewTitle } from '../../utils/date';
@@ -69,15 +69,52 @@
   // Fonction pour charger toutes les activités
   async function loadActivities() {
     isLoading = true;
+   
+    let dateStart, dateEnd, day, diff;
     try {
-      const activities = await ActivityApiService.getAllActivites();
+      switch (activeView)
+      {
+        case 'dayGridMonth':
+          dateStart = calendarService.calendar.getDate()
+          dateStart.setDate(1); // Premier jour du mois
+          dateEnd = new Date(dateStart.getFullYear(), dateStart.getMonth() + 1, 0); // Dernier jour du mois
+          break;  
+        
+        case 'timeGridWeek':
+              dateStart = calendarService.calendar.getDate()
+              day = dateStart.getDay();
+              diff = dateStart.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
+              dateStart.setDate(diff);
+
+              dateEnd = new Date(dateStart);
+              dateEnd.setDate(dateStart.getDate() + 6);
+              break;
+        case 'timeGridDay':
+          
+          dateStart = calendarService.calendar.getDate()
+          dateEnd = new Date(dateStart);
+          break;
+        default:
+          dateStart = calendarService.calendar.getDate()
+          day = dateStart.getDay();
+          diff = dateStart.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
+          dateStart.setDate(diff);
+
+          dateEnd = new Date(dateStart);
+          dateEnd.setDate(dateStart.getDate() + 6);
+          break;
+      }
+
+      dateStart = formatDate(dateStart);
+      dateEnd = formatDate(dateEnd);
+      let activities = [];
+      activities = await ActivityApiService.getAllActivitesFromRange(dateStart, dateEnd);
 
       // Utiliser la méthode du service pour ajouter les activités au calendrier
       if (activities && calendarService) {
         calendarService.loadActivities(activities);
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des activités:', error);
       alert('Une erreur est survenue lors du chargement des activités.');
     } finally {
       isLoading = false;
@@ -183,6 +220,7 @@
       calendarService.setView(viewName);
       activeView = viewName;
       updateViewTitle();
+      loadActivities();
     }
   }
 
@@ -211,7 +249,7 @@
       const updatedActivity = await ActivityApiService.updateActivity(activity);
       calendarService.updateEvent(updatedActivity);
     } catch (error) {
-      console.error('Erreur lors de la mise à jour de la tâche', error);
+      console.error('Erreur lors de la mise à jour de l\'activité', error);
 
       alert("Une erreur est survenue lors de la mise à jour de l'activité.");
 
@@ -258,16 +296,19 @@
   function prevPeriod() {
     calendarService?.prev();
     updateViewTitle();
+    loadActivities();
   }
 
   function nextPeriod() {
     calendarService?.next();
     updateViewTitle();
+    loadActivities();
   }
 
   function goToday() {
     calendarService?.today();
     updateViewTitle();
+    loadActivities();
   }
 
   function setTimeRange(range) {
