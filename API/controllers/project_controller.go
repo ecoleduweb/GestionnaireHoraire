@@ -29,6 +29,12 @@ func CreatedProject(c *gin.Context) {
 		return
 	}
 
+	_, err := services.GetUserById(strconv.Itoa(projetDTO.ManagerId))
+	if err != nil {
+		handleError(c, err, userSTR)
+		return
+	}
+
 	projectAdded, err := services.CreateProject(&projetDTO)
 	if err != nil {
 		handleError(c, err, projectSTR)
@@ -84,6 +90,12 @@ func UpdateProject(c *gin.Context) {
 	_, err := services.GetProjectById(id)
 	if err != nil {
 		handleError(c, err, projectSTR)
+		return
+	}
+
+	_, err = services.GetUserById(strconv.Itoa(projectToUpdate.ManagerId))
+	if err != nil {
+		handleError(c, err, userSTR)
 		return
 	}
 
