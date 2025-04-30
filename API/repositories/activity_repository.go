@@ -4,6 +4,7 @@ import (
 	"llio-api/database"
 	"llio-api/models/DAOs"
 	"llio-api/structs"
+	"strconv"
 )
 
 func CreateActivity(activity *DAOs.Activity) (*structs.ActivityJoin, error) {
@@ -55,13 +56,13 @@ func DeleteActivity(id string) error {
 	return DBErrorManager(database.DB.Delete(&DAOs.Activity{}, id).Error)
 }
 
-func GetActivitiesFromRange(from, to, idUser string) ([]*structs.ActivityJoin, error) {
+func GetActivitiesFromRange(from string, to string, idUser int) ([]*structs.ActivityJoin, error) {
 	var activities []*structs.ActivityJoin
-
+	idUserToString := strconv.Itoa(idUser)
 	err := database.DB.Table("activities").
 		Select("activities.*, projects.name as project_name").
 		Joins("LEFT JOIN projects ON activities.project_id = projects.id").
-		Where("Start_Date >= ? AND End_Date <= ? AND User_Id = ?", from, to, idUser).
+		Where("Start_Date >= ? AND End_Date <= ? AND User_Id = ?", from, to, idUserToString).
 		Scan(&activities).Error
 
 	return activities, DBErrorManager(err)

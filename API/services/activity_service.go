@@ -111,20 +111,29 @@ func DeleteActivity(id string) error {
 	return repositories.DeleteActivity(id)
 }
 
-func GetActivitiesFromRange(from, to, idUser string) ([]*DTOs.ActivityInfoDTO, error) {
-	activities, err := repositories.GetActivitiesFromRange(from, to, idUser)
-	if err != nil {
-		return nil, err
-	}
+func GetActivitiesFromRange(from string, to string, idUser int) ([]*DTOs.ActivityInfoDTO, error) {
+    fromDate := from
+    toDate := to
 
-	var activitiesDTOs []*DTOs.ActivityInfoDTO
-	for _, activity := range activities {
-		activityDTO := &DTOs.ActivityInfoDTO{}
-		err = copier.Copy(activityDTO, activity)
-		if err != nil {
-			return nil, err
-		}
-		activitiesDTOs = append(activitiesDTOs, activityDTO)
-	}
-	return activitiesDTOs, nil
+    if from == to {
+        toDate = to + " 23:59:59"
+        fromDate = from + " 00:00:00"
+    }
+
+    activities, err := repositories.GetActivitiesFromRange(fromDate, toDate, idUser)
+    if err != nil {
+        return nil, err
+    }
+
+    var activitiesDTOs []*DTOs.ActivityInfoDTO
+    for _, activity := range activities {
+        activityDTO := &DTOs.ActivityInfoDTO{}
+        err = copier.Copy(activityDTO, activity)
+        activitiesDTOs = append(activitiesDTOs, activityDTO)
+    }
+    if activitiesDTOs == nil {
+        log.Printf("Aucune activité trouvée dans la plage de dates spécifiée.")
+        return []*DTOs.ActivityInfoDTO{}, err
+    }
+    return activitiesDTOs, err
 }
