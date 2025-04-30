@@ -134,3 +134,18 @@ export function formatDate(date: Date): string {
 
   return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 }
+
+export const formatHours = (hours: number | null | undefined): string => {  
+  if (!hours && hours !== 0) return "-";  
+
+  const hoursInt = Math.floor(hours);  
+  const minutes = Math.round((hours - hoursInt) * 60);  
+
+  // Format « h00 », « h05 », « h15 », etc.  
+  return `${hoursInt}h${minutes === 0  
+    ? "00"  
+    : minutes < 10  
+      ? `0${minutes}`  
+      : minutes  
+  }`;  
+};  

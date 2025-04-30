@@ -1,6 +1,164 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
+  import { goto } from "$app/navigation"
+  import { onMount } from "svelte";
+  import { quintOut } from "svelte/easing";
+  import { slide } from "svelte/transition";
+  import DashboardProjectItem from "../Projects/DashboardPaneProjectItem.svelte";
+
+  let projects = $state([]);
+  let isArchivedVisible = $state(false);
+
+  function mockProjects() {
+    return [
+      {
+        id: "AT-123",
+        name: "Nommer le projet",
+        color: "blue",
+        lead: "Katell Arnault de la Ménardière",
+        timeSpent: 205.25,
+        timeEstimated: 300,
+        timeRemaining: 94.75,
+        isArchived: false
+      },
+      {
+        id: "AT-456",
+        name: "Le projet de Marie Amélie",
+        color: "pink",
+        lead: "Katell Arnault de la Ménardière",
+        timeSpent: 85.5,
+        timeEstimated: 450,
+        timeRemaining: 364.5,
+        isArchived: false
+      },
+      {
+        id: "FO-115",
+        name: "Graphisme 101",
+        color: "yellow",
+        lead: "Katell Arnault de la Ménardière",
+        timeSpent: 40,
+        timeEstimated: 0,
+        timeRemaining: 0,
+        isArchived: false
+      },
+      {
+        id: "RA-224",
+        name: "Noisette Steve",
+        color: "red",
+        lead: "Katell Arnault de la Ménardière",
+        timeSpent: 450,
+        timeEstimated: 400,
+        timeRemaining: -50,
+        isArchived: false
+      },
+      {
+        id: "AT-123",
+        name: "Nommer le projet",
+        color: "blue",
+        lead: "Katell Arnault de la Ménardière",
+        timeSpent: 205,
+        timeEstimated: 300,
+        timeRemaining: 95,
+        isArchived: true
+      },
+      {
+        id: "AT-456",
+        name: "Le projet de Marie Amélie",
+        color: "pink",
+        lead: "Katell Arnault de la Ménardière",
+        timeSpent: 85,
+        timeEstimated: 450,
+        timeRemaining: 365,
+        isArchived: true
+      },
+      {
+        id: "FO-115",
+        name: "Graphisme 101",
+        color: "yellow",
+        lead: "Katell Arnault de la Ménardière",
+        timeSpent: 40,
+        timeEstimated: 0,
+        timeRemaining: 0,
+        isArchived: true
+      },
+      {
+        id: "RA-224",
+        name: "Noisette Steve",
+        color: "red",
+        lead: "Katell Arnault de la Ménardière",
+        timeSpent: 550,
+        timeEstimated: 400,
+        timeRemaining: -150,
+        isArchived: true
+      },
+    ];
+  }
+
+  onMount(() => {
+    projects = mockProjects();
+  });
 </script>
+
+<div class="dashboard-container">
+  <!-- En-tête du dashboard -->
+  <div class="dashboard-header">Tableau de bord</div>
+
+  <!-- Contenu du dashboard -->
+  <div class="dashboard-content">
+    <!-- Contenu à venir -->
+    <div class="dashboard-item">
+      <div class="inline-flex rounded-md shadow-xs" role="group">
+        <button
+          type="button"
+          class="px-4 py-2 text-sm transition-colors font-semibold bg-[#014446] text-white rounded-l-lg"
+        >
+          Calendrier
+        </button>
+        <button 
+          onclick={() => goto('./projects')}
+          type="button" 
+          class="py-2 px-4 text-sm transition-colors font-semibold bg-gray-200 text-gray-900 rounded-r-lg hover:bg-[#014446] hover:text-white cursor-pointer"
+        >
+          Projets
+        </button>
+      </div>
+    </div>
+
+    <!-- Projets en cours -->
+    <div class="overflow-y-auto max-h-[calc(100vh-150px)]">
+      {#each projects.filter(x => !x.isArchived) as project}
+        <DashboardProjectItem project={project} />
+      {/each}
+
+      <!-- Projets archivés -->
+      {#if projects.some(x => x.isArchived)}
+      <div>
+        <button
+          class="w-full p-4 flex items-center justify-between text-gray-600 hover:bg-gray-50 cursor-pointer"
+          onclick={() => isArchivedVisible = !isArchivedVisible}
+        >
+          <span class="font-medium">Projets archivés ({projects.filter(x => x.isArchived).length})</span>
+          <svg
+            class="w-5 h-5 transform transition-transform {isArchivedVisible ? 'rotate-180' : ''}"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        {#if isArchivedVisible}
+          <div transition:slide={{ duration: 300, easing: quintOut }}>
+            {#each projects.filter(x => x.isArchived) as project}
+              <DashboardProjectItem project={project} />
+            {/each}
+          </div>
+        {/if}
+      </div>
+      {/if}
+    </div>
+  </div>
+</div>
 
 <style>
   .dashboard-container {
@@ -42,48 +200,3 @@
     background-color: #f5f5f5;
   }
 </style>
-
-<div class="dashboard-container">
-  <!-- En-tête du dashboard -->
-  <div class="dashboard-header">Dashboard</div>
-
-  <!-- Contenu du dashboard -->
-  <div class="dashboard-content">
-    <!-- Contenu à venir -->
-    <div class="dashboard-item">
-      <div class="inline-flex rounded-md shadow-xs" role="group">
-        <button
-          type="button"
-          class="px-4 py-2 text-sm transition-colors font-semibold bg-[#014446] text-white rounded-l-lg"
-        >
-          Calendrier
-        </button>
-        <button
-          onclick={() => goto('/projects')}
-          type="button"
-          class="py-2 px-4 text-sm transition-colors font-semibold bg-gray-200 text-gray-900 rounded-r-lg hover:bg-[#014446] hover:text-white cursor-pointer"
-        >
-          Projets
-        </button>
-      </div>
-    </div>
-
-    <!-- Statistiques -->
-    <div class="dashboard-item">
-      <div class="font-medium text-gray-700 mb-2">Statistiques</div>
-      <div class="text-gray-500 text-sm">Aucune statistique disponible pour le moment.</div>
-    </div>
-
-    <!-- Activités récentes -->
-    <div class="dashboard-item">
-      <div class="font-medium text-gray-700 mb-2">Activités récentes</div>
-      <div class="text-gray-500 text-sm">Aucune activité récente.</div>
-    </div>
-
-    <!-- Projets -->
-    <div class="dashboard-item">
-      <div class="font-medium text-gray-700 mb-2">Projets</div>
-      <div class="text-gray-500 text-sm">Aucun projet disponible.</div>
-    </div>
-  </div>
-</div>
