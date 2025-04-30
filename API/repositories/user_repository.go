@@ -23,3 +23,15 @@ func GetUserByEmail(email string) (*DAOs.User, error) {
 	err := database.DB.Where("email = ?", email).First(&user).Error
 	return &user, DBErrorManager(err)
 }
+
+func GetAllUsers() ([]*DAOs.User, error) {
+	var users []*DAOs.User
+
+	err := database.DB.Find(&users).Error
+	return users, DBErrorManager(err)
+}
+
+func UpdateUserRole(user *DAOs.User) (*DAOs.User, error) {
+	err := database.DB.Save(user).Error
+	return user, DBErrorManager(err)
+}
