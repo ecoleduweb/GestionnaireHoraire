@@ -1,8 +1,6 @@
 <script lang="ts">
   import type { CalendarService } from '../../services/calendar.service';
   import { UserApiService } from '../../services/UserApiService';
-  import { CategoryApiService } from '../../services/CategoryApiService';
-  import { ProjectApiService } from '../../services/ProjectApiService';
   import { CalendarService as CS } from '../../services/calendar.service';
   import { onMount } from 'svelte';
   import ActivityModal from '../../Components/Calendar/ActivityModal.svelte';
@@ -96,33 +94,6 @@
     }
   }
 
-  // Fonction pour charger les catégories
-  async function loadCategories() {
-    try {
-      categories = await CategoryApiService.getAllCategories();
-    } catch (error) {
-      console.error('Erreur lors du chargement des catégories:', error);
-      // Utiliser des données de repli en cas d'échec
-      categories = [
-        { id: 1, name: 'Categorie Test ManuDev' },
-        { id: 2, name: 'Categorie Test Antoine' },
-        { id: 3, name: 'Categorie Test CAnaDiEns' },
-        { id: 4, name: 'Categorie Test test' },
-      ];
-    }
-  }
-
-  // Fonction pour charger les projets
-  async function loadProjects() {
-    try {
-      projects = await ProjectApiService.getAllProjects();
-    } catch (error) {
-      console.error('Erreur lors du chargement des projets:', error);
-      // Données de secours en cas d'erreur
-      projects = [{ id: 1, name: 'Projet manudev' }];
-    }
-  }
-
   onMount(async () => {
     if (calendarEl) {
       calendarService = new CS();
@@ -213,10 +184,6 @@
       updateViewTitle();
 
       await loadActivities();
-
-      await loadCategories();
-
-      await loadProjects();
     }
   });
 

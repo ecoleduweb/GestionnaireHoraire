@@ -117,21 +117,19 @@
   // Rafraîchir les catégories quand le modal s'ouvre
   $effect(() => {
     if (show) {
-      // Si le modal est affiché et qu'un rafraîchissement est nécessaire ou si on modifie une activité
       if (shouldRefreshCategories || activityToEdit) {
         refreshCategories().then((updatedCategories) => {
-          // Si on modifie une activité, assurez-vous que sa catégorie est dans la liste
+          // Si on modifie une activité, vérifiez que sa catégorie est dans la liste
           if (activityToEdit && activityToEdit.categoryId) {
             const categoryExists = updatedCategories.some(
               (c) => c.id === activityToEdit.categoryId
             );
 
             if (!categoryExists) {
-              // Si la catégorie n'est pas dans la liste, essayez de la récupérer individuellement
+              // Si la catégorie n'est pas dans la liste, récupérer la individuellement
               CategoryApiService.getCategoryById(activityToEdit.categoryId)
                 .then((category) => {
                   if (category) {
-                    // Ajouter la catégorie à la liste si elle existe
                     categories = [...updatedCategories, category];
                   }
                 })
@@ -144,7 +142,6 @@
             }
           }
 
-          // Réinitialiser le flag
           shouldRefreshCategories = false;
         });
       }
@@ -244,10 +241,8 @@
       // Ajouter la nouvelle catégorie à la liste existante
       categories = [...categories, newCategory];
 
-      // Sélectionner la nouvelle catégorie
       activity.categoryId = newCategory.id;
 
-      // Réinitialiser et fermer le dropdown
       searchTerm = '';
       categoryDropdownOpen = false;
     } catch (error) {
