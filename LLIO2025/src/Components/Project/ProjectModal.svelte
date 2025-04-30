@@ -20,14 +20,14 @@
 
   let initialProject = projectTemplate.generate();
 
-  let isSubmitting = false;
+  let isSubmitting = $state(false);
 
   const project = $state<CreateProject>(initialProject);
 
   if (projectToEdit) {
     Object.assign(project, projectToEdit);
   }
-  
+
   const handleClose = () => {
     onClose();
   };
