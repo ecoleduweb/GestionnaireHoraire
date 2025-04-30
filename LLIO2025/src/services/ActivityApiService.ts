@@ -95,7 +95,7 @@ const getAllActivites = async () => {
 const getAllActivitesFromRange = async (startDate: string, endDate: string) => {
   try {
     const response = await GET<{ activities: RawActivity[] }>(
-      '/activities/me/' + startDate + '/' + endDate
+      '/activities/me?' + startDate + '&' + endDate
     );
 
     // Vérifier si la réponse contient la propriété 'activities' et si c'est un tableau
