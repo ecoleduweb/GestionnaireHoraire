@@ -37,8 +37,8 @@ export const activityMocks = {
                     "id": 1,
                     "name": "Fête de Jean-Félix et Sherlock",
                     "description": "Fête de Jean-Félix et Sherlock",
-                    "startDate": "2025-03-22T12:00:00Z",
-                    "endDate": "2025-03-22T13:15:00Z",
+                    "startDate": "2025-03-22T12:00:00-04:00",
+                    "endDate": "2025-03-22T13:15:00-04:00",
                     "userId": 1,
                     "projectId": 1,
                     "categoryId": 1
@@ -106,7 +106,7 @@ export const activityMocks = {
         }
     },
     getAllActivitiesDefaultWeekSuccess: {
-        url: '*/**/activities/me/2025-03-17/2025-03-23',
+        url: '*/**/activities/me?2025-03-17&2025-03-23',
         method: 'GET',
         response: {
                 status: 200,
@@ -148,7 +148,7 @@ export const activityMocks = {
         }
     },
     getAllActivitiesDaySuccess: {
-        url: '*/**/activities/me/2025-03-22/2025-03-22',
+        url: '*/**/activities/me?2025-03-22&2025-03-22',
         method: 'GET',
         response: {
                 status: 200,
@@ -180,7 +180,7 @@ export const activityMocks = {
         }
     },
     getAllActivitiesMonthSuccess: {
-        url: '*/**/activities/me/2025-03-01/2025-03-31',
+        url: '*/**/activities/me?2025-03-01&2025-03-31',
         method: 'GET',
         response: {
                 status: 200,
@@ -242,7 +242,7 @@ export const activityMocks = {
         }
     },
     getAllActivitiesPreviousWeekSuccess: {
-        url: '*/**/activities/me/2025-03-10/2025-03-16',
+        url: '*/**/activities/me?2025-03-10&2025-03-16',
         method: 'GET',
         response: {
                 status: 200,
@@ -263,7 +263,7 @@ export const activityMocks = {
         }
     },
     getAllActivitiesNextWeekSuccess: {
-        url: '*/**/activities/me/2025-03-24/2025-03-30',
+        url: '*/**/activities/me?2025-03-24&2025-03-30',
         method: 'GET',
         response: {
                 status: 200,
@@ -286,7 +286,7 @@ export const activityMocks = {
     },
 
     getAllActivitiesPreviousMonthSuccess: {
-        url: '*/**/activities/me/2025-02-01/2025-02-28',
+        url: '*/**/activities/me?2025-02-01&2025-02-28',
         method: 'GET',
         response: {
                 status: 200,
@@ -307,7 +307,7 @@ export const activityMocks = {
         }
     },
     getAllActivitiesNextMonthSuccess: {
-        url: '*/**/activities/me/2025-04-01/2025-04-30',
+        url: '*/**/activities/me?2025-04-01&2025-04-30',
         method: 'GET',
         response: {
                 status: 200,
@@ -329,7 +329,7 @@ export const activityMocks = {
         }
     },
     getAllActivitiesPreviousDaySuccess: {
-        url: '*/**/activities/me/2025-03-21/2025-03-21',
+        url: '*/**/activities/me?2025-03-21&2025-03-21',
         method: 'GET',
         response: {
                 status: 200,
@@ -361,7 +361,7 @@ export const activityMocks = {
         }
     },
     getAllActivitiesNextDaySuccess: {
-        url: '*/**/activities/me/2025-03-23/2025-03-23',
+        url: '*/**/activities/me?2025-03-23&2025-03-23',
         method: 'GET',
         response: {
                 status: 200,

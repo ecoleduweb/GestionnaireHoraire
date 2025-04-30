@@ -75,7 +75,7 @@ const deleteActivity = async (id: number): Promise<void> => {
 const getAllActivitesFromRange = async (startDate: string, endDate: string) => {
   try {
     const response = await GET<{ activities: RawActivity[] }>(
-      '/activities/me/' + startDate + '/' + endDate
+      '/activities/me?' + startDate + '&' + endDate
     );
 
     if (response?.activities && Array.isArray(response.activities)) {
