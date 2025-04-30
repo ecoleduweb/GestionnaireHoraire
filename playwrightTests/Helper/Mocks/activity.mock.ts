@@ -137,8 +137,8 @@ export const activityMocks = {
                             "id": 18,
                             "name": "Après party ! ",
                             "description": "Sous-sol !",
-                            "startDate": "2025-03-22T19:00:00-04:00",
-                            "endDate": "2025-03-22T21:00:00-04:00",
+                            "startDate": "2025-03-22T18:00:00-04:00",
+                            "endDate": "2025-03-22T20:00:00-04:00",
                             "userId": 1,
                             "projectId": 1,
                             "categoryId": 1

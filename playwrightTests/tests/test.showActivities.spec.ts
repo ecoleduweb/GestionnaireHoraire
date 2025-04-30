@@ -31,7 +31,7 @@ test.describe('showActivities', () => {
     });
 
     
-    /*
+    
     test('showActivitiesWeek', async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
@@ -53,7 +53,7 @@ test.describe('showActivities', () => {
         expect(activities.length).toBe(3);
 
     });
-    */
+    
 
     test('showActivitiesDay', async ({ page }) => {
         const apiMocker = new ApiMocker(page);
