@@ -6,6 +6,8 @@ import (
 	"llio-api/repositories"
 
 	"github.com/jinzhu/copier"
+
+	"strconv"
 )
 
 func FirstOrCreateUser(userDTO *DTOs.UserDTO) (*DTOs.UserDTO, error) {
@@ -63,4 +65,27 @@ func GetAllUsers() ([]*DTOs.UserDTO, error) {
 	}
 
 	return usersDTOs, err
+}
+
+func UpdateUserRole(userDTO *DTOs.UserDTO) (*DTOs.UserDTO, error) {
+	// Get the existing user
+	existingUser, err := repositories.GetUserById(strconv.Itoa(userDTO.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	// Only update the role
+	existingUser.Role = userDTO.Role
+
+	// Save the updated user
+	updatedUser, err := repositories.UpdateUserRole(existingUser)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert back to DTO
+	userDTOResponse := &DTOs.UserDTO{}
+	err = copier.Copy(userDTOResponse, updatedUser)
+
+	return userDTOResponse, err
 }
