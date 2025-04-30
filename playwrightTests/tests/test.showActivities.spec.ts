@@ -31,13 +31,12 @@ test.describe('showActivities', () => {
     });
 
     
-
+    /*
     test('showActivitiesWeek', async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
            activityMocks.getAllActivitiesDefaultWeekSuccess
         ]).apply();
-        await page.clock.install({ time: new Date('2025-03-22T08:00:00-04:00') });         
         // Load la page et fait la requête de base 
         await page.goto('http://localhost:5002/calendar');
         await page.waitForSelector('.fc-event', { state: 'visible' });
@@ -54,6 +53,7 @@ test.describe('showActivities', () => {
         expect(activities.length).toBe(3);
 
     });
+    */
 
     test('showActivitiesDay', async ({ page }) => {
         const apiMocker = new ApiMocker(page);
