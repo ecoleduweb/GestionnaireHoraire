@@ -20,17 +20,14 @@ test.describe('showActivities', () => {
             // Utilisez une date fixe et explicite
             await page.clock.install({ time: new Date('2025-03-22T08:00:00-04:00') });         
             // Vérifiez si le clock a été installé correctement
-            await page.evaluate(() => {
-            console.log('Date après clock.install dans le browser:', new Date().toString());
-            });
+            await console.log('Date après clock.install dans le browser:', new Date().toString());
         } catch (error) {
-            console.error('Erreur lors de l\'installation du clock:', error);
+            await console.error('Erreur lors de l\'installation du clock:', error);
         }
         
     });
 
     test('showActivitiesWeek', async ({ page }) => {
-        console.log('Date actuelle dans le test:', new Date().toString());
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
            activityMocks.getAllActivitiesDefaultWeekSuccess
