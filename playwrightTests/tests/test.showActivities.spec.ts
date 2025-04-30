@@ -16,41 +16,14 @@ test.describe('showActivities', () => {
         .apply();
         console.log('Date avant clock.install:', new Date().toString());
     
-        const fixedDate = '2025-03-22T08:00:00-04:00';
-    
-        // Injecter un script qui remplace la fonction Date native
-        await page.addInitScript(`
-            (function() {
-                const fixedDate = new Date('${fixedDate}');
-                const RealDate = Date;
-                
-                class MockDate extends RealDate {
-                    constructor(...args) {
-                        if (args.length === 0) {
-                            return new RealDate(fixedDate);
-                        }
-                        return new RealDate(...args);
-                    }
-                    
-                    static now() {
-                        return new RealDate(fixedDate).getTime();
-                    }
-                }
-                
-                // Copier les méthodes du prototype original
-                Object.setPrototypeOf(MockDate.prototype, RealDate.prototype);
-                Object.setPrototypeOf(MockDate, RealDate);
-                
-                // Remplacer la fonction Date globale
-                Date = MockDate;
-                
-                console.log('Date fixée à:', new Date().toString());
-            })();
-        `);
-        
-        // Vérifier si la date a été modifiée dans le contexte du navigateur
-        const pageDate = await page.evaluate(() => new Date().toString());
-        console.log('Date dans le navigateur après modification:', pageDate);
+        try {
+            // Utilisez une date fixe et explicite
+            await page.clock.install({ time: new Date('2025-03-22T08:00:00-04:00') });         
+            // Vérifiez si le clock a été installé correctement
+            await console.log('Date après clock.install dans le browser:', new Date().toString());
+        } catch (error) {
+            await console.error('Erreur lors de l\'installation du clock:', error);
+        }
         
     });
 
@@ -59,6 +32,7 @@ test.describe('showActivities', () => {
         await apiMocker.addMocks([
            activityMocks.getAllActivitiesDefaultWeekSuccess
         ]).apply();
+        await page.clock.install({ time: new Date('2025-03-22T08:00:00-04:00') });         
         // Load la page et fait la requête de base 
         await page.goto('http://localhost:5002/calendar');
         await page.waitForSelector('.fc-event', { state: 'visible' });
