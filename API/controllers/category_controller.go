@@ -97,11 +97,15 @@ func UpdateCategory(c *gin.Context) {
 }
 
 func GetCategoriesByProjectId(c *gin.Context) {
-	projectId := c.Param("projectId")
+	projectId := c.Param("id")
 
 	categories, err := services.GetCategoriesByProjectId(projectId)
 	if err != nil {
 		handleError(c, err, categorieSTR)
+		return
+	}
+	if categories == nil {
+		c.JSON(http.StatusOK, gin.H{"categories": []DTOs.CategoryDTO{}})
 		return
 	}
 
