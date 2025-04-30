@@ -24,27 +24,14 @@ func RegisterRoutes(r *gin.Engine) {
 		activityGroup.PUT("", controllers.UpdateActivity)
 		activityGroup.DELETE("/:id", controllers.DeleteActivity)
 
-		activitiesGroup := r.Group("/activities", middleware.RoleValidationMiddleware(enums.Employee))
-		{
-			usersActivitiesGroup := activitiesGroup.Group("/me")
-			{
-				//usersActivitiesGroup.GET("", controllers.GetUsersActivities)
-				// route de Vincent /me/:from/:to
-				usersActivitiesGroup.GET("/:from/:to", controllers.GetActivitiesFromRange)
-			}
-
-		}
 	}
 
 	activitiesGroup := r.Group("/activities", middleware.RoleValidationMiddleware(enums.Employee))
 	{
 		usersActivitiesGroup := activitiesGroup.Group("/me")
 		{
-			usersActivitiesGroup.GET("", controllers.GetUsersActivities)
-			// "/projects/:idProjet"
-			// "/categoies/:idCategory"
+			usersActivitiesGroup.GET("", controllers.GetActivitiesFromRange)
 		}
-
 	}
 
 	/*------------------- Categories -------------------*/

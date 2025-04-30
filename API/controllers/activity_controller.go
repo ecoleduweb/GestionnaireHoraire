@@ -137,8 +137,8 @@ func DeleteActivity(c *gin.Context) {
 }
 
 func GetActivitiesFromRange(c *gin.Context) {
-	from := c.Param("from")
-	to := c.Param("to")
+	from := c.Query("startDate")
+	to := c.Query("endDate")
 
 	currentUser, exists := c.Get("current_user")
 	if !exists {
