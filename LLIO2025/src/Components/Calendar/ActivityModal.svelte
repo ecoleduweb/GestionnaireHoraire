@@ -11,7 +11,7 @@
     applyEndTime as applyEndTimeUtil,
   } from '../../utils/date';
   import '../../style/app.css';
-  import { ChevronDown, X } from 'lucide-svelte';
+  import { ChevronDown, X, Search, Plus } from 'lucide-svelte';
 
   type Props = {
     show: boolean;
@@ -28,7 +28,6 @@
 
   let {
     show,
-    users,
     projects,
     categories,
     activityToEdit,
@@ -82,6 +81,63 @@
     time.endHours = result.endHours;
     time.endMinutes = result.endMinutes;
   };
+
+  // État pour le dropdown de catégories
+  let categoryDropdownOpen = $state(false);
+  let searchTerm = $state("");
+  let isSearchFocused = $state(false);
+  
+  // Filtrer les catégories selon le terme de recherche
+  const filteredCategories = $derived(searchTerm
+    ? categories.filter(category => 
+        category.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    : categories);
+
+  // Fonction pour sélectionner une catégorie
+  function selectCategory(categoryId) {
+    activity.categoryId = categoryId;
+    searchTerm = "";
+    categoryDropdownOpen = false;
+  }
+  
+  // Fonction pour ajouter une nouvelle catégorie
+  async function addNewCategory() {
+    if (!searchTerm.trim()) return;
+    
+    try {
+      // Ici vous devriez utiliser votre service API pour créer une nouvelle catégorie
+      // Par exemple:
+      // const newCategory = await CategoryApiService.createCategory({ name: searchTerm });
+      
+      // Pour cette démo, nous simulons simplement l'ajout d'une nouvelle catégorie
+      const newCategory = {
+        id: `temp-${Date.now()}`,
+        name: searchTerm.trim()
+      };
+      
+      // Ajouter la nouvelle catégorie à la liste existante
+      categories = [...categories, newCategory];
+      
+      // Sélectionner la nouvelle catégorie
+      activity.categoryId = newCategory.id;
+      
+      // Réinitialiser et fermer le dropdown
+      searchTerm = "";
+      categoryDropdownOpen = false;
+      
+    } catch (error) {
+      console.error("Erreur lors de l'ajout d'une catégorie", error);
+      alert("Erreur lors de l'ajout de la catégorie");
+    }
+  }
+
+  // Gérer la fermeture du dropdown si on clique ailleurs
+  function handleOutsideClick(event) {
+    if (categoryDropdownOpen && !event.target.closest('.category-dropdown-container')) {
+      categoryDropdownOpen = false;
+      searchTerm = ""; // Réinitialiser la recherche
+    }
+  }
 
   const handleSubmit = async () => {
     if (isSubmitting) return; // Empêche les soumissions multiples
@@ -138,6 +194,8 @@
 
   const { form, errors } = validateActivityForm(handleSubmit, activity);
 </script>
+
+<svelte:window on:click={handleOutsideClick} />
 
 <style>
   /* Animation pour le panneau latéral - ne peut pas être fait en Tailwind standard */
@@ -214,6 +272,123 @@
 
   .fixed {
     z-index: 40; /* Plus élevé que le dashboard */
+  }
+  
+  /* Styles pour le dropdown de catégories */
+  .category-dropdown-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .custom-select {
+    width: 100%;
+    height: 42px; /* Hauteur fixe pour correspondre aux autres champs */
+    background-color: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    color: #4b5563;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .custom-select:focus, .custom-select:focus-within {
+    outline: none;
+    border-color: #015e61;
+    box-shadow: 0 0 0 3px rgba(1, 94, 97, 0.2);
+  }
+  
+  .search-input {
+    width: 100%;
+    height: 100%;
+    padding: 0 1rem;
+    padding-right: 2.5rem; /* Espace pour la flèche */
+    border: none;
+    background: transparent;
+    font-size: inherit;
+    color: inherit;
+    outline: none;
+  }
+  
+  .search-input::placeholder {
+    color: #9ca3af;
+  }
+  
+  .select-value {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0 1rem;
+    padding-right: 2.5rem; /* Espace pour la flèche */
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .arrow-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* permet les clics à travers */
+  }
+  
+  .dropdown-content {
+    position: absolute;
+    width: 100%;
+    max-height: 300px;
+    background-color: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    margin-top: 0.25rem;
+    z-index: 50;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .category-list {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .category-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.15s;
+  }
+  
+  .category-item:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .category-item.selected {
+    background-color: #e5e7eb;
+  }
+  
+  .add-category {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid #e5e7eb;
+    color: #015e61;
+    cursor: pointer;
+    font-weight: 500;
+    background-color: #f9fafb;
+  }
+  
+  .add-category:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .no-results {
+    padding: 0.75rem 1rem;
+    color: #6b7280;
+    text-align: center;
   }
 </style>
 
@@ -386,49 +561,93 @@
               {/if}
             </div>
 
-            <!-- Utilisateur -->
-            <!-- <div>
-                <label for="activity-user" class="block text-gray-700 font-medium mb-2"
-                  >Utilisateur*</label
-                >
-                <div class="relative">
-                  <select
-                    id="activity-user"
-                    bind:value={activity.userId}
-                    required
-                    class="form-select w-full"
-                  >
-                    <option value="">Sélectionner un utilisateur...</option>
-                    {#each users as user}
-                      <option value={user.id}>{user.name}</option>
-                    {/each}
-                  </select>
-                </div>
-              </div> -->
-
-            <!-- Catégorie -->
+            <!-- Catégorie avec dropdown et recherche intégrée -->
             <div>
-              <label for="activity-category" class="block text-gray-700 font-medium mb-2">
+              <label for="activity-category-search" class="block text-gray-700 font-medium mb-2">
                 Catégorie
                 <span class="text-red-500">*</span>
               </label>
-              <div class="select-container">
-                <select
-                  id="activity-category"
-                  name="categoryId"
-                  bind:value={activity.categoryId}
-                  required
-                  class="form-select w-full"
+              <div class="category-dropdown-container">
+                <!-- Sélecteur personnalisé avec champ de recherche intégré -->
+                <div 
+                  class="custom-select"
+                  onclick={() => {
+                    categoryDropdownOpen = !categoryDropdownOpen;
+                    if (categoryDropdownOpen) {
+                      setTimeout(() => {
+                        document.getElementById('activity-category-search')?.focus();
+                      }, 0);
+                    }
+                  }}
                 >
-                  {#each categories as category}
-                    <option value={category.id}>{category.name}</option>
-                  {/each}
-                </select>
-                <div class="select-icon">
-                  <ChevronDown size={18} />
+                  {#if !categoryDropdownOpen || !isSearchFocused}
+                    <span class="select-value">
+                      {categories.find(c => c.id === activity.categoryId)?.name || 'Sélectionner une catégorie...'}
+                    </span>
+                  {/if}
+                  
+                  <input
+                    id="activity-category-search"
+                    type="text"
+                    class="search-input"
+                    placeholder="Rechercher une catégorie..."
+                    bind:value={searchTerm}
+                    style="opacity: {categoryDropdownOpen ? '1' : '0'}"
+                    onfocus={() => {
+                      categoryDropdownOpen = true;
+                      isSearchFocused = true;
+                    }}
+                    onblur={() => {
+                      isSearchFocused = false;
+                    }}
+                    onclick={(e) => e.stopPropagation()}
+                  />
+                  
+                  <div class="arrow-icon">
+                    <ChevronDown size={18} class="text-gray-600" />
+                  </div>
                 </div>
+                
+                {#if categoryDropdownOpen}
+                  <div class="dropdown-content">
+                    <!-- Liste des catégories -->
+                    <div class="category-list">
+                      {#if filteredCategories.length === 0}
+                        <div class="no-results">Aucun résultat trouvé</div>
+                      {:else}
+                        {#each filteredCategories as category}
+                          <div 
+                            class="category-item"
+                            class:selected={category.id === activity.categoryId}
+                            onclick={(e) => {
+                              e.stopPropagation();
+                              selectCategory(category.id);
+                            }}
+                          >
+                            {category.name}
+                          </div>
+                        {/each}
+                      {/if}
+                    </div>
+                    
+                    <!-- Option "Ajouter une nouvelle catégorie" -->
+                    {#if searchTerm && !filteredCategories.some(cat => cat.name.toLowerCase() === searchTerm.toLowerCase())}
+                      <div 
+                        class="add-category"
+                        onclick={(e) => {
+                          e.stopPropagation();
+                          addNewCategory();
+                        }}
+                      >
+                        <Plus size={16} />
+                        Ajouter "{searchTerm}"
+                      </div>
+                    {/if}
+                  </div>
+                {/if}
+                
                 {#if $errors.categoryId}
-                  <span class="text-red-500 text-sm">{$errors.categoryId}</span>
+                  <span class="text-red-500 text-sm mt-1">{$errors.categoryId}</span>
                 {/if}
               </div>
             </div>
