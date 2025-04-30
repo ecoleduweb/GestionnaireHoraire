@@ -21,13 +21,25 @@ export interface UserInfo {
 }
 
 export interface Project {
-    id: number;
+    id: string;
     name: string;
+    color: string;
+    lead: string;
+    coLeads: string[];
+    employees: Employee[];
+    totalTimeSpent: number;
+    isArchived?: boolean;
+}
+
+export interface Employee {
+    name: string;
+    categories: Category[];
 }
 
 export interface Category {
-    id: number;
     name: string;
+    timeSpent: number;
+    timeEstimated: number;
 }
 
 export interface ActivityUpdateResponse 
