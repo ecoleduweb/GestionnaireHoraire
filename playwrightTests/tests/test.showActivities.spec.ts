@@ -13,8 +13,19 @@ test.describe('showActivities', () => {
         await apiMocker.addMocks([
             UserMocks.userMeSuccess
         ])
-            .apply();
-        await page.clock.install({ time: new Date('2025-03-22T12:00:00-04:00') });
+        .apply();
+        console.log('Date avant clock.install:', new Date().toString());
+    
+        try {
+            // Utilisez une date fixe et explicite
+            await page.clock.install({ time: new Date('2025-03-22T08:00:00-04:00') });                
+            // Vérifiez si le clock a été installé correctement
+            await page.evaluate(() => {
+            console.log('Date après clock.install dans le browser:', new Date().toString());
+            });
+        } catch (error) {
+            console.error('Erreur lors de l\'installation du clock:', error);
+        }
         
     });
 
