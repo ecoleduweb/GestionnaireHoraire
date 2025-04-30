@@ -14,11 +14,12 @@ test.describe('showActivities', () => {
             UserMocks.userMeSuccess
         ])
             .apply();
-        await page.clock.install({ time: new Date('2025-03-22T08:00:00-04:00') });
+        await page.clock.install({ time: new Date('2025-03-22T012:00:00-04:00') });
         
     });
 
     test('showActivitiesWeek', async ({ page }) => {
+        console.log('Date actuelle dans le test:', new Date().toString());
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
            activityMocks.getAllActivitiesDefaultWeekSuccess
