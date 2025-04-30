@@ -18,14 +18,14 @@ test.describe('showActivities', () => {
           await page.screenshot({ path: screenshotPath, timeout: 5000 });
         }
       });
-      
+
     test.beforeEach(async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
             UserMocks.userMeSuccess
         ])
         .apply();
-            await page.clock.install({ time: new Date('2025-03-22T08:00:00-04:00') });         
+            await page.clock.install({ time: new Date('2025-03-22T08:00:00+04:00') });         
 
         
     });
