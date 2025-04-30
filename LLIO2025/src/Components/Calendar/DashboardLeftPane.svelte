@@ -4,6 +4,7 @@
   import { quintOut } from "svelte/easing";
   import { slide } from "svelte/transition";
   import DashboardProjectItem from "../Projects/DashboardPaneProjectItem.svelte";
+  import { Plus } from "lucide-svelte";
 
   let projects = $state([]);
   let isArchivedVisible = $state(false);
@@ -91,6 +92,9 @@
         isArchived: true
       },
     ];
+  }
+
+  function handleNewProject() {
   }
 
   onMount(() => {
