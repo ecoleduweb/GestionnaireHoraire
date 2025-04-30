@@ -31,3 +31,13 @@ func GetUserInfo(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"firstName": user.FirstName, "lastName": user.LastName})
 }
+
+func GetAllUsers(c *gin.Context) {
+	users, err := services.GetAllUsers()
+	if err != nil {
+		handleError(c, err, userSTR)
+		return
+	}
+
+	c.JSON(http.StatusOK, users)
+}

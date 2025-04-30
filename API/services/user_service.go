@@ -48,3 +48,19 @@ func GetUserByEmail(email string) (*DTOs.UserDTO, error) {
 
 	return userDTO, err
 }
+
+func GetAllUsers() ([]*DTOs.UserDTO, error) {
+	users, err := repositories.GetAllUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	var usersDTOs []*DTOs.UserDTO
+	for _, user := range users {
+		userDTO := &DTOs.UserDTO{}
+		err = copier.Copy(userDTO, user)
+		usersDTOs = append(usersDTOs, userDTO)
+	}
+
+	return usersDTOs, err
+}
