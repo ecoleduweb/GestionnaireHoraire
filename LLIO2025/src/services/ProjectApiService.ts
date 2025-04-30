@@ -11,6 +11,7 @@ const createProject = async (project: CreateProject): Promise<CreateProject> => 
   if (project.status === undefined) {
     project.status = ProjectStatus.InProgress;
   }
+  project.description = "-"; // En date du 30 avril 2025, l'API exige une description non vide
   try {
     const response = await POST<CreateProject, ProjectResponse>("/project", project);
     return response.project;

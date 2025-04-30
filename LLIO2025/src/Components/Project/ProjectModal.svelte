@@ -108,18 +108,6 @@
   }
 
   input,
-  textarea {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-
-  textarea {
-    resize: vertical;
-  }
-
   input[type='checkbox'] {
     width: auto;
     margin-right: 8px;
@@ -153,11 +141,6 @@
         <div class="form-group">
           <label for="project-name">Identifiant unique du projet*</label>
           <input id="project-name" name="name" type="text" bind:value={project.name} required />
-        </div>
-
-        <div class="form-group">
-          <label for="project-description">Description</label>
-          <textarea id="project-description" bind:value={project.description} rows="3"></textarea>
         </div>
 
         <div class="form-group">
