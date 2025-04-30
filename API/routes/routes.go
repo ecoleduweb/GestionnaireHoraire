@@ -17,7 +17,7 @@ func RegisterRoutes(r *gin.Engine) {
 		userGroup.PATCH("/:id/role", middleware.RoleValidationMiddleware(enums.Administrator), controllers.UpdateUserRole)
 	}
 
-	usersGroup := r.Group("/users", middleware.RoleValidationMiddleware(enums.Administrator))
+	usersGroup := r.Group("/users", middleware.RoleValidationMiddleware(enums.ProjectManager))
 	{
 		usersGroup.GET("", controllers.GetAllUsers)
 	}
