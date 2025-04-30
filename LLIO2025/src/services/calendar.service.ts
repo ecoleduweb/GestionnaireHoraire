@@ -67,7 +67,7 @@ export class CalendarService {
   }
 
   clearCalendar() {
-    this.calendar.removeAllEvents();
+    this.calendar?.removeAllEvents();
   }
   
 
