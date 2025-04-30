@@ -8,8 +8,8 @@ interface ProjectResponse {
 }
 
 const createProject = async (project: CreateProject): Promise<CreateProject> => {
-    if (project.status === undefined) {
-      project.status = ProjectStatus.InProgress;
+  if (project.status === undefined) {
+    project.status = ProjectStatus.InProgress;
   }
   try {
     const response = await POST<CreateProject, ProjectResponse>("/project", project);
