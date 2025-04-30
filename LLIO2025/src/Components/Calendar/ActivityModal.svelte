@@ -12,6 +12,7 @@
   } from '../../utils/date';
   import '../../style/app.css';
   import { ChevronDown, X, Search, Plus } from 'lucide-svelte';
+  import ConfirmationCreateCategory from './ConfirmationCreateCategory.svelte';
 
   type Props = {
     show: boolean;
@@ -41,8 +42,11 @@
   const editMode = activityToEdit !== null;
 
   let initialActivity = activityTemplate.generate(categories);
+  initialActivity.projectId = '';
 
   let isSubmitting = false;
+  let showCategoryConfirmModal = $state(false);
+  let categoryToAdd = $state('');
 
   if (selectedDate && selectedDate.start) {
     const { startDate, endDate } = initializeActivityDates(selectedDate.start);
@@ -84,47 +88,49 @@
 
   // État pour le dropdown de catégories
   let categoryDropdownOpen = $state(false);
-  let searchTerm = $state("");
+  let searchTerm = $state('');
   let isSearchFocused = $state(false);
-  
+
   // Filtrer les catégories selon le terme de recherche
-  const filteredCategories = $derived(searchTerm
-    ? categories.filter(category => 
-        category.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    : categories);
+  const filteredCategories = $derived(
+    searchTerm
+      ? categories.filter((category) =>
+          category.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      : categories
+  );
 
   // Fonction pour sélectionner une catégorie
   function selectCategory(categoryId) {
     activity.categoryId = categoryId;
-    searchTerm = "";
+    searchTerm = '';
     categoryDropdownOpen = false;
   }
-  
+
   // Fonction pour ajouter une nouvelle catégorie
   async function addNewCategory() {
     if (!searchTerm.trim()) return;
-    
+
     try {
       // Ici vous devriez utiliser votre service API pour créer une nouvelle catégorie
       // Par exemple:
       // const newCategory = await CategoryApiService.createCategory({ name: searchTerm });
-      
+
       // Pour cette démo, nous simulons simplement l'ajout d'une nouvelle catégorie
       const newCategory = {
         id: `temp-${Date.now()}`,
-        name: searchTerm.trim()
+        name: searchTerm.trim(),
       };
-      
+
       // Ajouter la nouvelle catégorie à la liste existante
       categories = [...categories, newCategory];
-      
+
       // Sélectionner la nouvelle catégorie
       activity.categoryId = newCategory.id;
-      
+
       // Réinitialiser et fermer le dropdown
-      searchTerm = "";
+      searchTerm = '';
       categoryDropdownOpen = false;
-      
     } catch (error) {
       console.error("Erreur lors de l'ajout d'une catégorie", error);
       alert("Erreur lors de l'ajout de la catégorie");
@@ -135,7 +141,7 @@
   function handleOutsideClick(event) {
     if (categoryDropdownOpen && !event.target.closest('.category-dropdown-container')) {
       categoryDropdownOpen = false;
-      searchTerm = ""; // Réinitialiser la recherche
+      searchTerm = ''; // Réinitialiser la recherche
     }
   }
 
@@ -192,10 +198,44 @@
     onClose();
   };
 
+  function handleAddCategory(e) {
+    e.stopPropagation();
+    categoryToAdd = searchTerm;
+    showCategoryConfirmModal = true;
+  }
+
+  // Fonction pour ajouter une nouvelle catégorie après confirmation
+  async function confirmAddCategory() {
+    if (!categoryToAdd.trim()) return;
+
+    try {
+      // Ici vous devriez utiliser votre service API pour créer une nouvelle catégorie
+      // Par exemple:
+      // const newCategory = await CategoryApiService.createCategory({ name: categoryToAdd });
+
+      // Pour cette démo, nous simulons simplement l'ajout d'une nouvelle catégorie
+      const newCategory = {
+        id: `temp-${Date.now()}`,
+        name: categoryToAdd.trim(),
+      };
+
+      // Ajouter la nouvelle catégorie à la liste existante
+      categories = [...categories, newCategory];
+
+      // Sélectionner la nouvelle catégorie
+      activity.categoryId = newCategory.id;
+
+      // Réinitialiser et fermer le dropdown
+      searchTerm = '';
+      categoryDropdownOpen = false;
+    } catch (error) {
+      console.error("Erreur lors de l'ajout d'une catégorie", error);
+      alert("Erreur lors de l'ajout de la catégorie");
+    }
+  }
+
   const { form, errors } = validateActivityForm(handleSubmit, activity);
 </script>
-
-<svelte:window on:click={handleOutsideClick} />
 
 <style>
   /* Animation pour le panneau latéral - ne peut pas être fait en Tailwind standard */
@@ -273,13 +313,13 @@
   .fixed {
     z-index: 40; /* Plus élevé que le dashboard */
   }
-  
+
   /* Styles pour le dropdown de catégories */
   .category-dropdown-container {
     position: relative;
     width: 100%;
   }
-  
+
   .custom-select {
     width: 100%;
     height: 42px; /* Hauteur fixe pour correspondre aux autres champs */
@@ -290,13 +330,14 @@
     position: relative;
     cursor: pointer;
   }
-  
-  .custom-select:focus, .custom-select:focus-within {
+
+  .custom-select:focus,
+  .custom-select:focus-within {
     outline: none;
     border-color: #015e61;
     box-shadow: 0 0 0 3px rgba(1, 94, 97, 0.2);
   }
-  
+
   .search-input {
     width: 100%;
     height: 100%;
@@ -307,12 +348,13 @@
     font-size: inherit;
     color: inherit;
     outline: none;
+    cursor: text;
   }
-  
+
   .search-input::placeholder {
     color: #9ca3af;
   }
-  
+
   .select-value {
     position: absolute;
     top: 0;
@@ -328,15 +370,16 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  
+
   .arrow-icon {
     position: absolute;
     right: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none; /* permet les clics à travers */
+    cursor: pointer;
   }
-  
+
   .dropdown-content {
     position: absolute;
     width: 100%;
@@ -349,26 +392,26 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
   }
-  
+
   .category-list {
     max-height: 200px;
     overflow-y: auto;
   }
-  
+
   .category-item {
     padding: 0.75rem 1rem;
     cursor: pointer;
     transition: background-color 0.15s;
   }
-  
+
   .category-item:hover {
     background-color: #f3f4f6;
   }
-  
+
   .category-item.selected {
     background-color: #e5e7eb;
   }
-  
+
   .add-category {
     display: flex;
     align-items: center;
@@ -380,17 +423,19 @@
     font-weight: 500;
     background-color: #f9fafb;
   }
-  
+
   .add-category:hover {
     background-color: #f3f4f6;
   }
-  
+
   .no-results {
     padding: 0.75rem 1rem;
     color: #6b7280;
     text-align: center;
   }
 </style>
+
+<svelte:window on:click={handleOutsideClick} />
 
 {#if show}
   <!-- Structure principale avec Tailwind -->
@@ -426,7 +471,6 @@
         >
           <!-- Champs de formulaire avec espacement vertical uniforme -->
           <div class="space-y-6">
-
             <!-- Projet -->
             <div>
               <label for="activity-project" class="block text-gray-700 font-medium mb-2">
@@ -569,7 +613,7 @@
               </label>
               <div class="category-dropdown-container">
                 <!-- Sélecteur personnalisé avec champ de recherche intégré -->
-                <div 
+                <div
                   class="custom-select"
                   onclick={() => {
                     categoryDropdownOpen = !categoryDropdownOpen;
@@ -582,10 +626,11 @@
                 >
                   {#if !categoryDropdownOpen || !isSearchFocused}
                     <span class="select-value">
-                      {categories.find(c => c.id === activity.categoryId)?.name || 'Sélectionner une catégorie...'}
+                      {categories.find((c) => c.id === activity.categoryId)?.name ||
+                        'Sélectionner une catégorie...'}
                     </span>
                   {/if}
-                  
+
                   <input
                     id="activity-category-search"
                     type="text"
@@ -602,12 +647,12 @@
                     }}
                     onclick={(e) => e.stopPropagation()}
                   />
-                  
+
                   <div class="arrow-icon">
                     <ChevronDown size={18} class="text-gray-600" />
                   </div>
                 </div>
-                
+
                 {#if categoryDropdownOpen}
                   <div class="dropdown-content">
                     <!-- Liste des catégories -->
@@ -616,7 +661,7 @@
                         <div class="no-results">Aucun résultat trouvé</div>
                       {:else}
                         {#each filteredCategories as category}
-                          <div 
+                          <div
                             class="category-item"
                             class:selected={category.id === activity.categoryId}
                             onclick={(e) => {
@@ -629,23 +674,17 @@
                         {/each}
                       {/if}
                     </div>
-                    
+
                     <!-- Option "Ajouter une nouvelle catégorie" -->
-                    {#if searchTerm && !filteredCategories.some(cat => cat.name.toLowerCase() === searchTerm.toLowerCase())}
-                      <div 
-                        class="add-category"
-                        onclick={(e) => {
-                          e.stopPropagation();
-                          addNewCategory();
-                        }}
-                      >
+                    {#if searchTerm && !filteredCategories.some((cat) => cat.name.toLowerCase() === searchTerm.toLowerCase())}
+                      <div class="add-category" onclick={handleAddCategory}>
                         <Plus size={16} />
                         Ajouter "{searchTerm}"
                       </div>
                     {/if}
                   </div>
                 {/if}
-                
+
                 {#if $errors.categoryId}
                   <span class="text-red-500 text-sm mt-1">{$errors.categoryId}</span>
                 {/if}
@@ -697,4 +736,16 @@
       </div>
     </div>
   </div>
+  <ConfirmationCreateCategory
+    show={showCategoryConfirmModal}
+    title="Confirmer l'ajout"
+    message={`Voulez-vous ajouter la catégorie "<strong>${categoryToAdd}</strong>" ?`}
+    onConfirm={() => {
+      showCategoryConfirmModal = false;
+      confirmAddCategory();
+    }}
+    onCancel={() => {
+      showCategoryConfirmModal = false;
+    }}
+  />
 {/if}
