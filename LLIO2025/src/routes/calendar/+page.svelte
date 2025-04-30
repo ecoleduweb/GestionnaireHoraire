@@ -13,16 +13,7 @@
   // Importer FullCalendar en français
   import frLocale from '@fullcalendar/core/locales/fr';
   import { formatViewTitle } from '../../utils/date';
-  import { ClientTelemetry } from '$lib/tracer';
-  import { env } from '$env/dynamic/public';
   import { Plus, Calendar, ChevronLeft, ChevronRight, LogOut } from 'lucide-svelte';
-
-  const ENABLED_TELEMETRY = env.PUBLIC_ENABLED_TELEMETRY === 'true';
-
-  if (ENABLED_TELEMETRY) {
-    const telemetry = ClientTelemetry.getInstance();
-    telemetry.start();
-  }
 
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
