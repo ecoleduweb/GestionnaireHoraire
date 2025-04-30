@@ -113,3 +113,18 @@ export const formatViewTitle = (viewType: string, date: Date): string => {
     year: 'numeric',
   });
 };
+
+export const formatHours = (hours: number | null | undefined): string => {  
+  if (!hours && hours !== 0) return "-";  
+
+  const hoursInt = Math.floor(hours);  
+  const minutes = Math.round((hours - hoursInt) * 60);  
+
+  // Format « h00 », « h05 », « h15 », etc.  
+  return `${hoursInt}h${minutes === 0  
+    ? "00"  
+    : minutes < 10  
+      ? `0${minutes}`  
+      : minutes  
+  }`;  
+};  
