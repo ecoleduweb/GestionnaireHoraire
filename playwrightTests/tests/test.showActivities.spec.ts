@@ -18,7 +18,7 @@ test.describe('showActivities', () => {
     
         try {
             // Utilisez une date fixe et explicite
-            await page.clock.install({ time: new Date('2025-03-22T08:00:00-04:00') });                
+            await page.clock.install({ time: new Date('2025-03-22T08:00:00-04:00') });         
             // Vérifiez si le clock a été installé correctement
             await page.evaluate(() => {
             console.log('Date après clock.install dans le browser:', new Date().toString());
