@@ -1,3 +1,6 @@
+import { bool } from "yup";
+import { ProjectStatus } from "../lib/types/enums";
+
 export interface Activity {
     id?: number;
     name: string;
@@ -42,7 +45,19 @@ export interface Category {
     timeEstimated: number;
 }
 
-export interface ActivityUpdateResponse 
-{
+export interface ActivityUpdateResponse {
     updated_activity: Activity;
+}
+
+export interface CreateProject {
+    name: string;
+    description: string;
+    status: ProjectStatus;
+    billable: boolean;
+}
+
+export interface UpdateProject {
+    name: string;
+    status: ProjectStatus;
+    billable: boolean;
 }
