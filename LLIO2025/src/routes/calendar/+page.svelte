@@ -14,7 +14,6 @@
   import frLocale from '@fullcalendar/core/locales/fr';
   import { formatViewTitle } from '../../utils/date';
   import { Plus, Calendar, ChevronLeft, ChevronRight, LogOut } from 'lucide-svelte';
-  import { date } from 'yup';
 
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
