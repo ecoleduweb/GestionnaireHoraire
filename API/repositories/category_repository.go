@@ -27,3 +27,9 @@ func UpdateCategory(categoryDAO *DAOs.Category) (*DAOs.Category, error) {
 	err := database.DB.Updates(categoryDAO).Error
 	return categoryDAO, DBErrorManager(err)
 }
+
+func GetCategoriesByProjectId(projectId string) ([]*DAOs.Category, error) {
+	var categories []*DAOs.Category
+	err := database.DB.Where("project_id = ?", projectId).Find(&categories).Error
+	return categories, DBErrorManager(err)
+}
