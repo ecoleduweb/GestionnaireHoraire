@@ -8,11 +8,11 @@
   <div class="p-4">
     <div class="flex justify-between items-center">
       <div>
-        <span class="text-black">{project.id}</span>
+        <span class="text-black">{project.name}</span>
         <span class="text-gray-500 ml-2">|</span>
         <span class="text-black ml-2">{project.lead}</span>
         <span class="text-gray-500 ml-2">|</span>
-        <span class="text-gray-500 ml-2">{project.name}</span>
+        <span class="text-gray-500 ml-2">{project.description}</span>
       </div>
     </div>
 

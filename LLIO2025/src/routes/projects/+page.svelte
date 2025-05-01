@@ -4,16 +4,34 @@
   import ProjectsLeftPane from "../../Components/Projects/ProjectsLeftPane.svelte";
   import ProjectComponent from "../../Components/Projects/ProjectComponent.svelte";
   import type { Project } from '../../Models/index.ts';
+  import { ProjectApiService } from "../../services/ProjectApiService";
 
   // État des projets
   let projects = $state<Project[]>([]);
-  let isLoading = $state(false);
+  let isLoading = $state(true);
+  let error = $state<string | null>(null);
+
+  async function loadProjects() {
+    try {
+      isLoading = true;
+      error = null;
+      const response = await ProjectApiService.getProjects();
+      projects = response;
+    } catch (err) {
+      console.error('Erreur lors de la récupération des projets:', err);
+      error = "Impossible de charger les projets. Veuillez réessayer plus tard.";
+      projects = [];
+    } finally {
+      isLoading = false;
+    }
+  }
 
   function mockProjects() {
     return [
       {
-      id: "AT-123",
-      name: "Nommer le projet",
+      id: 1,
+      name: "AT-123",
+      description: "Nommer le projet",
       color: "blue",
       lead: "Katell Arnault de la Ménardière",
       isArchived: false,
@@ -40,8 +58,9 @@
       totalTimeSpent: 65
       },
       {
-      id: "AT-456",
-      name: "Le projet de Marie Amélie",
+      id: 2,
+      name: "AT-456",
+      description: "Le projet de Marie Amélie",
       color: "pink",
       lead: "Katell Arnault de la Ménardière",
       isArchived: false,
@@ -75,8 +94,9 @@
       totalTimeSpent: 52
       },
       {
-      id: "FO-115",
-      name: "Graphisme 101",
+      id: 3,
+      name: "FO-115",
+      description: "Graphisme 101",
       color: "yellow",
       lead: "Katell Arnault de la Ménardière",
       isArchived: false,
@@ -98,8 +118,9 @@
       totalTimeSpent: 27
       },
       {
-      id: "RA-224",
-      name: "Noisette Steve",
+      id: 4,
+      name: "RA-224",
+      description: "Noisette Steve",
       color: "red",
       lead: "Steve Joncoux",
       isArchived: false,
@@ -139,8 +160,9 @@
       totalTimeSpent: 55
       },
       {
-      id: "AT-789",
-      name: "Nommer le projet",
+      id: 5,
+      name: "AT-789",
+      description: "Nommer le projet",
       color: "blue",
       lead: "Katell Arnault de la Ménardière",
       isArchived: true,
@@ -167,8 +189,9 @@
       totalTimeSpent: 65
       },
       {
-      id: "AT-987",
-      name: "Le projet de Marie Amélie",
+      id: 6,
+      name: "AT-987",
+      description: "Le projet de Marie Amélie",
       color: "pink",
       lead: "Katell Arnault de la Ménardière",
       isArchived: true,
@@ -202,8 +225,9 @@
       totalTimeSpent: 52
       },
       {
-      id: "FO-789",
-      name: "Graphisme 101",
+      id: 7,
+      name: "FO-789",
+      description: "Graphisme 101",
       color: "yellow",
       lead: "Katell Arnault de la Ménardière",
       isArchived: true,
@@ -225,8 +249,9 @@
       totalTimeSpent: 27
       },
       {
-      id: "RA-987",
-      name: "Noisette Steve",
+      id: 8,
+      name: "RA-987",
+      description: "Noisette Steve",
       color: "red",
       lead: "Steve Joncoux",
       isArchived: true,
@@ -269,8 +294,7 @@
   }
 
   onMount(() => {
-    projects = mockProjects();
-    isLoading = false;
+    loadProjects();
   });
 </script>
 
@@ -281,8 +305,18 @@
     <div class="p-4">
       <h1 class="text-2xl font-medium text-gray-800">Vos projets en cours</h1>
     </div>
+    {#if isLoading}
+    <div class="flex justify-center items-center h-screen">
+      <p class="text-gray-500">Chargement des projets...</p>
+    </div>
+  {:else if error}
+    <div class="flex justify-center items-center h-screen">
+      <p class="text-red-500">{error}</p>
+    </div>
+  {:else}
     {#each projects as project}
       <ProjectComponent {project} />
     {/each}
+  {/if}
   </div>
 </div>

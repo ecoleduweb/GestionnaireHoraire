@@ -3,11 +3,31 @@
   import { slide } from 'svelte/transition';
   import { quintOut } from 'svelte/easing';
   import { formatHours } from '../../utils/date';
-  
+
   let { project } = $props();
   let isDetailsVisible = $state([]);
-  project.coLeads = project.coLeads || [];
+
+  function calculateRemainingTime(timeSpent: number, timeEstimated: number): number {
+    return timeEstimated - timeSpent;
+  }
+
+  function calculateEmployeeTime(employee: any, type: 'spent' | 'estimated'): number {
+    return employee.categories.reduce(
+      (sum: number, cat: any) => sum + (type === 'spent' ? cat.timeSpent : cat.timeEstimated),
+      0
+    );
+  }
 </script>
+
+<style>
+  .project {
+    width: auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 15px;
+  }
+</style>
 
 <div class="project">
   <!-- Contenu du dashboard -->
@@ -18,9 +38,9 @@
         <div class="p-4">
           <div class="flex justify-between items-center">
             <div>
-              <span class="text-xl">{project.id}</span>
+              <span class="text-xl">{project.name}</span>
               <span class="text-xl text-gray-500 ml-2">|</span>
-              <span class="text-base text-gray-500 ml-2">{project.name}</span>
+              <span class="text-base text-gray-500 ml-2">{project.description}</span>
             </div>
           </div>
           <div class="flex mt-1">
@@ -75,16 +95,16 @@
                     </div>
                     <div
                       class="w-1/3 text-right text-sm"
-                      class:text-red-500={employee.categories.reduce(
-                        (sum, cat) => sum + cat.timeEstimated,
-                        0
-                      ) -
-                        employee.categories.reduce((sum, cat) => sum + cat.timeSpent, 0) <
-                        0}
+                      class:text-red-500={calculateRemainingTime(
+                        calculateEmployeeTime(employee, 'spent'),
+                        calculateEmployeeTime(employee, 'estimated')
+                      ) < 0}
                     >
                       {formatHours(
-                        employee.categories.reduce((sum, cat) => sum + cat.timeEstimated, 0) -
-                          employee.categories.reduce((sum, cat) => sum + cat.timeSpent, 0)
+                        calculateRemainingTime(
+                        calculateEmployeeTime(employee, 'spent'),
+                        calculateEmployeeTime(employee, 'estimated')
+                        )
                       )}
                     </div>
                   </div>
@@ -216,13 +236,3 @@
     </div>
   </div>
 </div>
-
-<style>
-  .project {
-    width: auto;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 15px;
-  }
-</style>

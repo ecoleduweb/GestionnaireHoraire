@@ -11,9 +11,15 @@ func CreateProject(project *DAOs.Project) (*DAOs.Project, error) {
 }
 
 func GetProjects() ([]*DAOs.Project, error) {
-	var projets []*DAOs.Project
-	err := database.DB.Find(&projets).Error
-	return projets, DBErrorManager(err)
+	var projects []*DAOs.Project
+	err := database.DB.Preload("Activities").Preload("Activities.User").Preload("Activities.Category").Preload("Categories").Find(&projects).Error
+	return projects, DBErrorManager(err)
+}
+
+func GetProjectsByManagerId(id int) ([]*DAOs.Project, error) {
+	var projects []*DAOs.Project
+	err := database.DB.Preload("Activities").Preload("Activities.User").Preload("Activities.Category").Preload("Categories").Find(&projects, "manager_id = ?", id).Error
+	return projects, DBErrorManager(err)
 }
 
 func GetProjectById(id string) (*DAOs.Project, error) {
