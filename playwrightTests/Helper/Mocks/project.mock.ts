@@ -2,7 +2,7 @@ import { MockConfig } from "../types";
 
 export const projectMocks = {
     getProjectsSuccess: {
-        url: 'http://localhost:8080/projects',
+        url: '*/**/projects/all',
         method: 'GET',
         response: {
             status: 200,
@@ -274,4 +274,4 @@ export const projectMocks = {
             }
         }
     }
-}
+} satisfies Record<string, MockConfig>;

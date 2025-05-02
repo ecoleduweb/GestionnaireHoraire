@@ -59,7 +59,7 @@ func RegisterRoutes(r *gin.Engine) {
 
 	projectsGroup := r.Group("/projects", middleware.RoleValidationMiddleware(enums.ProjectManager))
 	{
-		projectsGroup.GET("", controllers.GetProjects)
+		projectsGroup.GET("/all", controllers.GetProjects) //Différencie de la route frontend pour les tests
 	}
 
 }

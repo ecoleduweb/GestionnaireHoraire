@@ -35,7 +35,7 @@ const updateProject = async (project: UpdateProject): Promise<CreateProject> => 
 
 const getProjects = async(): Promise<Project[]> => {
   try {
-    const response = await GET<{projects: Project[]}>("/projects");
+    const response = await GET<{projects: Project[]}>("/projects/all");
     return response.projects;
   } catch (error) {
     console.error("Erreur lors de la récupération des projets:", error);
