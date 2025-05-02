@@ -34,7 +34,8 @@ test.describe('checkAddActivity', () => {
         await page.locator('#activity-project').selectOption('1');
 
         await page.getByText ('Créer').click();
-        
+
+        await page.waitForSelector('.fc-event', { state: 'visible' });
         await expect(page.getByText('Fête de Jean-Félix et Sherlock')).toBeVisible();
         
 
