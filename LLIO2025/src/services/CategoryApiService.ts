@@ -28,6 +28,17 @@ const getAllCategories = async (): Promise<Category[]> => {
   }
 };
 
+// Récupérer les catégories d'un projet spécifique
+const getCategoriesByProject = async (projectId: number): Promise<Category[]> => {
+  try {
+    const response = await GET<CategoriesResponse>(`/project/${projectId}/categories`);
+    return response?.categories || []; // Retourne un tableau vide si null ou undefined
+  } catch (error) {
+    console.error(`Erreur lors de la récupération des catégories du projet (ID: ${projectId}):`, error);
+    return [];
+  }
+};
+
 // Récupérer une catégorie par son ID
 const getCategoryById = async (id: number): Promise<Category> => {
   try {
@@ -70,5 +81,6 @@ const createCategory = async (
 export const CategoryApiService = {
   getAllCategories,
   getCategoryById,
-  createCategory
+  createCategory,
+  getCategoriesByProject
 };

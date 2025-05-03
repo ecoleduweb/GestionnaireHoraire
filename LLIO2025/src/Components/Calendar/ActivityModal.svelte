@@ -19,7 +19,6 @@
     show: boolean;
     users: User[];
     projects: Project[];
-    categories: Category[];
     activityToEdit: Activity | null;
     selectedDate?: { start: Date; end: Date } | null;
     onClose: () => void;
@@ -31,7 +30,6 @@
   let {
     show,
     projects,
-    categories,
     activityToEdit,
     selectedDate = null,
     onClose,
@@ -42,13 +40,15 @@
 
   const editMode = activityToEdit !== null;
 
-  let initialActivity = activityTemplate.generate(categories);
+  let categories: Category[] = []; // Toutes les catégories (utilisé en mode édition)
+  let projectCategories: Category[] = $state([]); // Catégories spécifiques au projet
+  let initialActivity = activityTemplate.generate();
   initialActivity.projectId = '' as unknown as number;
+  initialActivity.categoryId = null;
 
   let isSubmitting = false;
   let showCategoryConfirmModal = $state(false);
   let categoryToAdd = $state('');
-  let shouldRefreshCategories = $state(false);
 
   if (selectedDate && selectedDate.start) {
     const { startDate, endDate } = initializeActivityDates(selectedDate.start);
@@ -96,61 +96,82 @@
   // Filtrer les catégories selon le terme de recherche
   const filteredCategories = $derived(
     searchTerm
-      ? categories.filter((category) =>
+      ? projectCategories.filter((category) =>
           category.name.toLowerCase().includes(searchTerm.toLowerCase())
         )
-      : categories
+      : projectCategories
   );
 
-  // Fonction pour rafraîchir les catégories
-  async function refreshCategories() {
+  // Effet pour charger les catégories lors d'un changement de projet
+  $effect(() => {
+    if (activity.projectId) {
+      loadCategoriesByProject(activity.projectId);
+    } else {
+      projectCategories = [];
+      activity.categoryId = null;
+    }
+  });
+
+  // Fonction pour charger les catégories spécifiques à un projet
+  async function loadCategoriesByProject(projectId) {
+    if (!projectId) {
+      projectCategories = [];
+      return;
+    }
+
     try {
-      const updatedCategories = await CategoryApiService.getAllCategories();
-      categories = updatedCategories;
-      return updatedCategories;
+      projectCategories = await CategoryApiService.getCategoriesByProject(projectId);
+
+      if (activity.categoryId) {
+        const categoryExists = projectCategories.some((c) => c.id === activity.categoryId);
+
+        if (!categoryExists && editMode) {
+          try {
+            const category = await CategoryApiService.getCategoryById(activity.categoryId);
+            if (category) {
+              projectCategories = [...projectCategories, category];
+            }
+          } catch (err) {
+            console.error('Erreur lors de la récupération de la catégorie:', err);
+            activity.categoryId = null;
+          }
+        } else if (!categoryExists) {
+          activity.categoryId = null;
+        }
+      }
     } catch (error) {
-      console.error('Erreur lors du rafraîchissement des catégories:', error);
-      return categories;
+      console.error(`Erreur lors du chargement des catégories pour le projet ${projectId}:`, error);
+      projectCategories = [];
+    }
+  }
+
+  // Fonction pour charger toutes les catégories
+  async function loadCategories() {
+    try {
+      // En mode édition, charger les catégories du projet directement
+      if (editMode && activityToEdit && activityToEdit.projectId) {
+        await loadCategoriesByProject(activityToEdit.projectId);
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des catégories:', error);
     }
   }
 
   // Rafraîchir les catégories quand le modal s'ouvre
   $effect(() => {
     if (show) {
-      if (shouldRefreshCategories || activityToEdit) {
-        refreshCategories().then((updatedCategories) => {
-          // Si on modifie une activité, vérifiez que sa catégorie est dans la liste
-          if (activityToEdit && activityToEdit.categoryId) {
-            const categoryExists = updatedCategories.some(
-              (c) => c.id === activityToEdit.categoryId
-            );
-
-            if (!categoryExists) {
-              // Si la catégorie n'est pas dans la liste, récupérer la individuellement
-              CategoryApiService.getCategoryById(activityToEdit.categoryId)
-                .then((category) => {
-                  if (category) {
-                    categories = [...updatedCategories, category];
-                  }
-                })
-                .catch((err) => {
-                  console.error(
-                    "Erreur lors de la récupération de la catégorie de l'activité:",
-                    err
-                  );
-                });
-            }
-          }
-
-          shouldRefreshCategories = false;
-        });
+      if (activity.projectId) {
+        loadCategoriesByProject(activity.projectId);
+      } else {
+        loadCategories();
       }
     }
   });
 
   // Fonction pour sélectionner une catégorie
   function selectCategory(categoryId) {
-    activity.categoryId = categoryId;
+    // Convertir explicitement en nombre
+    activity.categoryId = Number(categoryId);
     searchTerm = '';
     categoryDropdownOpen = false;
   }
@@ -165,6 +186,16 @@
 
   const handleSubmit = async () => {
     if (isSubmitting) return; // Empêche les soumissions multiples
+
+    // S'assurer que les valeurs sont des nombres
+    if (typeof activity.projectId === 'string') {
+      activity.projectId = Number(activity.projectId);
+    }
+
+    if (typeof activity.categoryId === 'string') {
+      activity.categoryId = Number(activity.categoryId);
+    }
+
     isSubmitting = true;
 
     try {
@@ -238,10 +269,11 @@
         selectedProjectId
       );
 
-      // Ajouter la nouvelle catégorie à la liste existante
-      categories = [...categories, newCategory];
+      // Ajouter la nouvelle catégorie à la liste des catégories du projet
+      projectCategories = [...projectCategories, newCategory];
 
-      activity.categoryId = newCategory.id;
+      // Sélectionner la nouvelle catégorie
+      activity.categoryId = Number(newCategory.id);
 
       searchTerm = '';
       categoryDropdownOpen = false;
@@ -450,6 +482,12 @@
     color: #6b7280;
     text-align: center;
   }
+
+  .disabled-select {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
 </style>
 
 <svelte:window on:click={handleOutsideClick} />
@@ -632,7 +670,12 @@
                 <!-- Sélecteur personnalisé avec champ de recherche intégré -->
                 <div
                   class="custom-select"
-                  onclick={() => {
+                  class:disabled-select={!activity.projectId}
+                  onclick={(e) => {
+                    if (!activity.projectId) {
+                      e.preventDefault();
+                      return;
+                    }
                     categoryDropdownOpen = !categoryDropdownOpen;
                     if (categoryDropdownOpen) {
                       setTimeout(() => {
@@ -643,8 +686,10 @@
                 >
                   {#if !categoryDropdownOpen || !isSearchFocused}
                     <span class="select-value">
-                      {categories.find((c) => c.id === activity.categoryId)?.name ||
-                        'Sélectionner une catégorie...'}
+                      {!activity.projectId
+                        ? 'Sélectionner une catégorie'
+                        : projectCategories.find((c) => c.id === activity.categoryId)?.name ||
+                          'Sélectionner une catégorie'}
                     </span>
                   {/if}
 
@@ -654,10 +699,13 @@
                     class="search-input"
                     placeholder="Rechercher une catégorie..."
                     bind:value={searchTerm}
+                    disabled={!activity.projectId}
                     style="opacity: {categoryDropdownOpen ? '1' : '0'}"
                     onfocus={() => {
-                      categoryDropdownOpen = true;
-                      isSearchFocused = true;
+                      if (activity.projectId) {
+                        categoryDropdownOpen = true;
+                        isSearchFocused = true;
+                      }
                     }}
                     onblur={() => {
                       isSearchFocused = false;
@@ -670,12 +718,16 @@
                   </div>
                 </div>
 
-                {#if categoryDropdownOpen}
+                {#if categoryDropdownOpen && activity.projectId}
                   <div class="dropdown-content">
                     <!-- Liste des catégories -->
                     <div class="category-list">
                       {#if filteredCategories.length === 0}
-                        <div class="no-results">Aucun résultat trouvé</div>
+                        <div class="no-results">
+                          {searchTerm
+                            ? 'Aucun résultat trouvé'
+                            : 'Aucune catégorie disponible pour ce projet'}
+                        </div>
                       {:else}
                         {#each filteredCategories as category}
                           <div
@@ -692,8 +744,8 @@
                       {/if}
                     </div>
 
-                    <!-- Option "Ajouter une nouvelle catégorie" -->
-                    {#if searchTerm && !filteredCategories.some((cat) => cat.name.toLowerCase() === searchTerm.toLowerCase())}
+                    <!-- Option "Ajouter une nouvelle catégorie" uniquement si un projet est sélectionné -->
+                    {#if activity.projectId && searchTerm && !filteredCategories.some((cat) => cat.name.toLowerCase() === searchTerm.toLowerCase())}
                       <div class="add-category" onclick={handleAddCategory}>
                         <Plus size={16} />
                         Ajouter "{searchTerm}"

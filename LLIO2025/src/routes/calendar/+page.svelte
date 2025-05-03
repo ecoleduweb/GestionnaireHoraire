@@ -1,14 +1,13 @@
 <script lang="ts">
   import type { CalendarService } from '../../services/calendar.service';
   import { UserApiService } from '../../services/UserApiService';
-  import { CategoryApiService } from '../../services/CategoryApiService';
   import { ProjectApiService } from '../../services/ProjectApiService';
   import { CalendarService as CS } from '../../services/calendar.service';
   import { onMount } from 'svelte';
   import ActivityModal from '../../Components/Calendar/ActivityModal.svelte';
   import DashboardLeftPane from '../../Components/Calendar/DashboardLeftPane.svelte';
   import { ActivityApiService } from '../../services/ActivityApiService';
-  import type { Activity, UserInfo, Category, Project } from '../../Models/index.ts';
+  import type { Activity, UserInfo, Project } from '../../Models/index.ts';
   // Importez le fichier CSS
   import '../../style/modern-calendar.css';
   import { getDateOrDefault } from '../../utils/date';
@@ -47,7 +46,6 @@
 
   const users = [{ id: 1, name: 'Test ManuDev' }];
 
-  let categories = $state<Category[]>([]);
   let projects = $state<Project[]>([]);
 
   // Fonction pour attribuer une couleur à chaque événement
@@ -93,15 +91,6 @@
       alert('Une erreur est survenue lors du chargement des activités.');
     } finally {
       isLoading = false;
-    }
-  }
-
-  // Fonction pour charger les catégories
-  async function loadCategories() {
-    try {
-      categories = await CategoryApiService.getAllCategories();
-    } catch (error) {
-      console.error('Erreur lors du chargement des catégories:', error);
     }
   }
 
@@ -204,8 +193,6 @@
       updateViewTitle();
 
       await loadActivities();
-
-      await loadCategories();
 
       await loadProjects();
     }
@@ -517,7 +504,6 @@
     show={showModal}
     {users}
     {projects}
-    {categories}
     activityToEdit={editActivity}
     {selectedDate}
     onDelete={handleActivityDelete}

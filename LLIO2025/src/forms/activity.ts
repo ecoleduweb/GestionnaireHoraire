@@ -2,14 +2,14 @@ import type { Activity, Category } from '../Models';
 import { initializeActivityDates } from '../utils/date';
 
 export const activityTemplate = {
-  generate: (categories: Category[]): Activity => {
+  generate: (): Activity => {
     const { startDate, endDate } = initializeActivityDates();
     return {
       name: '',
       description: '',
       userId: 1,
       projectId: 0,
-      categoryId: categories[0].id,
+      categoryId: null,
       startDate,
       endDate,
     };
