@@ -66,6 +66,11 @@ export class CalendarService {
     this.calendar?.addEvent(eventData);
   }
 
+  clearCalendar() {
+    this.calendar?.removeAllEvents();
+  }
+  
+
   updateEvent(activity: any) {
     // Trouver l'événement existant
     const event = this.calendar?.getEventById(activity.id.toString());
@@ -119,6 +124,7 @@ export class CalendarService {
 
   loadActivities(activities: Activity[]) {
     // Ajouter chaque activité au calendrier
+    this.clearCalendar(); 
     activities.forEach((activity) => {
       this.addEvent({
         id: activity.id.toString(),

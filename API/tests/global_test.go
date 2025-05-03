@@ -76,6 +76,7 @@ func prepareTestData() {
 	testProject := DAOs.Project{
 		Name:        "Test Project",
 		Description: "Sample project",
+		ManagerId:   doNotDeleteUser.Id,
 		Status:      enums.ProjectStatus(enums.InProgress),
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
@@ -85,6 +86,7 @@ func prepareTestData() {
 	doNotDeleteProject = testProject
 	testProject2 := DAOs.Project{
 		Name:        "Test Project 2",
+		ManagerId:   doNotDeleteUser.Id,
 		Description: "Sample project 2",
 		Status:      enums.ProjectStatus(enums.InProgress),
 		CreatedAt:   time.Now(),
