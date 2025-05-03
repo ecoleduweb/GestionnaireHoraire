@@ -13,7 +13,7 @@
   } from '../../utils/date';
   import '../../style/app.css';
   import { ChevronDown, X, Plus } from 'lucide-svelte';
-  import ConfirmationCreateCategory from './ConfirmationCreateCategory.svelte';
+  import ConfirmationCreateCategory from './ConfirmModal.svelte';
 
   type Props = {
     show: boolean;
@@ -113,7 +113,7 @@
   });
 
   // Fonction pour charger les catégories spécifiques à un projet
-  async function loadCategoriesByProject(projectId) {
+  const loadCategoriesByProject = async (projectId) => {
     if (!projectId) {
       projectCategories = [];
       return;
@@ -143,10 +143,10 @@
       console.error(`Erreur lors du chargement des catégories pour le projet ${projectId}:`, error);
       projectCategories = [];
     }
-  }
+  };
 
   // Fonction pour charger toutes les catégories
-  async function loadCategories() {
+  const loadCategories = async () => {
     try {
       // En mode édition, charger les catégories du projet directement
       if (editMode && activityToEdit && activityToEdit.projectId) {
@@ -155,7 +155,7 @@
     } catch (error) {
       console.error('Erreur lors du chargement des catégories:', error);
     }
-  }
+  };
 
   // Rafraîchir les catégories quand le modal s'ouvre
   $effect(() => {
@@ -169,20 +169,20 @@
   });
 
   // Fonction pour sélectionner une catégorie
-  function selectCategory(categoryId) {
+  const selectCategory = (categoryId) => {
     // Convertir explicitement en nombre
     activity.categoryId = Number(categoryId);
     searchTerm = '';
     categoryDropdownOpen = false;
-  }
+  };
 
   // Gérer la fermeture du dropdown si on clique ailleurs
-  function handleOutsideClick(event) {
+  const handleOutsideClick = (event) => {
     if (categoryDropdownOpen && !event.target.closest('.category-dropdown-container')) {
       categoryDropdownOpen = false;
       searchTerm = ''; // Réinitialiser la recherche
     }
-  }
+  };
 
   const handleSubmit = async () => {
     if (isSubmitting) return; // Empêche les soumissions multiples
@@ -247,14 +247,14 @@
     onClose();
   };
 
-  function handleAddCategory(e) {
+  const handleAddCategory = (e) => {
     e.stopPropagation();
     categoryToAdd = searchTerm;
     showCategoryConfirmModal = true;
-  }
+  };
 
   // Fonction pour ajouter une nouvelle catégorie après confirmation
-  async function confirmAddCategory() {
+  const confirmAddCategory = async () => {
     if (!categoryToAdd.trim()) return;
 
     try {
@@ -281,7 +281,7 @@
       console.error("Erreur lors de l'ajout d'une catégorie", error);
       alert("Erreur lors de l'ajout de la catégorie");
     }
-  }
+  };
 
   const { form, errors } = validateActivityForm(handleSubmit, activity);
 </script>

@@ -42,7 +42,7 @@ func CreateCategory(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"reponse":  "La catégorie a bien été ajoutée à la base de données.",
-		"activity": categoryAdded,
+		"category": categoryAdded,
 	})
 }
 

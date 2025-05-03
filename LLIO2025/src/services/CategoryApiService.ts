@@ -13,7 +13,6 @@ interface CategoryResponse {
 // Correspondance avec la structure de réponse réelle du backend
 interface CategoryCreateResponse {
   reponse: string;
-  activity?: Category;  // Le backend retourne parfois "activity" au lieu de "category"
   category?: Category;
 }
 
@@ -69,7 +68,7 @@ const createCategory = async (
     
     // Traiter la réponse selon différents cas possibles
     if (response?.category) return response.category;
-    if (response?.activity) return response.activity;
+    // if (response?.activity) return response.activity;
     
     throw new Error('Format de réponse API inattendu');
   } catch (error) {
