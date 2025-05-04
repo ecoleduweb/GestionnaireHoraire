@@ -46,7 +46,7 @@ func GetProjectsList() ([]*DAOs.Project, error) {
 
 func GetProjectsByManagerId(id int) ([]*DAOs.Project, error) {
 	var projects []*DAOs.Project
-	err := database.DB.Preload("Activities").Preload("Activities.User").Preload("Activities.Category").Preload("Categories").Find(&projects, "manager_id = ?", id).Error
+	err := database.DB.Find(&projects, "manager_id = ?", id).Error
 	return projects, DBErrorManager(err)
 }
 
