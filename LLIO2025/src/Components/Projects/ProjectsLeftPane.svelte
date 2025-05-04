@@ -3,6 +3,7 @@
   import { quintOut } from "svelte/easing";
   import { slide } from "svelte/transition";
   import ProjectItem from "./ProjectPaneItem.svelte";
+  import HoursWorkedDashboard from "../Calendar/HoursWorkedDashboard.svelte";
 
   let { projects } = $props();
   let isArchivedVisible = $state(false);
@@ -66,8 +67,10 @@
           {/if}
         </div>
       {/if}
-    </div>
+    </div>  
+    HAAAAAAAAA pro
   </div>
+  
 </div>
 
 <style>

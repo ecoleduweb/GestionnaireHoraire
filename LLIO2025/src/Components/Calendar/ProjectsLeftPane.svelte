@@ -4,6 +4,7 @@
   import { onMount } from 'svelte';
   import ProjectModal from '../Project/ProjectModal.svelte';
   import type { CreateProject } from '../../Models';
+  import HoursWorkedDashboard from './HoursWorkedDashboard.svelte';
 
   let projects = [];
   let showModal = $state(false);
@@ -187,7 +188,7 @@
             </div>
           </div>
         </div>
-      {/each}
+      {/each}    
     </div>
   </div>
 </div>

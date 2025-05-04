@@ -4,6 +4,9 @@
   import { quintOut } from "svelte/easing";
   import { slide } from "svelte/transition";
   import DashboardProjectItem from "../Projects/DashboardPaneProjectItem.svelte";
+  import HoursWorkedDashboard from "./HoursWorkedDashboard.svelte";
+  import { $props } from "svelte";
+  const { activities }: { activities: any[] } = $props();
 
   let projects = $state([]);
   let isArchivedVisible = $state(false);
@@ -158,6 +161,7 @@
       {/if}
     </div>
   </div>
+  <HoursWorkedDashboard />
 </div>
 
 <style>

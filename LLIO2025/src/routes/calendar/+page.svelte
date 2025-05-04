@@ -24,6 +24,7 @@
   let activeView = $state('timeGridWeek');
   let currentViewTitle = $state('');
   let isLoading = $state(false);
+  let activities = [];
 
   const timeRanges = [
     { label: 'Heures de bureau', start: '06:00:00', end: '19:00:00', default: true },
@@ -107,7 +108,7 @@
 
       dateStart = formatDate(dateStart);
       dateEnd = formatDate(dateEnd);
-      let activities = [];
+      
       activities = await ActivityApiService.getAllActivitesFromRange(dateStart, dateEnd);
 
       // Utiliser la méthode du service pour ajouter les activités au calendrier
@@ -387,7 +388,7 @@
 
 <div class="flex">
   <!-- Dashboard toujours visible à gauche -->
-  <DashboardLeftPane />
+  <DashboardLeftPane {activities}/>
 
   <!-- Contenu principal (calendrier) avec marge pour s'adapter au dashboard -->
   <div class="space-between-dashboard-calendar w-full h-full bg-white px-4 py-6">
