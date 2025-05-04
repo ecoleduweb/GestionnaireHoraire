@@ -24,6 +24,11 @@
     editToProject = null;
     showModal = true;
   }
+
+  function handleEditProject(project) {
+    editToProject = project;
+    showModal = true;
+  }
 </script>
 
 <style>
@@ -100,7 +105,7 @@
 
     <div class="overflow-y-auto max-h-[calc(100vh-150px)]">
       {#each projects.filter((x) => !x.isArchived) as project}
-        <ProjectItem {project} />
+        <ProjectItem {project} onEdit={handleEditProject} />
       {/each}
 
       <!-- Projets archivés -->
@@ -131,7 +136,7 @@
           {#if isArchivedVisible}
             <div transition:slide={{ duration: 300, easing: quintOut }}>
               {#each projects.filter((x) => x.isArchived) as project}
-                <ProjectItem {project} />
+                <ProjectItem {project} onEdit={handleEditProject} />
               {/each}
             </div>
           {/if}

@@ -1,7 +1,19 @@
 <script lang="ts">
   import { formatHours } from '../../utils/date';
-
-  let { project } = $props();
+  import { Pencil } from 'lucide-svelte';
+  import type { Project } from '../../Models';
+  
+  type Props = {
+    project: Project;
+    onEdit: (project: Project) => void;
+  };
+  
+  let { project, onEdit } = $props();
+  
+  function handleEdit(event: MouseEvent) {
+    event.stopPropagation(); // Empêche la propagation du clic aux éléments parents
+    onEdit(project);
+  }
 </script>
 
 <div class="border-l-10 border-b" style="border-left-color: {project.color}">
@@ -14,6 +26,13 @@
         <span class="text-gray-500 ml-2">|</span>
         <span class="text-gray-500 ml-2">{project.name}</span>
       </div>
+      <button 
+        class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+        on:click={handleEdit}
+        aria-label="Modifier le projet"
+      >
+        <Pencil size={16} />
+      </button>
     </div>
 
     <div class="mt-2 flex items-center text-xs text-gray-500">
