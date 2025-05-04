@@ -38,7 +38,7 @@ func TestGetProjectWithNonNumericId(t *testing.T) {
 }
 
 func TestGetAllProjects(t *testing.T) {
-	w := sendRequest(router, "GET", "/projects/all", nil, enums.Administrator)
+	w := sendRequest(router, "GET", "/projects", nil, enums.Administrator)
 	assertResponse(t, w, http.StatusOK, nil)
 
 	// Vérification du corps de la réponse
