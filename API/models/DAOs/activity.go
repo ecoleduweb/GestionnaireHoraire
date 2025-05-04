@@ -31,6 +31,7 @@ type ActivityWithTimeSpent struct {
 	TimeSpent  float64 `gorm:"column:time_spent"`
 }
 
+// AfterFind est un hook appelé automatiquement après la récupération d'un enregistrement dans la BD
 func (a *Activity) AfterFind(tx *gorm.DB) error {
 	// Only calculate if not already set (by aggregation query)
 	if a.TimeSpent == 0 && !a.StartDate.IsZero() && !a.EndDate.IsZero() {
