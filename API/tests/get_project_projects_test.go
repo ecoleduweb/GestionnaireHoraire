@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"llio-api/models/DAOs"
+	"llio-api/models/enums"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -37,22 +38,22 @@ func TestGetProjectWithNonNumericId(t *testing.T) {
 }
 
 func TestGetAllProjects(t *testing.T) {
-	w := sendRequest(router, "GET", "/projects", nil)
+	w := sendRequest(router, "GET", "/projects", nil, enums.Administrator)
 	assertResponse(t, w, http.StatusOK, nil)
 
 	// Vérification du corps de la réponse
 	var responseBody struct {
-		Projets []DAOs.Project `json:"projets"`
+		Projects []DAOs.Project `json:"projects"`
 	}
 	err := json.Unmarshal(w.Body.Bytes(), &responseBody)
 	assert.NoError(t, err)
 
 	// Vérifie qu'on a au moins un projet
-	assert.Greater(t, len(responseBody.Projets), 0)
+	assert.Greater(t, len(responseBody.Projects), 0)
 
 	// Vérifie que doNotDeleteProject est présent
 	var found bool
-	for _, project := range responseBody.Projets {
+	for _, project := range responseBody.Projects {
 		if project.Id == doNotDeleteProject.Id {
 			found = true
 			assert.Equal(t, doNotDeleteProject.Name, project.Name)

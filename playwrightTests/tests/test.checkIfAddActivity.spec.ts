@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { ApiMocker } from '../Helper/mockApi';
 import { activityMocks } from '../Helper/Mocks/activity.mock';
+import { projectMocks } from '../Helper/Mocks/project.mock';
 
 
 
@@ -11,7 +12,8 @@ test.describe('checkAddActivity', () => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
             activityMocks.getByIdSuccess,      
-            activityMocks.getAllActivityEmpty,      
+            activityMocks.getAllActivityEmpty,    
+            projectMocks.getProjectsSuccess,  
         ])
             .apply();
         await page.clock.install({ time: new Date('2025-03-22T08:00:00') });
