@@ -142,9 +142,19 @@ func formatProjects(projects []*DAOs.Project, err error) ([]map[string]any, erro
 
 	var result []map[string]any
 	for _, project := range projects {
-		activities, err := repositories.GetProjectActivities(project.Id)
+		tempActivities, err := repositories.GetProjectActivities(project.Id)
 		if err != nil {
 			return nil, err
+		}
+
+		activities := make([]DAOs.Activity, len(tempActivities))
+		for i, result := range tempActivities {
+			activities[i] = DAOs.Activity{
+				UserId:     result.UserID,
+				CategoryId: result.CategoryID,
+				ProjectId:  result.ProjectID,
+				TimeSpent:  result.TimeSpent,
+			}
 		}
 
 		formattedProject := formatProjectWithActivities(project, activities, userMap, categoryMap)

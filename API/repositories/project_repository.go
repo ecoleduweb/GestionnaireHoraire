@@ -16,19 +16,26 @@ func GetProjects() ([]*DAOs.Project, error) {
 	return projects, DBErrorManager(err)
 }
 
-func GetProjectActivities(projectId int) ([]DAOs.Activity, error) {
-	var activities []DAOs.Activity
+func GetProjectActivities(projectId int) ([]DAOs.ActivityWithTimeSpent, error) {
+	var tempResults []DAOs.ActivityWithTimeSpent
+
 	err := database.DB.
 		Select(`
-            user_id, 
-            category_id, 
-            project_id, 
-            SUM(TIMESTAMPDIFF(SECOND, start_date, end_date)/3600.0) as time_spent
+            activities.user_id, 
+            activities.category_id, 
+            activities.project_id, 
+            CAST(SUM(TIMESTAMPDIFF(SECOND, activities.start_date, activities.end_date))/3600.0 AS DECIMAL(10,2)) as time_spent
         `).
+		Table("activities").
 		Where("project_id = ?", projectId).
 		Group("user_id, category_id, project_id").
-		Find(&activities).Error
-	return activities, DBErrorManager(err)
+		Scan(&tempResults).Error
+
+	if err != nil {
+		return nil, DBErrorManager(err)
+	}
+
+	return tempResults, err
 }
 
 func GetProjectsList() ([]*DAOs.Project, error) {
