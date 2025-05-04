@@ -2,7 +2,7 @@ import { MockConfig } from "../types";
 
 export const projectMocks = {
     getProjectsSuccess: {
-        url: '*api/projects',
+        url: '**/*api/projects',
         method: 'GET',
         response: {
             status: 200,
