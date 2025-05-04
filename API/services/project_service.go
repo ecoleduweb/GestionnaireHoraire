@@ -70,12 +70,21 @@ func GetProjectsList() ([]*DTOs.ProjectDTO, error) {
 	if err != nil {
 		return nil, err
 	}
-	var projectsDTO []*DTOs.ProjectDTO
-	err = copier.Copy(projects, projectsDTO)
-	if err != nil {
+
+	if len(projects) == 0 {
+		return make([]*DTOs.ProjectDTO, 0), nil
+	}
+
+	projectsDTO := make([]*DTOs.ProjectDTO, len(projects))
+	for i := range projectsDTO {
+		projectsDTO[i] = &DTOs.ProjectDTO{}
+	}
+
+	if err := copier.Copy(&projectsDTO, &projects); err != nil {
 		return nil, err
 	}
-	return projectsDTO, err
+
+	return projectsDTO, nil
 }
 
 func GetProjectsByManagerId(id int) ([]map[string]any, error) {
