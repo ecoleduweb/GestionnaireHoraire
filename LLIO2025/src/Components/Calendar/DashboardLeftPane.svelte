@@ -4,6 +4,7 @@
   import { slide } from "svelte/transition";
   import DashboardProjectItem from "../Projects/DashboardPaneProjectItem.svelte";
   import type { UserInfo } from '../../Models/index.ts';
+  import { UserRole } from '../../lib/types/enums';
   
   const { currentUser = null } = $props<{currentUser?: UserInfo | null}>();
   let { projects } = $props();
@@ -35,7 +36,7 @@
         </button>
       </div>
       <div class="mt-4">
-        {#if currentUser.role === 2}
+        {#if currentUser.role === UserRole.Admin}
           <button 
             onclick={() => goto('./users')}
             id="user-button"
