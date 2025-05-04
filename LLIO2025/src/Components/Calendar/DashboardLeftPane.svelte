@@ -1,103 +1,14 @@
 <script lang="ts">
   import { goto } from "$app/navigation"
-  import { onMount } from "svelte";
   import { quintOut } from "svelte/easing";
   import { slide } from "svelte/transition";
   import DashboardProjectItem from "../Projects/DashboardPaneProjectItem.svelte";
   import type { UserInfo } from '../../Models/index.ts';
   
   const { currentUser = null } = $props<{currentUser?: UserInfo | null}>();
-  let projects = $state([]);
+  let { projects } = $props();
   let isArchivedVisible = $state(false);
 
-  function mockProjects() {
-    return [
-      {
-        id: "AT-123",
-        name: "Nommer le projet",
-        color: "blue",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 205.25,
-        timeEstimated: 300,
-        timeRemaining: 94.75,
-        isArchived: false
-      },
-      {
-        id: "AT-456",
-        name: "Le projet de Marie Amélie",
-        color: "pink",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 85.5,
-        timeEstimated: 450,
-        timeRemaining: 364.5,
-        isArchived: false
-      },
-      {
-        id: "FO-115",
-        name: "Graphisme 101",
-        color: "yellow",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 40,
-        timeEstimated: 0,
-        timeRemaining: 0,
-        isArchived: false
-      },
-      {
-        id: "RA-224",
-        name: "Noisette Steve",
-        color: "red",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 450,
-        timeEstimated: 400,
-        timeRemaining: -50,
-        isArchived: false
-      },
-      {
-        id: "AT-123",
-        name: "Nommer le projet",
-        color: "blue",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 205,
-        timeEstimated: 300,
-        timeRemaining: 95,
-        isArchived: true
-      },
-      {
-        id: "AT-456",
-        name: "Le projet de Marie Amélie",
-        color: "pink",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 85,
-        timeEstimated: 450,
-        timeRemaining: 365,
-        isArchived: true
-      },
-      {
-        id: "FO-115",
-        name: "Graphisme 101",
-        color: "yellow",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 40,
-        timeEstimated: 0,
-        timeRemaining: 0,
-        isArchived: true
-      },
-      {
-        id: "RA-224",
-        name: "Noisette Steve",
-        color: "red",
-        lead: "Katell Arnault de la Ménardière",
-        timeSpent: 550,
-        timeEstimated: 400,
-        timeRemaining: -150,
-        isArchived: true
-      },
-    ];
-  }
-
-  onMount(() => {
-    projects = mockProjects();
-  });
 </script>
 
 <div class="dashboard-container">

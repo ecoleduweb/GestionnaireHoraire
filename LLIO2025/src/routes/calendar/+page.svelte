@@ -6,7 +6,7 @@
   import ActivityModal from '../../Components/Calendar/ActivityModal.svelte';
   import DashboardLeftPane from '../../Components/Calendar/DashboardLeftPane.svelte';
   import { ActivityApiService } from '../../services/ActivityApiService';
-  import type { Activity, UserInfo } from '../../Models/index.ts';
+  import type { Activity, Project, UserInfo } from '../../Models/index.ts';
   // Importez le fichier CSS
   import '../../style/modern-calendar.css';
   import { getDateOrDefault, formatDate } from '../../utils/date';
@@ -14,6 +14,7 @@
   import frLocale from '@fullcalendar/core/locales/fr';
   import { formatViewTitle } from '../../utils/date';
   import { Plus, Calendar, ChevronLeft, ChevronRight, LogOut } from 'lucide-svelte';
+  import { ProjectApiService } from '../../services/ProjectApiService';
 
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
@@ -33,9 +34,9 @@
   let activeTimeRange = $state(timeRanges.find((range) => range.default));
 
   let currentUser = $state<UserInfo | null>(null);
+  let projects = $state<Project[]>([]);
 
   const users = [{ id: 1, name: 'Test ManuDev' }];
-  const projects = [{ id: 1, name: 'Projet manudev' }];
   const categories = [{ id: 1, name: 'Categorie Test ManuDev' }];
 
   // Fonction pour attribuer une couleur à chaque événement
@@ -114,6 +115,19 @@
       }
     } catch (error) {
       alert('Une erreur est survenue lors du chargement des activités.');
+    }
+  }
+
+  async function loadProjects() {
+    try {
+      isLoading = true;
+      const response = await ProjectApiService.getProjects();
+      projects = response;
+    } catch (err) {
+      console.error('Erreur lors de la récupération des projets:', err);
+      projects = [];
+    } finally {
+      isLoading = false;
     }
   }
 
@@ -210,6 +224,7 @@
       // Charger les activités
       await loadActivities();
     }
+    loadProjects();
     isLoading = false;
   });
 
@@ -388,7 +403,7 @@
   {#if isLoading}
     <div class="fixed left-0 top-0 w-[300px] h-full bg-gray-100 animate-pulse"></div>
   {:else if currentUser}
-    <DashboardLeftPane {currentUser} />
+    <DashboardLeftPane {projects} {currentUser} />
   {/if}
 
   <!-- Contenu principal (calendrier) avec marge pour s'adapter au dashboard -->

@@ -8,9 +8,9 @@
   <div class="p-4">
     <div class="flex justify-between items-center">
       <div>
-        <span class="text-black">{project.id}</span>
+        <span class="text-black">{project.name}</span>
         <span class="text-gray-500 ml-2">|</span>
-        <span class="text-gray-500 ml-2">{project.name}</span>
+        <span class="text-gray-500 ml-2">{project.description}</span>
       </div>
     </div>
 
@@ -20,16 +20,22 @@
       </div>
       <div class="flex">
         <div class="w-14">
-          <div class="font-bold">{formatHours(project.timeSpent)}</div>
+          <div class="font-bold">{formatHours(project.totalTimeSpent)}</div>
         </div>
         <div class="w-14">
-          <div class="text-gray-400">{formatHours(project.timeEstimated)}</div>
+          <div class="text-gray-400">
+            {formatHours(project.totalTimeEstimated)}
+          </div>
         </div>
         <div>
-          {#if project.timeRemaining < 0}
-            <div class="font-medium text-red-700">{formatHours(project.timeRemaining)}</div>
+          {#if project.totalTimeRemaining < 0}
+            <div class="font-medium text-red-700">
+              {formatHours(project.totalTimeRemaining)}
+            </div>
           {:else}
-            <div class="text-gray-400">{formatHours(project.timeRemaining)}</div>
+            <div class="text-gray-400">
+              {formatHours(project.totalTimeRemaining)}
+            </div>
           {/if}
         </div>
       </div>
