@@ -5,7 +5,6 @@ import (
 	"llio-api/models/DTOs"
 	"llio-api/models/enums"
 	"llio-api/repositories"
-	"strconv"
 
 	"github.com/jinzhu/copier"
 )
@@ -59,15 +58,24 @@ func GetProjects() ([]map[string]any, error) {
 		return nil, err
 	}
 
-	var result []map[string]any
-	for _, project := range projects {
-		projectDTO := &DTOs.ProjectDTO{}
-		err = copier.Copy(projectDTO, project)
-		formattedProject := formatProjectDTO(projectDTO)
-		result = append(result, formattedProject)
+	result, err := formatProjects(projects, err)
+	if err != nil {
+		return nil, err
 	}
-
 	return result, err
+}
+
+func GetProjectsList() ([]*DTOs.ProjectDTO, error) {
+	projects, err := repositories.GetProjectsList()
+	if err != nil {
+		return nil, err
+	}
+	var projectsDTO []*DTOs.ProjectDTO
+	err = copier.Copy(projects, projectsDTO)
+	if err != nil {
+		return nil, err
+	}
+	return projectsDTO, err
 }
 
 func GetProjectsByManagerId(id int) ([]map[string]any, error) {
@@ -76,14 +84,10 @@ func GetProjectsByManagerId(id int) ([]map[string]any, error) {
 		return nil, err
 	}
 
-	var result []map[string]any
-	for _, project := range projects {
-		projectDTO := &DTOs.ProjectDTO{}
-		err = copier.Copy(projectDTO, project)
-		formattedProject := formatProjectDTO(projectDTO)
-		result = append(result, formattedProject)
+	result, err := formatProjects(projects, err)
+	if err != nil {
+		return nil, err
 	}
-
 	return result, err
 }
 
@@ -117,65 +121,113 @@ func UpdateProject(projectDTO *DTOs.ProjectDTO) (*DTOs.ProjectDTO, error) {
 	return projectDTOResponse, err
 }
 
-func formatProjectDTO(projectDTO *DTOs.ProjectDTO) map[string]any {
-	manager, _ := GetUserById(strconv.Itoa(projectDTO.ManagerId))
-	lead := manager.FirstName + " " + manager.LastName
+func formatProjects(projects []*DAOs.Project, err error) ([]map[string]any, error) {
+	users, err := repositories.GetAllUsers()
+	if err != nil {
+		return nil, err
+	}
+	userMap := make(map[int]*DAOs.User)
+	for _, user := range users {
+		userMap[user.Id] = user
+	}
 
-	employeesMap := make(map[string][]map[string]any)
+	categories, err := repositories.GetCategories()
+	if err != nil {
+		return nil, err
+	}
+	categoryMap := make(map[int]*DAOs.Category)
+	for _, cat := range categories {
+		categoryMap[cat.Id] = cat
+	}
 
-	// Process activities to build employees and categories
-	for _, activity := range projectDTO.Activities {
-		user, _ := GetUserById(strconv.Itoa(activity.UserId))
-		userName := user.FirstName + " " + user.LastName
+	var result []map[string]any
+	for _, project := range projects {
+		activities, err := repositories.GetProjectActivities(project.Id)
+		if err != nil {
+			return nil, err
+		}
 
-		// Get category name
-		category, _ := GetCategoryById(strconv.Itoa(activity.CategoryId))
+		formattedProject := formatProjectWithActivities(project, activities, userMap, categoryMap)
+		result = append(result, formattedProject)
+	}
 
-		// Add or update employee's categories
+	return result, nil
+}
+
+func formatProjectWithActivities(project *DAOs.Project, activities []DAOs.Activity, userMap map[int]*DAOs.User, categoryMap map[int]*DAOs.Category) map[string]any {
+	employeesMap := make(map[int]map[string]any)
+
+	for _, activity := range activities {
+		user, exists := userMap[activity.UserId]
+		if !exists {
+			continue
+		}
+
+		category, exists := categoryMap[activity.CategoryId]
+		if !exists {
+			continue
+		}
+
+		if _, ok := employeesMap[user.Id]; !ok {
+			employeesMap[user.Id] = map[string]any{
+				"name":       user.FirstName + " " + user.LastName,
+				"categories": make([]map[string]any, 0),
+			}
+		}
+
+		categories := employeesMap[user.Id]["categories"].([]map[string]any)
 		found := false
-		for _, cat := range employeesMap[userName] {
+		for i, cat := range categories {
 			if cat["name"] == category.Name {
-				cat["timeSpent"] = cat["timeSpent"].(float64) + activity.EndDate.Sub(activity.StartDate).Hours()
+				categories[i]["timeSpent"] = activity.TimeSpent
 				found = true
 				break
 			}
 		}
 
 		if !found {
-			employeesMap[userName] = append(employeesMap[userName], map[string]any{
+			categories = append(categories, map[string]any{
 				"name":          category.Name,
-				"timeSpent":     activity.EndDate.Sub(activity.StartDate).Hours(),
-				"timeEstimated": 0, // You'll need to add this to your category model
+				"timeSpent":     activity.TimeSpent,
+				"timeEstimated": 0,
 			})
+			employeesMap[user.Id]["categories"] = categories
 		}
 	}
 
-	// Convert employees map to array
+	// Convert to array
 	var employees []map[string]any
-	for name, categories := range employeesMap {
-		employees = append(employees, map[string]any{
-			"name":       name,
-			"categories": categories,
-		})
+	for _, emp := range employeesMap {
+		employees = append(employees, emp)
 	}
 
-	// Calculate total time spent
+	// Calculate total time
 	var totalTimeSpent float64
-	for _, empl := range employees {
-		for _, cat := range empl["categories"].([]map[string]any) {
+	for _, emp := range employees {
+		for _, cat := range emp["categories"].([]map[string]any) {
 			totalTimeSpent += cat["timeSpent"].(float64)
 		}
 	}
 
-	// Build the final response
+	// Get manager info
+	manager, exists := userMap[project.ManagerId]
+	lead := ""
+	if exists {
+		lead = manager.FirstName + " " + manager.LastName
+	}
+
+	var totalTimeEstimated float64 = 0 // À ajouter aux modèles
+
 	return map[string]any{
-		"id":             projectDTO.Id,
-		"name":           projectDTO.Name,
-		"description":    projectDTO.Description,
-		"lead":           lead,
-		"coLeads":        []string{}, // Pas de fetch de coLeads pour l'instant
-		"employees":      employees,
-		"totalTimeSpent": totalTimeSpent,
-		"isArchived":     projectDTO.Status == enums.ProjectStatus(enums.Finish),
+		"id":                 project.Id,
+		"name":               project.Name,
+		"description":        project.Description,
+		"lead":               lead,
+		"coLeads":            []string{},
+		"employees":          employees,
+		"totalTimeEstimated": totalTimeEstimated,
+		"totalTimeRemaining": totalTimeEstimated - totalTimeSpent,
+		"totalTimeSpent":     totalTimeSpent,
+		"isArchived":         project.Status == enums.ProjectStatus(enums.Finish),
 	}
 }

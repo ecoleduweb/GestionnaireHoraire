@@ -82,6 +82,14 @@ func GetProjects(c *gin.Context) {
 		projects, err = services.GetProjects()
 	case enums.ProjectManager:
 		projects, err = services.GetProjectsByManagerId(user.Id)
+	case enums.Employee:
+		projectsDTO, err := services.GetProjectsList()
+		if err != nil {
+			handleError(c, err, projectSTR)
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"projects": projectsDTO})
+		return
 	}
 
 	if err != nil {

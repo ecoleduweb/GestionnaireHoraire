@@ -10,7 +10,7 @@ type Activity struct {
 	Description string    `json:"description" gorm:"type:text;not null"`
 	StartDate   time.Time `json:"start_date" gorm:"not null"`
 	EndDate     time.Time `json:"end_date" gorm:"not null"`
-
+	TimeSpent   float64   `json:"time_spent" gorm:"type:float"`
 	// Clés étrangères
 	UserId     int `json:"userId" gorm:"not null"`
 	ProjectId  int `json:"projectId" gorm:"not null"`

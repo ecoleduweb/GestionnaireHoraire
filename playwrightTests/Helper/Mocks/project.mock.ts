@@ -35,7 +35,9 @@ export const projectMocks = {
                                 categories: []
                             }
                         ],
-                        totalTimeSpent: 65
+                        totalTimeEstimated: 20,
+                        totalTimeRemaining: -45,
+                        totalTimeSpent: 65,
                     },
                     {
                         id: 2,
@@ -71,6 +73,8 @@ export const projectMocks = {
                                 ]
                             }
                         ],
+                        totalTimeEstimated: 20,
+                        totalTimeRemaining: -32,
                         totalTimeSpent: 52
                     },
                     {
@@ -95,7 +99,9 @@ export const projectMocks = {
                                 ]
                             }
                         ],
-                        totalTimeSpent: 27
+                        totalTimeEstimated: 20,
+                        totalTimeRemaining: -7,
+                        totalTimeSpent: 27,
                     },
                     {
                         id: 4,
@@ -137,7 +143,9 @@ export const projectMocks = {
                                 ]
                             }
                         ],
-                        totalTimeSpent: 55
+                        totalTimeEstimated: 20,
+                        totalTimeRemaining: -35,
+                        totalTimeSpent: 55,
                     },
                     {
                         id: 5,
@@ -166,7 +174,9 @@ export const projectMocks = {
                                 categories: []
                             }
                         ],
-                        totalTimeSpent: 65
+                        totalTimeEstimated: 20,
+                        totalTimeRemaining: -45,
+                        totalTimeSpent: 65,
                     },
                     {
                         id: 6,
@@ -202,7 +212,9 @@ export const projectMocks = {
                                 ]
                             }
                         ],
-                        totalTimeSpent: 52
+                        totalTimeEstimated: 20,
+                        totalTimeRemaining: -32,
+                        totalTimeSpent: 52,
                     },
                     {
                         id: 7,
@@ -226,7 +238,9 @@ export const projectMocks = {
                                 ]
                             }
                         ],
-                        totalTimeSpent: 27
+                        totalTimeEstimated: 20,
+                        totalTimeRemaining: -7,
+                        totalTimeSpent: 27,
                     },
                     {
                         id: 8,
@@ -268,7 +282,9 @@ export const projectMocks = {
                                 ]
                             }
                         ],
-                        totalTimeSpent: 55
+                        totalTimeEstimated: 20,
+                        totalTimeRemaining: -35,
+                        totalTimeSpent: 55,
                     }
                 ]
             }

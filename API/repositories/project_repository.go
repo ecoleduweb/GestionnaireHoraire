@@ -12,7 +12,28 @@ func CreateProject(project *DAOs.Project) (*DAOs.Project, error) {
 
 func GetProjects() ([]*DAOs.Project, error) {
 	var projects []*DAOs.Project
-	err := database.DB.Preload("Activities").Preload("Activities.User").Preload("Activities.Category").Preload("Categories").Find(&projects).Error
+	err := database.DB.Find(&projects).Error
+	return projects, DBErrorManager(err)
+}
+
+func GetProjectActivities(projectId int) ([]DAOs.Activity, error) {
+	var activities []DAOs.Activity
+	err := database.DB.
+		Select(`
+            user_id, 
+            category_id, 
+            project_id, 
+            SUM(TIMESTAMPDIFF(SECOND, start_date, end_date)/3600.0) as time_spent
+        `).
+		Where("project_id = ?", projectId).
+		Group("user_id, category_id, project_id").
+		Find(&activities).Error
+	return activities, DBErrorManager(err)
+}
+
+func GetProjectsList() ([]*DAOs.Project, error) {
+	var projects []*DAOs.Project
+	err := database.DB.Find(&projects).Error
 	return projects, DBErrorManager(err)
 }
 

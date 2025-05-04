@@ -181,51 +181,16 @@
                 <span class="text-2xl text-left w-1/2">Total</span>
                 <div class="flex w-1/2">
                   <div class="w-1/3 text-right text-sm">
-                    {formatHours(
-                      project.employees.reduce(
-                        (sum, emp) =>
-                          sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeSpent, 0),
-                        0
-                      )
-                    )}
+                    {formatHours(project.totalTimeSpent)}
                   </div>
                   <div class="w-1/3 text-right text-sm font-normal">
-                    {formatHours(
-                      project.employees.reduce(
-                        (sum, emp) =>
-                          sum +
-                          emp.categories.reduce((catSum, cat) => catSum + cat.timeEstimated, 0),
-                        0
-                      )
-                    )}
+                    {formatHours(project.totalTimeEstimated)}
                   </div>
                   <div
                     class="w-1/3 text-right text-sm font-normal"
-                    class:text-red-500={project.employees.reduce(
-                      (sum, emp) =>
-                        sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeEstimated, 0),
-                      0
-                    ) -
-                      project.employees.reduce(
-                        (sum, emp) =>
-                          sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeSpent, 0),
-                        0
-                      ) <
-                      0}
+                    class:text-red-500={project.totalTimeRemaining < 0}
                   >
-                    {formatHours(
-                      project.employees.reduce(
-                        (sum, emp) =>
-                          sum +
-                          emp.categories.reduce((catSum, cat) => catSum + cat.timeEstimated, 0),
-                        0
-                      ) -
-                        project.employees.reduce(
-                          (sum, emp) =>
-                            sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeSpent, 0),
-                          0
-                        )
-                    )}
+                    {formatHours(project.totalTimeRemaining)}
                   </div>
                 </div>
               </div>

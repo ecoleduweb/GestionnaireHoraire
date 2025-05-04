@@ -30,6 +30,8 @@ export interface Project {
     lead: string;
     coLeads: string[];
     employees: Employee[];
+    totalTimeEstimated: number;
+    totalTimeRemaining: number;
     totalTimeSpent: number;
     isArchived?: boolean;
 }

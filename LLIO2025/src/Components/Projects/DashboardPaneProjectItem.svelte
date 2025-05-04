@@ -24,45 +24,17 @@
         </div>
         <div class="w-14">
           <div class="text-gray-400">
-            {formatHours(
-              project.employees.reduce(
-                (sum, emp) =>
-                  sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeEstimated, 0),
-                0
-              )
-            )}
+            {formatHours(project.totalTimeEstimated)}
           </div>
         </div>
         <div>
-          {#if project.employees.reduce((sum, emp) => sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeEstimated, 0), 0) - project.employees.reduce((sum, emp) => sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeSpent, 0), 0) < 0}
+          {#if project.totalTimeRemaining < 0}
             <div class="font-medium text-red-700">
-              {formatHours(
-                project.employees.reduce(
-                  (sum, emp) =>
-                    sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeEstimated, 0),
-                  0
-                ) -
-                  project.employees.reduce(
-                    (sum, emp) =>
-                      sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeSpent, 0),
-                    0
-                  )
-              )}
+              {formatHours(project.totalTimeRemaining)}
             </div>
           {:else}
             <div class="text-gray-400">
-              {formatHours(
-                project.employees.reduce(
-                  (sum, emp) =>
-                    sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeEstimated, 0),
-                  0
-                ) -
-                  project.employees.reduce(
-                    (sum, emp) =>
-                      sum + emp.categories.reduce((catSum, cat) => catSum + cat.timeSpent, 0),
-                    0
-                  )
-              )}
+              {formatHours(project.totalTimeRemaining)}
             </div>
           {/if}
         </div>
