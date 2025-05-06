@@ -17,7 +17,7 @@ export interface User {
     name: string;
 }
 
-export interface UserInfo {	
+export interface UserInfo {
     firstName: string;
     lastName: string;
 }
@@ -28,20 +28,6 @@ export interface User {
     last_name: string;
     email: string;
     role: UserRole;
-  }
-
-export interface Project {
-    id: number;
-    name: string;
-    description: string;
-    color: string;
-    lead: string;
-    coLeads: string[];
-    employees: Employee[];
-    totalTimeEstimated: number;
-    totalTimeRemaining: number;
-    totalTimeSpent: number;
-    isArchived?: boolean;
 }
 
 export interface Employee {
@@ -59,17 +45,31 @@ export interface ActivityUpdateResponse {
     updated_activity: Activity;
 }
 
-export interface CreateProject {
-    id?: number;
+/*************** Project ***************/
+// Base interface avec les propriétés communes
+export interface ProjectBase {
     name: string;
     description: string;
-    status: ProjectStatus;
+    manager_id: number;
     billable: boolean;
-    manager_id: number; // Ajout du champ manager_id
-  }
+    status?: ProjectStatus;
+}
 
-export interface UpdateProject {
-    name: string;
-    status: ProjectStatus;
-    billable: boolean;
+// Interface pour la création
+export interface UpdateProject extends ProjectBase {
+    id: number;
+}
+
+// Interface complète pour un projet existant
+export interface Project extends ProjectBase {
+    id: number;
+    color: string;
+    lead: string;
+    coLeads: string[];
+    employees: Employee[];
+    totalTimeEstimated: number;
+    totalTimeRemaining: number;
+    totalTimeSpent: number;
+    isArchived?: boolean;
+    status: ProjectStatus; // Devenu obligatoire
 }

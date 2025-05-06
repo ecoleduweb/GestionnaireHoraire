@@ -1,47 +1,84 @@
 <script lang="ts">
   import { validateProjectForm } from '../../Validation/Project';
   import { projectTemplate } from '../../forms/project';
-  import { ProjectStatus } from '../../lib/types/enums';
   import { ProjectApiService } from '../../services/ProjectApiService';
   import { UserApiService } from '../../services/UserApiService';
-  import type { CreateProject, User } from '../../Models/index';
+  import type { ProjectBase, User, Project } from '../../Models/index';
   import '../../style/app.css';
   import { X } from 'lucide-svelte';
   import { onMount } from 'svelte';
 
   type Props = {
     show: boolean;
-    projectToEdit: CreateProject | null;
+    projectIdToEdit: number | null;
     onClose: () => void;
-    onSubmit: (project: CreateProject) => void;
-    onUpdate: (project: CreateProject) => void;
+    onSubmit: (project: ProjectBase) => void;
+    onUpdate: (project: Project) => void;
   };
 
-  let { show, projectToEdit, onClose, onSubmit, onUpdate }: Props = $props();
+  let { show, projectIdToEdit, onClose, onSubmit, onUpdate }: Props = $props();
 
-  const editMode = projectToEdit !== null;
+  const editMode = projectIdToEdit !== null;
 
-  let initialProject = projectTemplate.generate();
+  const getInitialProject = () => ({...projectTemplate.generate()});
 
   let isSubmitting = $state(false);
-  let isLoading = $state(true);
+  let isLoadingManagers = $state(true);
+  let isLoadingProject = $state(false);
   let managers = $state<User[]>([]);
   let error = $state<string | null>(null);
+  let project = $state<ProjectBase>(getInitialProject());
+  let fullProject = $state<Project | null>(null);
 
-  const project = $state<CreateProject>(initialProject);
+  $effect(() => {
+    if (!show) {
+      project = getInitialProject();
+      fullProject = null;
+      error = null;
+    }
+  });
 
-  if (projectToEdit) {
-    Object.assign(project, projectToEdit);
+  $effect(() => {
+    if (show) {
+      if (editMode && projectIdToEdit) {
+        loadProject(projectIdToEdit);
+      } else {
+        project = getInitialProject();
+      }
+    }
+  });
+
+  async function loadProject(id: number) {
+    try {
+      isLoadingProject = true;
+      fullProject = await ProjectApiService.getProject(id);
+      
+      project = {
+        name: fullProject.name,
+        description: fullProject.description,
+        manager_id: fullProject.manager_id,
+        billable: fullProject.billable,
+        status: fullProject.status
+      };
+      
+      isLoadingProject = false;
+    } catch (err) {
+      console.error(err);
+      error = 'Impossible de charger le projet';
+      isLoadingProject = false;
+    }
   }
 
   onMount(async () => {
     try {
-      isLoading = true;
+      isLoadingManagers = true;
+      error = null;
       managers = await UserApiService.getManagerUsers();
-      isLoading = false;
     } catch (err) {
+      console.error('Failed to load managers:', err);
       error = 'Impossible de charger la liste des managers';
-      isLoading = false;
+    } finally {
+      isLoadingManagers = false;
     }
   });
 
@@ -50,22 +87,24 @@
   };
 
   const handleSubmit = async () => {
-    if (isSubmitting) return; // Empêche les soumissions multiples
+    if (isSubmitting) return;
     isSubmitting = true;
 
     try {
-      if (editMode) {
-        const newProject = await ProjectApiService.updateProject(project);
-        onSubmit(newProject);
+      if (editMode && fullProject) {
+        const updatedProject = await ProjectApiService.updateProject({
+          ...fullProject,
+          ...project
+        });
+        onUpdate(updatedProject);
       } else {
         const newProject = await ProjectApiService.createProject(project);
         onSubmit(newProject);
       }
-
       onClose();
     } catch (error) {
       console.error('Erreur lors de la soumission du projet', error);
-      alert('Une erreur est survenue. Veuillez réessayer.\n' + error);
+      error = 'Une erreur est survenue. Veuillez réessayer.';
     } finally {
       isSubmitting = false;
     }
@@ -173,13 +212,14 @@
         }}
       >
         <div class="form-group">
+          
           <label for="project-name">Identifiant unique du projet*</label>
           <input id="project-name" name="name" type="text" bind:value={project.name} required />
         </div>
 
         <div class="form-group">
           <label for="project-manager">Manager du projet*</label>
-          {#if isLoading}
+          {#if isLoadingManagers}
             <div class="py-2 px-4 bg-gray-100 rounded">Chargement des managers...</div>
           {:else if error}
             <div class="error-text">{error}</div>

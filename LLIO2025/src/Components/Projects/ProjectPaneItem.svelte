@@ -26,6 +26,7 @@
         <span class="text-gray-500 ml-2">|</span>
         <span class="text-gray-500 ml-2">{project.description}</span>
       </div>
+      <!-- svelte-ignore event_directive_deprecated -->
       <button 
         class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
         on:click={handleEdit}

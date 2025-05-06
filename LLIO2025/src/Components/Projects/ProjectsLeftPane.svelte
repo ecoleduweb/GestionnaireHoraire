@@ -5,28 +5,28 @@
   import ProjectItem from './ProjectPaneItem.svelte';
   import { Plus } from 'lucide-svelte';
   import ProjectModal from './ProjectModal.svelte';
-  import type { CreateProject } from '../../Models';
+  import type { Project } from '../../Models';
 
   let { projects } = $props();
   let isArchivedVisible = $state(false);
   let showModal = $state(false);
-  let editToProject = $state(null);
+  let editProjectId = $state(null);
 
-  const handleProjectSubmit = async (projectData: CreateProject) => {
+  const handleProjectSubmit = async (projectData: Project) => {
     //
   };
 
-  const handleProjectUpdate = async (projectData: CreateProject) => {
+  const handleProjectUpdate = async (projectData: Project) => {
     //
   };
 
   function handleNewProject() {
-    editToProject = null;
+    editProjectId = null;
     showModal = true;
   }
 
   function handleEditProject(project) {
-    editToProject = project;
+    editProjectId = project.id;
     showModal = true;
   }
 </script>
@@ -150,7 +150,7 @@
 {#if showModal}
   <ProjectModal
     show={showModal}
-    projectToEdit={editToProject}
+    projectIdToEdit={editProjectId}
     onSubmit={handleProjectSubmit}
     onUpdate={handleProjectUpdate}
     onClose={() => {

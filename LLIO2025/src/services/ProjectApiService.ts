@@ -1,18 +1,22 @@
 // ProjectApiService.ts
 import { ProjectStatus } from "$lib/types/enums";
-import type { CreateProject, Project, UpdateProject } from "../Models/index";
+import type { ProjectBase, Project, UpdateProject } from "../Models/index";
 import { GET, POST, PUT } from "../ts/server";
 
 interface ProjectResponse {
-  project: CreateProject;
+  project: ProjectBase;
 }
 
-const createProject = async (project: CreateProject): Promise<CreateProject> => {
+interface ProjectUpdateResponse {
+  project: Project;
+}
+
+const createProject = async (project: ProjectBase): Promise<ProjectBase> => {
   if (project.status === undefined) {
     project.status = ProjectStatus.InProgress;
   }
   try {
-    const response = await POST<CreateProject, ProjectResponse>("/project", project);
+    const response = await POST<ProjectBase, ProjectResponse>("/project", project);
     return response.project;
   } catch (error) {
     console.error("Erreur lors de la création du projet:", error);
@@ -20,12 +24,12 @@ const createProject = async (project: CreateProject): Promise<CreateProject> => 
   }
 };
 
-const updateProject = async (project: UpdateProject): Promise<CreateProject> => {
+const updateProject = async (project: UpdateProject): Promise<Project> => {
   if (project.status === undefined) {
     project.status = ProjectStatus.InProgress;
   }
   try {
-    const response = await PUT<UpdateProject, ProjectResponse>("/project", project);
+    const response = await PUT<UpdateProject, ProjectUpdateResponse>("/project", project);
     return response.project;
   } catch (error) {
     console.error("Erreur lors de la création du projet:", error);
@@ -43,8 +47,19 @@ const getProjects = async(): Promise<Project[]> => {
   }
 }
 
+const getProject = async(id: number): Promise<Project> => {
+  try {
+    const response = await GET<{project: Project}>(`/project/${id}`);
+    return response.project;
+  } catch (error) {
+    console.error("Erreur lors de la récupération du projet:", error);
+    throw new Error("Échec de la récupération du projet. Veuillez réessayer.");
+  }
+}
+
 export const ProjectApiService = {
   createProject,
   updateProject,
   getProjects,
+  getProject,
 };
