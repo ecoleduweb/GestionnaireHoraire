@@ -98,7 +98,7 @@ export const activityMocks = {
         }
     },
     getAllActivityEmpty: {
-        url: '*/**/activities',
+        url: '*/**/activities/me?startDate=2025-03-17&endDate=2025-03-23',
         method: 'GET',
         response: {
             status: 200,
@@ -392,6 +392,48 @@ export const activityMocks = {
                 }
         }
     },
+    getAllActivitiesAfterAdd: {
+        url: '*/**/activities/me*',
+        method: 'GET',
+        response: {
+            status: 200,
+            json: {
+                "activities": [
+                    {
+                        "id": 1,
+                        "name": "Fête de Jean-Félix et Sherlock",
+                        "description": "asd",
+                        "startDate": "2025-03-22T08:00:00-04:00",
+                        "endDate": "2025-03-22T09:00:00-04:00",
+                        "userId": 1,
+                        "projectId": 1,
+                        "categoryId": null
+                    }
+                ]
+            }
+        }
+    },
+    getAllActivitiesAfterAddNoName: {
+        url: '*/**/activities/me*',
+        method: 'GET',
+        response: {
+            status: 200,
+            json: {
+                "activities": [
+                    {
+                        "id": 2,
+                        "name": "",
+                        "description": "",
+                        "startDate": "2025-03-22T08:00:00-04:00",
+                        "endDate": "2025-03-22T09:00:00-04:00",
+                        "userId": 1,
+                        "projectId": 1,
+                        "categoryId": null
+                    }
+                ]
+            }
+        }
+    }
 
 
 
