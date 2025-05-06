@@ -17,6 +17,7 @@ func TestCreateProject(t *testing.T) {
 
 	project := DTOs.ProjectDTO{
 		Name:        "Nouveau Projet",
+		ManagerId:   doNotDeleteUser.Id,
 		Description: "Description de test",
 		Status:      enums.ProjectStatus(enums.InProgress),
 	}
@@ -38,6 +39,7 @@ func TestCreateProject(t *testing.T) {
 func TestDoNotCreateProjectWithoutName(t *testing.T) {
 	project := DTOs.ProjectDTO{
 		Name:        "",
+		ManagerId:   doNotDeleteUser.Id,
 		Description: "Description de test",
 		Status:      enums.ProjectStatus(enums.InProgress),
 	}
@@ -52,6 +54,7 @@ func TestDoNotCreateProjectWithoutName(t *testing.T) {
 func TestDoNotCreateProjectWithInvalidName(t *testing.T) {
 	project := DTOs.ProjectDTO{
 		Name:        "Ceci est un très long nom de projet qui dépasse largement la limite de 50 caractères et qui devrait donc être rejeté par la validation",
+		ManagerId:   doNotDeleteUser.Id,
 		Description: "Description de test",
 		Status:      enums.ProjectStatus(enums.InProgress),
 	}
@@ -68,6 +71,7 @@ func TestDoNotCreateProjectWithInconsistentDates(t *testing.T) {
 
 	project := DTOs.ProjectDTO{
 		Name:        "Test Project",
+		ManagerId:   doNotDeleteUser.Id,
 		Description: "Description de test",
 		Status:      enums.ProjectStatus(enums.InProgress),
 		CreatedAt:   now,
@@ -88,6 +92,7 @@ func TestCreateProjectWithConsistentDates(t *testing.T) {
 	// Création d'un projet avec des dates cohérentes
 	project := DTOs.ProjectDTO{
 		Name:        "Test Project Dates",
+		ManagerId:   doNotDeleteUser.Id,
 		Description: "Description avec dates",
 		Status:      enums.ProjectStatus(enums.InProgress),
 		CreatedAt:   now,

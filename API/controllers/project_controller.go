@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"llio-api/models/DTOs"
+	"llio-api/models/enums"
 	"llio-api/services"
 	"log"
 	"net/http"
@@ -26,6 +27,12 @@ func CreatedProject(c *gin.Context) {
 	if len(msgErrsMore) > 0 {
 		log.Printf("Une ou plusieurs erreurs de verification du format du projet sont survenues:%v", msgErrsMore)
 		c.JSON(http.StatusBadRequest, gin.H{"errors": msgErrsMore})
+		return
+	}
+
+	_, err := services.GetUserById(strconv.Itoa(projetDTO.ManagerId))
+	if err != nil {
+		handleError(c, err, userSTR)
 		return
 	}
 
@@ -54,13 +61,49 @@ func GetProjectById(c *gin.Context) {
 }
 
 func GetProjects(c *gin.Context) {
-	projects, err := services.GetProjects()
+	currentUser, exists := c.Get("current_user")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Utilisateur non authentifié"})
+		return
+	}
+
+	user, ok := currentUser.(*DTOs.UserDTO)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur interne du serveur"})
+		c.Abort()
+		return
+	}
+
+	var projects []map[string]any
+	var err error
+
+	switch user.Role {
+	case enums.Administrator:
+		projects, err = services.GetProjects()
+	case enums.ProjectManager:
+		projects, err = services.GetProjectsByManagerId(user.Id)
+	case enums.Employee:
+		projectsDTO, err := services.GetProjectsList()
+		if err != nil {
+			handleError(c, err, projectSTR)
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"projects": projectsDTO})
+		return
+	}
+
 	if err != nil {
 		handleError(c, err, projectSTR)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"projets": projects})
+	if projects == nil {
+		// Retourner une liste vide au lieu de null
+		c.JSON(http.StatusOK, gin.H{"projects": []map[string]any{}})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"projects": projects})
 }
 
 func UpdateProject(c *gin.Context) {
@@ -84,6 +127,12 @@ func UpdateProject(c *gin.Context) {
 	_, err := services.GetProjectById(id)
 	if err != nil {
 		handleError(c, err, projectSTR)
+		return
+	}
+
+	_, err = services.GetUserById(strconv.Itoa(projectToUpdate.ManagerId))
+	if err != nil {
+		handleError(c, err, userSTR)
 		return
 	}
 
