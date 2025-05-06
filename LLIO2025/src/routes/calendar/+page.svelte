@@ -34,10 +34,9 @@
   let activeTimeRange = $state(timeRanges.find((range) => range.default));
 
   let currentUser = $state<UserInfo | null>(null);
+  let projects = $state<Project[]>([]);
 
   const users = [{ id: 1, name: 'Test ManuDev' }];
-
-  let projects = $state<Project[]>([]);
 
   // Fonction pour attribuer une couleur à chaque événement
   function getEventClassName(eventInfo: any) {
@@ -70,33 +69,31 @@
   // Fonction pour charger toutes les activités
   async function loadActivities() {
     isLoading = true;
-   
+
     let dateStart, dateEnd, day, diff;
     try {
-      switch (activeView)
-      {
+      switch (activeView) {
         case 'dayGridMonth':
-          dateStart = calendarService.calendar.getDate()
+          dateStart = calendarService.calendar.getDate();
           dateStart.setDate(1); // Premier jour du mois
           dateEnd = new Date(dateStart.getFullYear(), dateStart.getMonth() + 1, 0); // Dernier jour du mois
-          break;  
-        
-        case 'timeGridWeek':
-              dateStart = calendarService.calendar.getDate()
-              day = dateStart.getDay();
-              diff = dateStart.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
-              dateStart.setDate(diff);
+          break;
 
-              dateEnd = new Date(dateStart);
-              dateEnd.setDate(dateStart.getDate() + 6);
-              break;
+        case 'timeGridWeek':
+          dateStart = calendarService.calendar.getDate();
+          day = dateStart.getDay();
+          diff = dateStart.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
+          dateStart.setDate(diff);
+
+          dateEnd = new Date(dateStart);
+          dateEnd.setDate(dateStart.getDate() + 6);
+          break;
         case 'timeGridDay':
-          
-          dateStart = calendarService.calendar.getDate()
+          dateStart = calendarService.calendar.getDate();
           dateEnd = new Date(dateStart);
           break;
         default:
-          dateStart = calendarService.calendar.getDate()
+          dateStart = calendarService.calendar.getDate();
           day = dateStart.getDay();
           diff = dateStart.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
           dateStart.setDate(diff);
@@ -122,12 +119,16 @@
     }
   }
 
-  // Fonction pour charger les projets
   async function loadProjects() {
     try {
-      projects = await ProjectApiService.getAllProjects();
-    } catch (error) {
-      console.error('Erreur lors du chargement des projets:', error);
+      isLoading = true;
+      const response = await ProjectApiService.getProjects();
+      projects = response;
+    } catch (err) {
+      console.error('Erreur lors de la récupération des projets:', err);
+      projects = [];
+    } finally {
+      isLoading = false;
     }
   }
 
@@ -224,6 +225,8 @@
 
       await loadProjects();
     }
+
+    loadProjects();
   });
 
   function setView(viewName: string) {
@@ -260,7 +263,7 @@
       const updatedActivity = await ActivityApiService.updateActivity(activity);
       calendarService.updateEvent(updatedActivity);
     } catch (error) {
-      console.error('Erreur lors de la mise à jour de l\'activité', error);
+      console.error("Erreur lors de la mise à jour de l'activité", error);
 
       alert("Une erreur est survenue lors de la mise à jour de l'activité.");
 
@@ -398,7 +401,7 @@
 
 <div class="flex">
   <!-- Dashboard toujours visible à gauche -->
-  <DashboardLeftPane />
+  <DashboardLeftPane {projects} />
 
   <!-- Contenu principal (calendrier) avec marge pour s'adapter au dashboard -->
   <div class="space-between-dashboard-calendar w-full h-full bg-white px-4 py-6">
