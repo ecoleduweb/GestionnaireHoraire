@@ -23,12 +23,15 @@ export interface UserInfo {
 }
 
 export interface Project {
-    id: string;
+    id: number;
     name: string;
+    description: string;
     color: string;
     lead: string;
     coLeads: string[];
     employees: Employee[];
+    totalTimeEstimated: number;
+    totalTimeRemaining: number;
     totalTimeSpent: number;
     isArchived?: boolean;
 }
