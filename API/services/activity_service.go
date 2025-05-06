@@ -41,7 +41,7 @@ func VerifyCreateActivityJSON(activityDTO *DTOs.ActivityDTO) []DTOs.FieldErrorDT
 	return errors
 }
 
-func CreateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.ActivityInfoDTO, error) {
+func CreateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.DetailedActivityDTO, error) {
 
 	// Mapper le body vers le modèle Activity
 
@@ -56,9 +56,7 @@ func CreateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.ActivityInfoDTO, error
 		return nil, err
 	}
 
-	activityDTOResponse := &DTOs.ActivityInfoDTO{}
-	err = copier.Copy(activityDTOResponse, activityDAOAded)
-	return activityDTOResponse, err
+	return GetDetailedActivityById(activityDAOAded.Id)
 }
 
 func GetUsersActivities(userId int) ([]*DTOs.ActivityDTO, error) {
@@ -89,7 +87,29 @@ func GetActivityById(id string) (*DTOs.ActivityDTO, error) {
 	return activityDTO, err
 }
 
-func UpdateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.ActivityInfoDTO, error) {
+
+func GetDetailedActivityById(id int) (*DTOs.DetailedActivityDTO, error) {
+	activity, err := repositories.GetDetailedActivityById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	detailedActivityDTO := &DTOs.DetailedActivityDTO{
+		Id:          activity.Id,
+		Name:        activity.Name,
+		Description: activity.Description,
+		StartDate:   activity.StartDate,
+		EndDate:     activity.EndDate,
+		UserId:      activity.UserId,
+		ProjectId:   activity.ProjectId,
+		ProjectName: activity.Project.Name,
+		CategoryId:  activity.CategoryId,
+	}
+
+	return detailedActivityDTO, err
+}
+
+func UpdateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.DetailedActivityDTO, error) {
 
 	activityDAO := &DAOs.Activity{}
 	err := copier.Copy(activityDAO, activityDTO)
@@ -102,16 +122,41 @@ func UpdateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.ActivityInfoDTO, error
 		return nil, err
 	}
 
-	activityDTOResponse := &DTOs.ActivityInfoDTO{}
-	err = copier.Copy(activityDTOResponse, activityDAOUpdated)
-	return activityDTOResponse, err
+	return GetDetailedActivityById(activityDAOUpdated.Id)
 }
 
 func DeleteActivity(id string) error {
 	return repositories.DeleteActivity(id)
 }
 
-func GetActivitiesFromRange(from string, to string, idUser int) ([]*DTOs.ActivityInfoDTO, error) {
+func GetActivitiesFromRange(from string, to string, idUser int) ([]*DTOs.ActivityDTO, error) {
+	fromDate := from
+	toDate := to
+
+	if from == to {
+		toDate = to + " 23:59:59"
+		fromDate = from + " 00:00:00"
+	}
+
+	activities, err := repositories.GetActivitiesFromRange(fromDate, toDate, idUser)
+	if err != nil {
+		return nil, err
+	}
+
+	var activitiesDTOs []*DTOs.ActivityDTO
+	for _, activity := range activities {
+		activityDTO := &DTOs.ActivityDTO{}
+		err = copier.Copy(activityDTO, activity)
+		activitiesDTOs = append(activitiesDTOs, activityDTO)
+	}
+	if activitiesDTOs == nil {
+		log.Printf("Aucune activité trouvée dans la plage de dates spécifiée.")
+		return []*DTOs.ActivityDTO{}, err
+	}
+	return activitiesDTOs, err
+}
+
+func GetDetailedActivitiesFromRange(from string, to string, idUser int) ([]*DTOs.DetailedActivityDTO, error) {
     fromDate := from
     toDate := to
 
@@ -125,15 +170,19 @@ func GetActivitiesFromRange(from string, to string, idUser int) ([]*DTOs.Activit
         return nil, err
     }
 
-    var activitiesDTOs []*DTOs.ActivityInfoDTO
+    var detailedActivitiesDTOs []*DTOs.DetailedActivityDTO
     for _, activity := range activities {
-        activityDTO := &DTOs.ActivityInfoDTO{}
-        err = copier.Copy(activityDTO, activity)
-        activitiesDTOs = append(activitiesDTOs, activityDTO)
+        detailedActivityDTO, err := GetDetailedActivityById(activity.Id)
+        if err != nil {
+            return nil, err
+        }
+        detailedActivitiesDTOs = append(detailedActivitiesDTOs, detailedActivityDTO)
     }
-    if activitiesDTOs == nil {
+    
+    if detailedActivitiesDTOs == nil {
         log.Printf("Aucune activité trouvée dans la plage de dates spécifiée.")
-        return []*DTOs.ActivityInfoDTO{}, err
+        return []*DTOs.DetailedActivityDTO{}, err
     }
-    return activitiesDTOs, err
+    
+    return detailedActivitiesDTOs, err
 }

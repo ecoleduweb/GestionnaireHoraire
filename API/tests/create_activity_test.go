@@ -31,7 +31,7 @@ func TestCreateActivity(t *testing.T) {
 	// Vérification du corps de la réponse
 	var responseBody struct {
 		Reponse  string               `json:"reponse"`
-		Activity DTOs.ActivityInfoDTO `json:"activity"`
+		Activity DTOs.DetailedActivityDTO `json:"activity"`
 	}
 	err := json.Unmarshal(w.Body.Bytes(), &responseBody)
 	assert.NoError(t, err)

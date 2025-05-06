@@ -51,7 +51,7 @@ func TestUpdateActivity(t *testing.T) {
 	assertResponse(t, w, http.StatusOK, nil)
 
 	var updateResponseBody struct {
-		UpdatedActivity DTOs.ActivityInfoDTO `json:"updated_activity"`
+		UpdatedActivity DTOs.DetailedActivityDTO `json:"updated_activity"`
 	}
 	err = json.Unmarshal(w.Body.Bytes(), &updateResponseBody)
 	assert.NoError(t, err)

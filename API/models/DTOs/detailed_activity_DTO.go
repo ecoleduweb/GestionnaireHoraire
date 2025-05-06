@@ -2,7 +2,7 @@ package DTOs
 
 import "time"
 
-type ActivityInfoDTO struct {
+type DetailedActivityDTO struct {
 	Id          int       `json:"id"`
 	Name        string    `json:"name" binding:"required,max=50"`
 	Description string    `json:"description" binding:"required"`
