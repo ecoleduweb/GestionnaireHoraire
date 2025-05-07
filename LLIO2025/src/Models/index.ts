@@ -1,5 +1,5 @@
 import { bool } from "yup";
-import { ProjectStatus } from "../lib/types/enums";
+import { ProjectStatus, UserRole } from "../lib/types/enums";
 
 export interface Activity {
     id?: number;
@@ -21,6 +21,7 @@ export interface User {
 export interface UserInfo {	
     firstName: string;
     lastName: string;
+    role : UserRole;
 }
 
 export interface Project {
