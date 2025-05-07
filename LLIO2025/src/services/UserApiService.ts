@@ -13,7 +13,7 @@ const getUserInfo = async (): Promise<UserInfo> => {
 
 const getUsers = async (): Promise<UserInfo[]> => {
   try {
-    const response = await GET<UserInfo[]>('/users/all');
+    const response = await GET<UserInfo[]>('/users');
     return response;
   }
   catch (error) {

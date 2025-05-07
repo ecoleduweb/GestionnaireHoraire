@@ -15,7 +15,7 @@ export const UserMocks = {
         }
     },
     usersSuccess: {
-        url: '*/**/users/all',
+        url: '*/**api/users',
         method: 'GET',
         response: {
                 status: 200,

@@ -11,14 +11,14 @@ import (
 )
 
 func TestGetAllUsers(t *testing.T) {
-	w := sendRequest(router, "GET", "/users/all", nil, enums.ProjectManager)
+	w := sendRequest(router, "GET", "/users", nil, enums.ProjectManager)
 	assertResponse(t, w, http.StatusOK, nil)
 	assert.NotNil(t, w.Body)
 }
 
 func TestGetAllUsersWithInvalidToken(t *testing.T) {
 	// Create a request without using the sendRequest helper to avoid token generation
-	req, _ := http.NewRequest("GET", "/users/all", nil)
+	req, _ := http.NewRequest("GET", "/users", nil)
 	req.Header.Set("Content-Type", "application/json")
 
 	// Add an invalid token cookie
@@ -37,6 +37,6 @@ func TestGetAllUsersWithInvalidToken(t *testing.T) {
 }
 
 func TestGetAllUsersWithoutPermission(t *testing.T) {
-	w := sendRequest(router, "GET", "/users/all", nil, enums.Employee)
+	w := sendRequest(router, "GET", "/users", nil, enums.Employee)
 	assertResponse(t, w, http.StatusForbidden, nil)
 }

@@ -67,7 +67,7 @@
             <button 
               onclick={handleConfirmClick} 
               class="bg-[#015e61] hover:bg-[#014446] text-white font-bold py-2 px-4 rounded transition-colors cursor-pointer"
-              disabled={!selectedUser || selectedRole === undefined}>
+              disabled={!selectedUser || !selectedRole}>
               Confirmer
             </button>
             <button 

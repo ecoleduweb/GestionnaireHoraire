@@ -3,11 +3,20 @@
   import { quintOut } from "svelte/easing";
   import { slide } from "svelte/transition";
   import DashboardProjectItem from "../Projects/DashboardPaneProjectItem.svelte";
-  import type { UserInfo } from '../../Models/index.ts';
+  import type { Project, UserInfo } from '../../Models/index.ts';
   import { UserRole } from '../../lib/types/enums';
-  
-  const { currentUser = null } = $props<{currentUser?: UserInfo | null}>();
-  let { projects } = $props();
+
+
+  type Props = {
+    projects: Project[];
+    currentUser: UserInfo | null;
+  };
+
+  let {
+    projects,
+    currentUser
+  }: Props = $props();
+
   let isArchivedVisible = $state(false);
 
 </script>
