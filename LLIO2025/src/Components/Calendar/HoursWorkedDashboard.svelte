@@ -1,21 +1,9 @@
 <script>
     import {formatDateHoursWorked, areDatesEqual, getHoursFromRange} from '../../utils/date.js';
-    const { activities = [], dateStart, dateEnd, textHoursWorked } = $props();
-    const totalHours = $derived(calculateTotalHours());
-
+    const { hoursTotal, dateStart, dateEnd, textHoursWorked } = $props();
     areDatesEqual(dateStart, dateEnd);
-    
-    function calculateTotalHours() {
-      let total = 0;
-      if (activities && activities.length > 0) {
-        activities.forEach(activity => {
-          total += getHoursFromRange(activity);
-        });
-      }
-      return total;
-    }
-  </script>
-  
+
+</script>  
   <div class="bilan-container">
     <div class="header">
       <h2>
@@ -26,7 +14,7 @@
         {/if}
       </h2>
     </div>
-    <span>Vous avez travaillé <strong>{totalHours.toFixed(2)}</strong> heures {textHoursWorked}.</span>
+    <span>Vous avez travaillé <strong>{hoursTotal}</strong> heures {textHoursWorked}.</span>
   </div>
   
   <style>

@@ -25,9 +25,9 @@
   let activeView = $state('timeGridWeek');
   let currentViewTitle = $state('');
   let isLoading = $state(false);
-  let activities = $state([]);
   let dateStart = $state(null), dateEnd = $state(null);
   let textHoursWorked = $state('');
+  let totalHours = $state(0);
   
 
   const timeRanges = [
@@ -115,12 +115,12 @@
       dateStart = formatDate(dateStart);
       dateEnd = formatDate(dateEnd);
       
-      activities = await ActivityApiService.getAllActivitesFromRange(dateStart, dateEnd);
-
+      let activities = await ActivityApiService.getAllActivitesFromRange(dateStart, dateEnd);
       
       // Utiliser la méthode du service pour ajouter les activités au calendrier
       if (activities && calendarService) {
         calendarService.loadActivities(activities);
+        totalHours = calendarService.getTotalHours();
       }
     } catch (error) {
       alert('Une erreur est survenue lors du chargement des activités.');
@@ -255,7 +255,8 @@
       end: activityData.endDate,
       extendedProps: { ...activityData },
     });
-    activities = [...activities, activityData];
+
+    totalHours = calendarService.getTotalHours();
   }
 
   async function handleActivityUpdate(activity: Activity) {
@@ -272,9 +273,7 @@
 
       const updatedActivity = await ActivityApiService.updateActivity(activity);
       calendarService.updateEvent(updatedActivity);
-      activities = activities.map(act => 
-        act.id === updatedActivity.id ? updatedActivity : act
-      );
+      totalHours = calendarService.getTotalHours();
     } catch (error) {
       console.error('Erreur lors de la mise à jour de l\'activité', error);
 
@@ -292,9 +291,8 @@
       const updatedActivity = await ActivityApiService.updateActivity(activity);
 
       calendarService.updateEvent(updatedActivity);
-      activities = activities.map(act => 
-        act.id === updatedActivity.id ? updatedActivity : act
-      );
+      totalHours = calendarService.getTotalHours();
+      
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'activité", error);
       alert("Une erreur est survenue lors de la mise à jour de l'activité.");
@@ -307,7 +305,8 @@
     try {
       await ActivityApiService.deleteActivity(activity.id);
       calendarService.deleteActivity(activity.id.toString());
-      activities = activities.filter(act => act.id !== activity.id);
+      totalHours = calendarService.getTotalHours();
+      
     } catch (error) {
       console.error("Erreur lors de la suppression de l'activité", error);
       throw error;
@@ -418,7 +417,7 @@
 
 <div class="flex">
   <!-- Dashboard toujours visible à gauche -->
-  <DashboardLeftPane {projects} {dateStart}  {dateEnd} {activities} {textHoursWorked} />
+  <DashboardLeftPane {projects} {dateStart}  {dateEnd} {totalHours} {textHoursWorked} />
   <!-- Contenu principal (calendrier) avec marge pour s'adapter au dashboard -->
   <div class="space-between-dashboard-calendar w-full h-full bg-white px-4 py-6">
     <div class="max-w-7xl mx-auto">

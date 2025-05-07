@@ -19,7 +19,7 @@ test.describe("showHoursWorked", () => {
     await page.goto("http://localhost:5002/calendar");
     await page.waitForSelector(".fc-event", { state: "visible" });
     await expect(
-      page.getByText("Vous avez travaillé 8.00 heures cette semaine.")
+      page.getByText("Vous avez travaillé 8 heures cette semaine.")
     ).toBeVisible();
   });
 
@@ -37,11 +37,11 @@ test.describe("showHoursWorked", () => {
     await page.getByText("Bilan du 1 mars au 31 mars");
     await page.waitForTimeout(1000);
     await page.waitForSelector(
-      "text=Vous avez travaillé 21.00 heures ce mois-ci.",
+      "text=Vous avez travaillé 21 heures ce mois-ci.",
       { state: "visible" }
     );
     await expect(
-      page.getByText("Vous avez travaillé 21.00 heures ce mois-ci.")
+      page.getByText("Vous avez travaillé 21 heures ce mois-ci.")
     ).toBeVisible();
   });
 
@@ -59,11 +59,11 @@ test.describe("showHoursWorked", () => {
     await page.getByText("Bilan du 22 mars");
     await page.waitForTimeout(1000);
     await page.waitForSelector(
-      "text=Vous avez travaillé 7.00 heures aujourd'hui.",
+      "text=Vous avez travaillé 7 heures aujourd'hui.",
       { state: "visible" }
     );
     await expect(
-      page.getByText("Vous avez travaillé 7.00 heures aujourd'hui.")
+      page.getByText("Vous avez travaillé 7 heures aujourd'hui.")
     ).toBeVisible();
   });
 
@@ -77,13 +77,13 @@ test.describe("showHoursWorked", () => {
     await page.getByText("Bilan du 22 mars");
     await page.waitForTimeout(1000);
     await page.waitForSelector(
-      "text=Vous avez travaillé 0.00 heures cette semaine.",
+      "text=Vous avez travaillé 0 heures cette semaine.",
       {
         state: "visible",
       }
     );
     await expect(
-      page.getByText("Vous avez travaillé 0.00 heures cette semaine.")
+      page.getByText("Vous avez travaillé 0 heures cette semaine.")
     ).toBeVisible();
   });
 });

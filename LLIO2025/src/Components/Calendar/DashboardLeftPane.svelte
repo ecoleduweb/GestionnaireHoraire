@@ -4,7 +4,7 @@
   import { slide } from "svelte/transition";
   import DashboardProjectItem from "../Projects/DashboardPaneProjectItem.svelte";
   import HoursWorkedDashboard from "./HoursWorkedDashboard.svelte";
-  const { activities = [], projects = [], dateStart, dateEnd, textHoursWorked } = $props();
+  const { totalHours, projects = [], dateStart, dateEnd, textHoursWorked } = $props();
   let isArchivedVisible = $state(false);
 
 </script>
@@ -72,7 +72,7 @@
   <HoursWorkedDashboard 
   dateStart={dateStart}
   dateEnd={dateEnd}
-  activities={activities}
+  hoursTotal={totalHours}
   textHoursWorked = {textHoursWorked} />
 </div>
 
