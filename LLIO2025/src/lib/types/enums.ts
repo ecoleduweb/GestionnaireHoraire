@@ -6,7 +6,7 @@ export enum ProjectStatus {
 }
 
 export enum UserRole {
-  Employee = 0,
+  User = 0,
   ProjectManager = 1,
-  Administrator = 2
+  Admin = 2
 }

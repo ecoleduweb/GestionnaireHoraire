@@ -20,6 +20,7 @@ export interface User {
 export interface UserInfo {
     firstName: string;
     lastName: string;
+    role : UserRole;
 }
 
 export interface User {
