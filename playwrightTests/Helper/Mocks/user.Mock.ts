@@ -2,7 +2,7 @@ import { MockConfig } from "../types";
 
 export const UserMocks = {
     userMeSuccess: {
-        url: '*/**/user/me',
+        url: '/user/me',
         method: 'GET',
         response: {
                 status: 200,
@@ -15,7 +15,7 @@ export const UserMocks = {
         }
     },
     usersSuccess: {
-        url: '**/*api/users',
+        url: '/users',
         method: 'GET',
         response: {
                 status: 200,
@@ -43,7 +43,7 @@ export const UserMocks = {
         }
     },
     updateUserRoleSuccess: {
-        url: '*/**/user/*/role',
+        url: '/user/*/role',
         method: 'PATCH',
         response: {
                 status: 200,
@@ -58,7 +58,7 @@ export const UserMocks = {
         }
     },
     updateUserRoleError: {
-        url: '*/**/user/*/role',
+        url: '/user/*/role',
         method: 'PATCH',
         response: {
                 status: 400,

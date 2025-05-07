@@ -20,11 +20,10 @@ test.describe('updateUserRole', () => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
             UserMocks.updateUserRoleSuccess,
-            UserMocks.usersSuccess,
         ]).apply();
         
         // Configurer un écouteur pour intercepter l'alerte
-        page.on('dialog', async dialog => {
+        await page.once('dialog', async dialog => {
             expect(dialog.message()).toBe('Rôle mis à jour avec succès');
             await dialog.dismiss();
         });
@@ -42,7 +41,7 @@ test.describe('updateUserRole', () => {
         ]).apply();
         
         // Configurer un écouteur pour intercepter l'alerte
-        page.on('dialog', async dialog => {
+        page.once('dialog', async dialog => {
             expect(dialog.message()).toBe('Erreur lors de la mise à jour du rôle');
             await dialog.dismiss();
         });
