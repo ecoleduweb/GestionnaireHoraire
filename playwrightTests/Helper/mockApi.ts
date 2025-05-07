@@ -31,7 +31,7 @@ export class ApiMocker {
                     headers: config.response.headers
                 });
             });
-            await this.page.route(`*/**api${config.url}`, async route => {
+            await this.page.route(`**/*api${config.url}`, async route => {
                 await route.fulfill({
                     status: config.response.status,
                     json: config.response.json,
