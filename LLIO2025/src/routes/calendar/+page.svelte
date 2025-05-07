@@ -25,6 +25,10 @@
   let activeView = $state('timeGridWeek');
   let currentViewTitle = $state('');
   let isLoading = $state(false);
+  let dateStart = $state(null),
+    dateEnd = $state(null);
+  let textHoursWorked = $state('');
+  let totalHours = $state(0);
 
   const timeRanges = [
     { label: 'Heures de bureau', start: '06:00:00', end: '19:00:00', default: true },
@@ -35,8 +39,6 @@
 
   let currentUser = $state<UserInfo | null>(null);
   let projects = $state<Project[]>([]);
-
-  const users = [{ id: 1, name: 'Test ManuDev' }];
 
   // Fonction pour attribuer une couleur à chaque événement
   function getEventClassName(eventInfo: any) {
@@ -75,6 +77,7 @@
           dateStart = calendarService.calendar.getDate();
           dateStart.setDate(1); // Premier jour du mois
           dateEnd = new Date(dateStart.getFullYear(), dateStart.getMonth() + 1, 0); // Dernier jour du mois
+          textHoursWorked = 'ce mois-ci';
           break;
 
         case 'timeGridWeek':
@@ -82,13 +85,14 @@
           day = dateStart.getDay();
           diff = dateStart.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
           dateStart.setDate(diff);
-
           dateEnd = new Date(dateStart);
           dateEnd.setDate(dateStart.getDate() + 6);
+          textHoursWorked = 'cette semaine';
           break;
         case 'timeGridDay':
           dateStart = calendarService.calendar.getDate();
           dateEnd = new Date(dateStart);
+          textHoursWorked = "aujourd'hui";
           break;
         default:
           dateStart = calendarService.calendar.getDate();
@@ -103,12 +107,12 @@
 
       dateStart = formatDate(dateStart);
       dateEnd = formatDate(dateEnd);
-      let activities = [];
-      activities = await ActivityApiService.getAllActivitesFromRange(dateStart, dateEnd);
+      let activities = await ActivityApiService.getAllActivitesFromRange(dateStart, dateEnd);
 
       // Utiliser la méthode du service pour ajouter les activités au calendrier
       if (activities && calendarService) {
         calendarService.loadActivities(activities);
+        totalHours = calendarService.getTotalHours();
       }
     } catch (error) {
       alert('Une erreur est survenue lors du chargement des activités.');
@@ -243,6 +247,7 @@
       end: activityData.endDate,
       extendedProps: { ...activityData },
     });
+    totalHours = calendarService.getTotalHours();
   }
 
   async function handleActivityUpdate(activity: Activity) {
@@ -259,6 +264,7 @@
 
       const updatedActivity = await ActivityApiService.updateActivity(activity);
       calendarService.updateEvent(updatedActivity);
+      totalHours = calendarService.getTotalHours();
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'activité", error);
 
@@ -276,6 +282,7 @@
       const updatedActivity = await ActivityApiService.updateActivity(activity);
 
       calendarService.updateEvent(updatedActivity);
+      totalHours = calendarService.getTotalHours();
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'activité", error);
       alert("Une erreur est survenue lors de la mise à jour de l'activité.");
@@ -288,6 +295,7 @@
     try {
       await ActivityApiService.deleteActivity(activity.id);
       calendarService.deleteActivity(activity.id.toString());
+      totalHours = calendarService.getTotalHours();
     } catch (error) {
       console.error("Erreur lors de la suppression de l'activité", error);
       throw error;
@@ -401,7 +409,14 @@
   {#if isLoading}
     <div class="fixed left-0 top-0 w-[300px] h-full bg-gray-100 animate-pulse"></div>
   {:else if currentUser}
-    <DashboardLeftPane {projects} {currentUser} />
+    <DashboardLeftPane
+      {projects}
+      {currentUser}
+      {dateStart}
+      {dateEnd}
+      {totalHours}
+      {textHoursWorked}
+    />
   {/if}
 
   <!-- Contenu principal (calendrier) avec marge pour s'adapter au dashboard -->
@@ -538,7 +553,6 @@
 {#if showModal}
   <ActivityModal
     show={showModal}
-    {users}
     {projects}
     activityToEdit={editActivity}
     {selectedDate}

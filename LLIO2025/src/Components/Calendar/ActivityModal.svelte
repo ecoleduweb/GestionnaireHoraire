@@ -17,7 +17,6 @@
 
   type Props = {
     show: boolean;
-    users: User[];
     projects: Project[];
     activityToEdit: Activity | null;
     selectedDate?: { start: Date; end: Date } | null;
