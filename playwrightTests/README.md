@@ -6,7 +6,7 @@ Les tests Playwright sont des tests frontend qui servent à **reproduire le comp
 
 ## Installation
 
-Ce placer dans le répertoire `/playwright tests.`
+Ce placer dans le répertoire `/playwrightTests.`
 
 Installer les modules npm `npm install`.
 
