@@ -76,7 +76,7 @@ const getAllActivitesFromRange = async (startDate: string, endDate: string) => {
   try {
     
     const response = await GET<{ activities: RawActivity[] }>(
-      '/activities/me?startDate=' + startDate + '&endDate=' + endDate
+      '/activities/me/detailed?startDate=' + startDate + '&endDate=' + endDate
     );
 
     if (response?.activities && Array.isArray(response.activities)) {
