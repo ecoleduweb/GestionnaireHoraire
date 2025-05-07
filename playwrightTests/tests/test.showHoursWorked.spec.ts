@@ -70,20 +70,18 @@ test.describe("showHoursWorked", () => {
   test("hoursWorkedNoActivities", async ({ page }) => {
     const apiMocker = new ApiMocker(page);
     await apiMocker
-      .addMocks([
-        activityMocks.getAllActivitiesEmptyDefaultWeekSuccess,
-        activityMocks.getAllActivitiesDefaultWeekSuccess,
-      ])
+      .addMocks([activityMocks.getAllActivitiesEmptyDefaultWeekSuccess])
       .apply();
     await page.goto("http://localhost:5002/calendar");
     await page.waitForSelector(".fc-event", { state: "visible" });
     await page.getByRole("button", { name: "Jour", exact: true }).click();
     await page.getByText("Bilan du 22 mars");
     await page.waitForTimeout(1000);
-    await page.waitForSelector(
-      "text=Vous n'avez pas travaillé aujourd'hui.",
-      { state: "visible" }
-    );
-    expect(page.getByText("Vous n'avez pas travaillé aujourd'hui.")).toBeVisible();
-  }
+    await page.waitForSelector("text=Vous n'avez pas travaillé aujourd'hui.", {
+      state: "visible",
+    });
+    expect(
+      page.getByText("Vous n'avez pas travaillé aujourd'hui.")
+    ).toBeVisible();
+  });
 });
