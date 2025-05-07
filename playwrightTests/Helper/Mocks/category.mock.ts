@@ -2,7 +2,7 @@ import { MockConfig } from "../types";
 
 export const categoryMocks = {
   getCategoriesByProjectSuccess: {
-    url: "*/**/project/*/categories",
+    url: "/project/*/categories",
     method: "GET",
     response: {
       status: 200,

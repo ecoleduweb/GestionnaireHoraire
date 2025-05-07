@@ -242,7 +242,7 @@
   async function handleActivitySubmit(activityData: Activity) {
     calendarService.addEvent({
       id: activityData.id.toString(),
-      title: activityData.name,
+      title: activityData.projectName,
       start: activityData.startDate,
       end: activityData.endDate,
       extendedProps: { ...activityData },
