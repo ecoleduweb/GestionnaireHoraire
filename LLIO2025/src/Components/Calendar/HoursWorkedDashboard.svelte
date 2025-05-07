@@ -1,5 +1,5 @@
 <script>
-    import {formatDateHoursWorked, areDatesEqual, getHoursFromRange} from '../../utils/date.js';
+    import {formatDateHoursWorked, areDatesEqual} from '../../utils/date.js';
     const { hoursTotal, dateStart, dateEnd, textHoursWorked } = $props();
     areDatesEqual(dateStart, dateEnd);
 
