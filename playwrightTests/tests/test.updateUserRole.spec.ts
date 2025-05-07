@@ -26,7 +26,7 @@ test.describe('updateUserRole', () => {
         // Configurer un écouteur pour intercepter l'alerte
         page.on('dialog', async dialog => {
             expect(dialog.message()).toBe('Rôle mis à jour avec succès');
-            await dialog.accept();
+            await dialog.dismiss();
         });
         
         await page.locator('#userSelect').selectOption('JérémieTest Lapointe');
@@ -44,7 +44,7 @@ test.describe('updateUserRole', () => {
         // Configurer un écouteur pour intercepter l'alerte
         page.on('dialog', async dialog => {
             expect(dialog.message()).toBe('Erreur lors de la mise à jour du rôle');
-            await dialog.accept();
+            await dialog.dismiss();
         });
         
         await page.locator('#userSelect').selectOption('JérémieTest Lapointe');
