@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { ApiMocker } from '../Helper/mockApi';
 import { activityMocks } from '../Helper/Mocks/activity.mock';
 import { UserMocks } from '../Helper/Mocks/user.Mock';
+import { projectMocks } from '../Helper/Mocks/project.mock';
 
 
 
@@ -79,6 +80,7 @@ test.describe('showActivities', () => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
             activityMocks.getAllActivitiesMonthSuccess,
+            projectMocks.getProjectsSuccess,
             activityMocks.getAllActivitiesDefaultWeekSuccess
         ]).apply();
         // Load la page et fait la requête de base 
