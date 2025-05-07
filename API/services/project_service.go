@@ -51,7 +51,7 @@ func CreateProject(projectDTO *DTOs.ProjectDTO) (*DTOs.ProjectDTO, error) {
 	return projectDTOResponse, err
 }
 
-func GetProjects() ([]map[string]any, error) {
+func GetDetailedProjects() ([]map[string]any, error) {
 	projects, err := repositories.GetProjects()
 	if err != nil {
 		return nil, err
@@ -64,8 +64,8 @@ func GetProjects() ([]map[string]any, error) {
 	return result, err
 }
 
-func GetProjectsList() ([]*DTOs.ProjectDTO, error) {
-	projects, err := repositories.GetProjectsList()
+func GetProjects() ([]*DTOs.ProjectDTO, error) {
+	projects, err := repositories.GetProjects()
 	if err != nil {
 		return nil, err
 	}
@@ -247,5 +247,9 @@ func formatProjectWithActivities(project *DAOs.Project, activities []DAOs.Activi
 		"totalTimeRemaining": totalTimeEstimated - totalTimeSpent,
 		"totalTimeSpent":     totalTimeSpent,
 		"isArchived":         project.Status == enums.ProjectStatus(enums.Finish),
+		"manager_id":         project.ManagerId,
+		"createdAt":          project.CreatedAt,
+		"updatedAt":          project.UpdatedAt,
+		"billable":           project.Billable,
 	}
 }

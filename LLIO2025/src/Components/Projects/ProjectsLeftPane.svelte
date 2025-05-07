@@ -11,7 +11,7 @@
   let { projects, currentUser } = $props();
   let isArchivedVisible = $state(false);
   let showModal = $state(false);
-  let editProjectId = $state(null);
+  let editProject = $state(null);
 
   console.log(currentUser)
 
@@ -24,18 +24,18 @@
   };
 
   function handleNewProject() {
-    editProjectId = null;
+    editProject = null;
     showModal = true;
   }
 
   function handleEditProject(project) {
-    editProjectId = project.id;
+    editProject = projects.find((x) => x.id === project.id);
     showModal = true;
   }
 
   function handleCloseModal() {
     showModal = false;
-    editProjectId = null;
+    editProject = null;
   }
 </script>
 
@@ -158,7 +158,7 @@
 
 <ProjectModal
   show={showModal}
-  projectIdToEdit={editProjectId}
+  projectToEdit={editProject}
   onSubmit={handleProjectSubmit}
   onUpdate={handleProjectUpdate}
   onClose={handleCloseModal}

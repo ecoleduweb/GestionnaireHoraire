@@ -10,7 +10,7 @@
 
   type Props = {
     show: boolean;
-    projectIdToEdit: number | null;
+    projectToEdit: Project | null;
     onClose: () => void;
     onSubmit: (project: ProjectBase) => void;
     onUpdate: (project: Project) => void;
@@ -27,9 +27,9 @@
     status: yup.number(),
   });
 
-  let { show, projectIdToEdit, onClose, onSubmit, onUpdate }: Props = $props();
+  let { show, projectToEdit: projectToEdit, onClose, onSubmit, onUpdate }: Props = $props();
 
-  const editMode = $derived(projectIdToEdit !== null);
+  const editMode = $derived(projectToEdit !== null);
 
   const getInitialProject = () => ({ ...projectTemplate.generate() });
 
@@ -83,10 +83,10 @@
   });
 
   const loadProjectIfNeeded = async () => {
-    if (show && editMode && projectIdToEdit) {
+    if (show && editMode && projectToEdit) {
       try {
         isLoadingProject = true;
-        fullProject = await ProjectApiService.getProject(projectIdToEdit);
+        fullProject = projectToEdit;
 
         project = {
           name: fullProject.name,
@@ -116,7 +116,7 @@
 
   $effect(() => {
     if (show) {
-      if (editMode && projectIdToEdit) {
+      if (editMode && projectToEdit) {
         loadProjectIfNeeded();
       } else {
         project = getInitialProject();
