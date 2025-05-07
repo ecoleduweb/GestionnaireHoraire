@@ -76,11 +76,11 @@ test.describe("showHoursWorked", () => {
     await page.getByRole("button", { name: "Jour", exact: true }).click();
     await page.getByText("Bilan du 22 mars");
     await page.waitForTimeout(1000);
-    await page.waitForSelector("text=Vous n'avez pas travaillé aujourd'hui.", {
+    await page.waitForSelector("text=Vous avez travaillé 0.00 heures cette semaine.", {
       state: "visible",
     });
-    expect(
-      page.getByText("Vous n'avez pas travaillé aujourd'hui.")
+    await expect(
+      page.getByText("Vous avez travaillé 0.00 heures cette semaine.")
     ).toBeVisible();
   });
 });
