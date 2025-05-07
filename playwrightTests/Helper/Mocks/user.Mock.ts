@@ -2,7 +2,7 @@ import { MockConfig } from "../types";
 
 export const UserMocks = {
     userMeSuccess: {
-        url: '*/**/user/me',
+        url: '**user/me**',
         method: 'GET',
         response: {
                 status: 200,
