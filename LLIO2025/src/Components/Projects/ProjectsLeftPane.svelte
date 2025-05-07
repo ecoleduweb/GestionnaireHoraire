@@ -6,11 +6,14 @@
   import { Plus } from 'lucide-svelte';
   import ProjectModal from './ProjectModal.svelte';
   import type { Project } from '../../Models';
+  import { UserRole } from '$lib/types/enums';
 
-  let { projects } = $props();
+  let { projects, currentUser } = $props();
   let isArchivedVisible = $state(false);
   let showModal = $state(false);
   let editProjectId = $state(null);
+
+  console.log(currentUser)
 
   const handleProjectSubmit = async (projectData: Project) => {
     //
@@ -99,18 +102,20 @@
         </button>
       </div>
 
-      <button
-        type="button"
-        onclick={handleNewProject}
-        class="ml-12 px-3 py-2 text-sm transition-colors font-semibold bg-gray-200 text-gray-900 rounded-lg hover:bg-[#014446] hover:text-white cursor-pointer"
-      >
-        <Plus class="h-4 w-4" />
-      </button>
+      {#if currentUser.role == UserRole.Admin || currentUser.role == UserRole.ProjectManager}
+        <button
+          type="button"
+          onclick={handleNewProject}
+          class="ml-12 px-3 py-2 text-sm transition-colors font-semibold bg-gray-200 text-gray-900 rounded-lg hover:bg-[#014446] hover:text-white cursor-pointer"
+        >
+          <Plus class="h-4 w-4" />
+        </button>
+      {/if}
     </div>
 
     <div class="overflow-y-auto max-h-[calc(100vh-150px)]">
       {#each projects.filter((x) => !x.isArchived) as project}
-        <ProjectItem {project} onEdit={handleEditProject} />
+        <ProjectItem {project} {currentUser} onEdit={handleEditProject} />
       {/each}
 
       <!-- Projets archivés -->
@@ -141,7 +146,7 @@
           {#if isArchivedVisible}
             <div transition:slide={{ duration: 300, easing: quintOut }}>
               {#each projects.filter((x) => x.isArchived) as project}
-                <ProjectItem {project} onEdit={handleEditProject} />
+                <ProjectItem {project} {currentUser} onEdit={handleEditProject} />
               {/each}
             </div>
           {/if}
