@@ -66,5 +66,25 @@ test.describe("showHoursWorked", () => {
       page.getByText("Vous avez travaillé 7.00 heures aujourd'hui.")
     ).toBeVisible();
   });
+
+  test("hoursWorkedNoActivities", async ({ page }) => {
+    const apiMocker = new ApiMocker(page);
+    await apiMocker
+      .addMocks([
+        activityMocks.getAllActivitiesEmptyDefaultWeekSuccess,
+        activityMocks.getAllActivitiesDefaultWeekSuccess,
+      ])
+      .apply();
+    await page.goto("http://localhost:5002/calendar");
+    await page.waitForSelector(".fc-event", { state: "visible" });
+    await page.getByRole("button", { name: "Jour", exact: true }).click();
+    await page.getByText("Bilan du 22 mars");
+    await page.waitForTimeout(1000);
+    await page.waitForSelector(
+      "text=Vous n'avez pas travaillé aujourd'hui.",
+      { state: "visible" }
+    );
+    expect(page.getByText("Vous n'avez pas travaillé aujourd'hui.")).toBeVisible();
+  }
 });
 
