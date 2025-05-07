@@ -45,8 +45,6 @@
 
   let isSubmitting = false;
 
-  
-
   if (selectedDate && selectedDate.start) {
     const { startDate, endDate } = initializeActivityDates(selectedDate.start);
     initialActivity.startDate = startDate;

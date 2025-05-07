@@ -43,7 +43,6 @@
   const users = [{ id: 1, name: 'Test ManuDev' }];
   const categories = [{ id: 1, name: 'Categorie Test ManuDev' }];
 
-  // Fonction pour attribuer une couleur à chaque événement
   function getEventClassName(eventInfo: any) {
     const eventTypes = [
       'event-blue',
