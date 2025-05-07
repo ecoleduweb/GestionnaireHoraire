@@ -51,6 +51,6 @@ test.describe("checkAddActivity", () => {
     await page.getByText("Créer").click();
 
     await expect(page.locator(".fc-event-title-container")).toBeVisible();
-    await expect(page.getByText("Projet sous-sol")).toBeVisible();
+    await expect(page.locator(".fc-event").getByText("Projet sous-sol")).toBeVisible();
   });
 });
