@@ -1,28 +1,17 @@
 import { createForm } from "felte";
-import type { CreateProject } from "../Models";
+import type { ProjectBase } from "../Models";
 import * as yup from 'yup';
 
-// Schéma de validation Yup
-const schema = yup.object().shape({
-    // Validation des informations du projet
-    name: yup
-        .string()
-        .max(50, "Le nom du projet ne doit pas dépasser 50 caractères"),
-    description: yup
-        .string()
-        .max(20000, "La description du projet ne doit pas dépasser 20000 caractères"),
+// Schéma de validation
+const schema = yup.object({
+    name: yup.string().required('Le nom est requis').max(50),
+    manager_id: yup.number().required('Le manager est requis').positive(),
+    description: yup.string().max(20000),
+    billable: yup.boolean(),
+    status: yup.number()
+  });
 
-    // Validation des informations projet et catégorie
-    status: yup
-        .number()
-        .typeError('Veuillez séléctionner un status valide')
-        .min(0, 'Veuillez séléctionner un status valide'),
-    billable: yup
-        .bool()
-        .typeError('Vous devez spécifier si le projet est facturable ou non.')
-});
-
-export const validateProjectForm = (handleSubmit: (values) => void, project: CreateProject) => {
+export const validateProjectForm = (handleSubmit: (values) => void, project: ProjectBase) => {
     return createForm({
         initialValues: { ...project },
         validate: async (values) => {

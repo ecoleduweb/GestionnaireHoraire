@@ -1,8 +1,8 @@
 import { ProjectStatus } from "$lib/types/enums";
-import type { CreateProject } from "../Models";
+import type { ProjectBase } from "../Models";
 
 export const projectTemplate = {
-    generate: (): CreateProject => ({
+    generate: (): ProjectBase => ({
         name: "",
         description: "",
         status: ProjectStatus.InProgress,

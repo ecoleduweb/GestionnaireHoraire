@@ -36,7 +36,6 @@ func VerifyProjectJSON(projectDTO *DTOs.ProjectDTO) []DTOs.FieldErrorDTO {
 func CreateProject(projectDTO *DTOs.ProjectDTO) (*DTOs.ProjectDTO, error) {
 
 	project := &DAOs.Project{}
-	projectDTO.Description = ""
 	err := copier.Copy(project, projectDTO)
 	if err != nil {
 		return nil, err

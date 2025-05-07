@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { validateProjectForm } from '../../Validation/Project';
   import { projectTemplate } from '../../forms/project';
   import { ProjectApiService } from '../../services/ProjectApiService';
   import { UserApiService } from '../../services/UserApiService';
@@ -18,9 +17,9 @@
 
   let { show, projectIdToEdit, onClose, onSubmit, onUpdate }: Props = $props();
 
-  const editMode = projectIdToEdit !== null;
+  const editMode = $derived(projectIdToEdit !== null);
 
-  const getInitialProject = () => ({...projectTemplate.generate()});
+  const getInitialProject = () => ({ ...projectTemplate.generate() });
 
   let isSubmitting = $state(false);
   let isLoadingManagers = $state(true);
@@ -30,44 +29,47 @@
   let project = $state<ProjectBase>(getInitialProject());
   let fullProject = $state<Project | null>(null);
 
+  async function loadProjectIfNeeded() {
+    if (show && editMode && projectIdToEdit) {
+      try {
+        isLoadingProject = true;
+        fullProject = await ProjectApiService.getProject(projectIdToEdit);
+
+        project = {
+          name: fullProject.name,
+          description: fullProject.description,
+          manager_id: fullProject.manager_id,
+          billable: fullProject.billable,
+          status: fullProject.status,
+        };
+
+        isLoadingProject = false;
+      } catch (err) {
+        console.error(err);
+        error = 'Impossible de charger le projet';
+        isLoadingProject = false;
+      }
+    }
+  }
+
   $effect(() => {
     if (!show) {
       project = getInitialProject();
       fullProject = null;
       error = null;
+      isLoadingProject = false;
     }
   });
 
   $effect(() => {
     if (show) {
       if (editMode && projectIdToEdit) {
-        loadProject(projectIdToEdit);
+        loadProjectIfNeeded();
       } else {
         project = getInitialProject();
       }
     }
   });
-
-  async function loadProject(id: number) {
-    try {
-      isLoadingProject = true;
-      fullProject = await ProjectApiService.getProject(id);
-      
-      project = {
-        name: fullProject.name,
-        description: fullProject.description,
-        manager_id: fullProject.manager_id,
-        billable: fullProject.billable,
-        status: fullProject.status
-      };
-      
-      isLoadingProject = false;
-    } catch (err) {
-      console.error(err);
-      error = 'Impossible de charger le projet';
-      isLoadingProject = false;
-    }
-  }
 
   onMount(async () => {
     try {
@@ -83,18 +85,18 @@
   });
 
   const handleClose = () => {
+    console.log('handleClose called');
     onClose();
   };
 
   const handleSubmit = async () => {
     if (isSubmitting) return;
     isSubmitting = true;
-
     try {
       if (editMode && fullProject) {
         const updatedProject = await ProjectApiService.updateProject({
           ...fullProject,
-          ...project
+          ...project,
         });
         onUpdate(updatedProject);
       } else {
@@ -102,18 +104,15 @@
         onSubmit(newProject);
       }
       onClose();
-    } catch (error) {
-      console.error('Erreur lors de la soumission du projet', error);
+    } catch (err) {
+      console.error('Erreur lors de la soumission du projet', err);
       error = 'Une erreur est survenue. Veuillez réessayer.';
     } finally {
       isSubmitting = false;
     }
   };
-
-  const { form, errors } = validateProjectForm(handleSubmit, project);
 </script>
 
-<!-- svelte-ignore css_unused_selector -->
 <style>
   .modal-overlay {
     position: fixed;
@@ -194,99 +193,104 @@
   }
 </style>
 
-<div class="modal-overlay">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 class="modal-title">{editMode ? 'Modifier le projet' : 'Créer un nouveau projet'}</h2>
-      <button type="button" class="text-black hover:text-gray-600" onclick={handleClose}>
-        <X />
-      </button>
-    </div>
+{#if show}
+  <div class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">{editMode ? 'Modifier le projet' : 'Créer un nouveau projet'}</h2>
+        <button type="button" class="text-black hover:text-gray-600" onclick={handleClose}>
+          <X />
+        </button>
+      </div>
 
-    <div class="modal-content">
-      <form
-        class="flex flex-col h-full"
-        use:form
-        onsubmit={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <div class="form-group">
-          
-          <label for="project-name">Identifiant unique du projet*</label>
-          <input id="project-name" name="name" type="text" bind:value={project.name} required />
-        </div>
+      <div class="modal-content">
+        {#if isLoadingProject}
+          <div class="py-2 px-4 bg-gray-100 rounded">Chargement du projet...</div>
+        {:else}
+          <form class="flex flex-col h-full" onsubmit={handleSubmit}>
+            <div class="form-group">
+              <label for="project-name">Identifiant unique du projet*</label>
+              <input id="project-name" name="name" type="text" bind:value={project.name} required />
+            </div>
 
-        <div class="form-group">
-          <label for="project-manager">Manager du projet*</label>
-          {#if isLoadingManagers}
-            <div class="py-2 px-4 bg-gray-100 rounded">Chargement des managers...</div>
-          {:else if error}
-            <div class="error-text">{error}</div>
-          {:else}
-            <select id="project-manager" name="manager_id" bind:value={project.manager_id} required>
-              <option value="">-- Sélectionner un manager --</option>
-              {#each managers as manager}
-                <option value={manager.id}>
-                  {manager.first_name}
-                  {manager.last_name}
-                </option>
-              {/each}
-            </select>
-          {/if}
-        </div>
+            <div class="form-group">
+              <label for="project-manager">Chargé de projet*</label>
+              {#if isLoadingManagers}
+                <div class="py-2 px-4 bg-gray-100 rounded">Chargement des managers...</div>
+              {:else if error}
+                <div class="error-text">{error}</div>
+              {:else}
+                <select
+                  id="project-manager"
+                  name="manager_id"
+                  bind:value={project.manager_id}
+                  required
+                >
+                  <option value="">-- Sélectionner un manager --</option>
+                  {#each managers as manager}
+                    <option value={manager.id}>
+                      {manager.first_name}
+                      {manager.last_name}
+                    </option>
+                  {/each}
+                </select>
+              {/if}
+            </div>
 
-        <div class="form-group">
-          <label for="project-description">Description</label>
-          <textarea
-            id="project-description"
-            name="description"
-            bind:value={project.description}
-            rows="3"
-          ></textarea>
-        </div>
+            <div class="form-group">
+              <label for="project-description">Description</label>
+              <textarea
+                id="project-description"
+                name="description"
+                bind:value={project.description}
+                rows="3"
+              >
+              </textarea>
+            </div>
 
-        <div class="form-group">
-          <label>
-            <input type="checkbox" bind:checked={project.billable} />
-            Facturable
-          </label>
-        </div>
+            <div class="form-group">
+              <label>
+                <input type="checkbox" bind:checked={project.billable} />
+                Facturable
+              </label>
+            </div>
 
-        <div class="modal-footer">
-          {#if editMode}
-            <button
-              type="button"
-              class="py-3 px-6 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 transition border border-gray-200"
-              onclick={handleClose}
-            >
-              Retour
-            </button>
-            <button
-              type="submit"
-              class="py-3 px-6 bg-[#015e61] text-white rounded-lg font-medium hover:bg-[#014446] hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 transition disabled:opacity-50"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'En cours...' : 'Modifier'}
-            </button>
-          {:else}
-            <button
-              type="button"
-              class="py-3 px-6 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 transition border border-gray-200"
-              onclick={handleClose}
-            >
-              Annuler
-            </button>
-            <button
-              type="submit"
-              class="py-3 px-6 bg-[#015e61] text-white rounded-lg font-medium hover:bg-[#014446] hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 transition disabled:opacity-50"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'En cours...' : 'Soumettre'}
-            </button>
-          {/if}
-        </div>
-      </form>
+            <div class="modal-footer">
+              {#if editMode}
+                <button
+                  type="button"
+                  class="py-3 px-6 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 transition border border-gray-200"
+                  onclick={handleClose}
+                >
+                  Retour
+                </button>
+                <button
+                  type="submit"
+                  class="py-3 px-6 bg-[#015e61] text-white rounded-lg font-medium hover:bg-[#014446] hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 transition disabled:opacity-50"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'En cours...' : 'Modifier'}
+                </button>
+              {:else}
+                <button
+                  type="button"
+                  class="py-3 px-6 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 transition border border-gray-200"
+                  onclick={handleClose}
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  class="py-3 px-6 bg-[#015e61] text-white rounded-lg font-medium hover:bg-[#014446] hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 transition disabled:opacity-50"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'En cours...' : 'Soumettre'}
+                </button>
+              {/if}
+            </div>
+          </form>
+        {/if}
+      </div>
     </div>
   </div>
-</div>
+{/if}

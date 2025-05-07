@@ -29,6 +29,11 @@
     editProjectId = project.id;
     showModal = true;
   }
+
+  function handleCloseModal() {
+    showModal = false;
+    editProjectId = null;
+  }
 </script>
 
 <style>
@@ -146,15 +151,10 @@
   </div>
 </div>
 
-<!-- Modal du projet qui s'affiche par-dessus tout le reste -->
-{#if showModal}
-  <ProjectModal
-    show={showModal}
-    projectIdToEdit={editProjectId}
-    onSubmit={handleProjectSubmit}
-    onUpdate={handleProjectUpdate}
-    onClose={() => {
-      showModal = false;
-    }}
-  />
-{/if}
+<ProjectModal
+  show={showModal}
+  projectIdToEdit={editProjectId}
+  onSubmit={handleProjectSubmit}
+  onUpdate={handleProjectUpdate}
+  onClose={handleCloseModal}
+/>
