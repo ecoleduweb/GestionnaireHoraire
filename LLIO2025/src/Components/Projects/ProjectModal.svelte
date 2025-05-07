@@ -6,132 +6,39 @@
   import '../../style/app.css';
   import { X } from 'lucide-svelte';
   import { onMount } from 'svelte';
-  import * as yup from 'yup';
+  import {validateProjectForm } from '../../Validation/Project';
 
   type Props = {
     show: boolean;
-    projectToEdit: Project | null;
+    projectToEdit: ProjectBase | null;
     onClose: () => void;
-    onSubmit: (project: ProjectBase) => void;
-    onUpdate: (project: Project) => void;
+    onSuccess: () => void;
   };
 
-  const schema = yup.object({
-    name: yup.string().required('Le nom du projet est requis').max(50),
-    manager_id: yup
-      .number()
-      .required('Un chargé de projet est requis')
-      .positive('Un chargé de projet est requis'),
-    description: yup.string().max(20000).nullable(),
-    billable: yup.boolean().required(),
-    status: yup.number(),
-  });
+  let { show, projectToEdit, onClose, onSuccess }: Props = $props();
 
-  let { show, projectToEdit: projectToEdit, onClose, onSubmit, onUpdate }: Props = $props();
+  let initialProject = projectTemplate.generate();
+  let project = $state<ProjectBase>(initialProject);
+
+    if(projectToEdit) {
+      Object.assign(project, projectToEdit);
+    }
 
   const editMode = $derived(projectToEdit !== null);
-
-  const getInitialProject = () => ({ ...projectTemplate.generate() });
-
-  let errors = $state<Record<string, string>>({});
-
-  const validateField = async (field: string) => {
-    try {
-      await (yup.reach(schema, field) as yup.Schema<any>).validate(project[field]);
-      errors = { ...errors, [field]: '' };
-    } catch (err) {
-      if (hasSubmitted || touchedFields[field]) {
-        errors = { ...errors, [field]: err.message };
-      }
-    }
-  };
 
   let isSubmitting = $state(false);
   let isLoadingManagers = $state(true);
   let isLoadingProject = $state(false);
   let managers = $state<User[]>([]);
-  let error = $state<string | null>(null);
-  let project = $state<ProjectBase>(getInitialProject());
-  let fullProject = $state<Project | null>(null);
-  let hasSubmitted = $state(false);
-  let touchedFields = $state<Record<string, boolean>>({});
 
-  $effect(() => {
-    (async () => {
-      await validateField('name');
-    })();
-  });
-  $effect(() => {
-    (async () => {
-      await validateField('manager_id');
-    })();
-  });
-  $effect(() => {
-    (async () => {
-      await validateField('description');
-    })();
-  });
-  $effect(() => {
-    (async () => {
-      await validateField('billable');
-    })();
-  });
-  $effect(() => {
-    (async () => {
-      await validateField('status');
-    })();
-  });
-
-  const loadProjectIfNeeded = async () => {
-    if (show && editMode && projectToEdit) {
-      try {
-        isLoadingProject = true;
-        fullProject = projectToEdit;
-
-        project = {
-          name: fullProject.name,
-          description: fullProject.description,
-          manager_id: fullProject.manager_id,
-          billable: fullProject.billable,
-          status: fullProject.status,
-        };
-
-        isLoadingProject = false;
-      } catch (err) {
-        console.error(err);
-        error = 'Impossible de charger le projet';
-        isLoadingProject = false;
-      }
-    }
-  };
-
-  $effect(() => {
-    if (!show) {
-      project = getInitialProject();
-      fullProject = null;
-      error = null;
-      isLoadingProject = false;
-    }
-  });
-
-  $effect(() => {
-    if (show) {
-      if (editMode && projectToEdit) {
-        loadProjectIfNeeded();
-      } else {
-        project = getInitialProject();
-      }
-    }
-  });
 
   onMount(async () => {
     try {
       isLoadingManagers = true;
-      error = null;
       managers = await UserApiService.getManagerUsers();
     } catch (err) {
       console.error('Failed to load managers:', err);
-      error = 'Impossible de charger la liste des managers';
+      alert("Impossible de charger les chargés de projet.");
     } finally {
       isLoadingManagers = false;
     }
@@ -144,55 +51,23 @@
 
   const handleSubmit = async () => {
     if (isSubmitting) return;
-
-    // Marquer tous les champs comme touchés et valider
-    touchedFields = Object.keys(project).reduce(
-      (acc, key) => {
-        acc[key] = true;
-        return acc;
-      },
-      {} as Record<string, boolean>
-    );
-
-    hasSubmitted = true;
-
-    await Promise.all(Object.keys(project).map((field) => validateField(field)));
-
-    const hasErrors = Object.values(errors).some((error) => error !== '');
-    if (hasErrors) {
-      error = 'Veuillez corriger les erreurs dans le formulaire';
-      return;
-    }
-
-    isSubmitting = true;
-    error = null;
-
     try {
-      await schema.validate(project, { abortEarly: false });
 
-      if (editMode && fullProject) {
-        const updatedProject = await ProjectApiService.updateProject({
-          ...fullProject,
-          ...project,
-        });
-        onUpdate(updatedProject);
+      if (editMode) {
+        await ProjectApiService.updateProject(project);
       } else {
-        const newProject = await ProjectApiService.createProject(project);
-        onSubmit(newProject);
+        await ProjectApiService.createProject(project);
       }
+      onSuccess();
       onClose();
     } catch (err) {
       console.error('Erreur lors de la soumission du projet', err);
-
-      if (err instanceof yup.ValidationError) {
-        error = err.errors.join(', ');
-      } else {
-        error = 'Une erreur est survenue. Veuillez réessayer.';
-      }
+      alert('Erreur lors de la soumission du projet');
     } finally {
       isSubmitting = false;
     }
   };
+  const {form, errors} = validateProjectForm(handleSubmit, project)
 </script>
 
 <style>
@@ -286,13 +161,13 @@
       </div>
 
       <div class="modal-content">
-        {#if error}
-          <div class="error-text">{error}</div>
-        {/if}
         {#if isLoadingProject}
           <div class="py-2 px-4 bg-gray-100 rounded">Chargement du projet...</div>
         {:else}
-          <form class="flex flex-col h-full" onsubmit={handleSubmit}>
+          <form class="flex flex-col h-full" use:form
+          onsubmit={(e) => {
+            e.preventDefault();
+          }}>
             <div class="form-group">
               <label for="project-name">Identifiant unique du projet*</label>
               {#if editMode}
@@ -312,10 +187,6 @@
                     name="name"
                     type="text"
                     bind:value={project.name}
-                    onblur={() => {
-                      touchedFields = { ...touchedFields, name: true };
-                      validateField('name');
-                    }}
                   />
                 </label>
               {/if}
@@ -331,12 +202,8 @@
               {:else}
                 <select
                   id="project-manager"
-                  name="manager_id"
-                  bind:value={project.manager_id}
-                  onblur={() => {
-                    touchedFields = { ...touchedFields, manager_id: true };
-                    validateField('manager_id');
-                  }}
+                  name="managerId"
+                  bind:value={project.managerId}
                 >
                   <option value="">-- Sélectionner un manager --</option>
                   {#each managers as manager}
@@ -346,8 +213,8 @@
                     </option>
                   {/each}
                 </select>
-                {#if errors.manager_id}
-                  <div class="error-text">{errors.manager_id}</div>
+                {#if errors.managerId}
+                  <div class="error-text">{errors.managerId}</div>
                 {/if}
               {/if}
             </div>
@@ -359,10 +226,6 @@
                 name="description"
                 bind:value={project.description}
                 rows="3"
-                onblur={() => {
-                  touchedFields = { ...touchedFields, description: true };
-                  validateField('description');
-                }}
               >
               </textarea>
               {#if errors.description}

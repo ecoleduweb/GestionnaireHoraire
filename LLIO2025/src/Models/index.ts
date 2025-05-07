@@ -52,7 +52,7 @@ export interface ActivityUpdateResponse {
 export interface ProjectBase {
     name: string;
     description: string;
-    manager_id: number;
+    managerId: number;
     billable: boolean;
     status?: ProjectStatus;
 }

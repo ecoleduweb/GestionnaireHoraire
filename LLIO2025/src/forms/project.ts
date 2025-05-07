@@ -7,6 +7,6 @@ export const projectTemplate = {
         description: "",
         status: ProjectStatus.InProgress,
         billable: false,
-        manager_id: 0
+        managerId: 0
     })
 };

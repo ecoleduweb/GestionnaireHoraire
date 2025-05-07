@@ -24,12 +24,12 @@ const createProject = async (project: ProjectBase): Promise<ProjectBase> => {
   }
 };
 
-const updateProject = async (project: UpdateProject): Promise<Project> => {
+const updateProject = async (project: ProjectBase): Promise<ProjectBase> => {
   if (project.status === undefined) {
     project.status = ProjectStatus.InProgress;
   }
   try {
-    const response = await PUT<UpdateProject, ProjectUpdateResponse>("/project", project);
+    const response = await PUT<ProjectBase, ProjectUpdateResponse>("/project", project);
     return response.project;
   } catch (error) {
     console.error("Erreur lors de la création du projet:", error);
