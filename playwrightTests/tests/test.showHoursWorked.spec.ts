@@ -18,7 +18,7 @@ test.describe("showHoursWorked", () => {
       .apply();
     await page.goto("http://localhost:5002/calendar");
     await page.waitForSelector(".fc-event", { state: "visible" });
-    expect(
+    await expect(
       page.getByText("Vous avez travaillé 8.00 heures cette semaine.")
     ).toBeVisible();
   });
@@ -40,7 +40,7 @@ test.describe("showHoursWorked", () => {
       "text=Vous avez travaillé 21.00 heures ce mois-ci.",
       { state: "visible" }
     );
-    expect(
+    await expect(
       page.getByText("Vous avez travaillé 21.00 heures ce mois-ci.")
     ).toBeVisible();
   });
@@ -62,8 +62,9 @@ test.describe("showHoursWorked", () => {
       "text=Vous avez travaillé 7.00 heures aujourd'hui.",
       { state: "visible" }
     );
-    expect(
+    await expect(
       page.getByText("Vous avez travaillé 7.00 heures aujourd'hui.")
     ).toBeVisible();
   });
 });
+
