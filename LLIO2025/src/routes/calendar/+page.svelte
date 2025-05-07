@@ -68,8 +68,6 @@
 
   // Fonction pour charger toutes les activités
   async function loadActivities() {
-    isLoading = true;
-
     let dateStart, dateEnd, day, diff;
     try {
       switch (activeView) {
