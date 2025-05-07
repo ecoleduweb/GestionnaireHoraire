@@ -6,7 +6,6 @@ const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '');
 
 // Utiliser la valeur de BASE_PATH depuis .env ou une valeur par défaut
 const basePath = env.BASE_PATH || '';
-console.log("🚀 ~ basePath:", basePath)
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
