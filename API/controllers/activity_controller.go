@@ -165,3 +165,33 @@ func GetActivitiesFromRange(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"activities": activities})
 }
+
+func GetDetailedActivitiesFromRange(c *gin.Context) {
+	from := c.Query("startDate")
+	to := c.Query("endDate")
+
+	currentUser, exists := c.Get("current_user")
+	if !exists {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Utilisateur non connecté"})
+		return
+	}
+
+	user, ok := currentUser.(*DTOs.UserDTO)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur interne du serveur"})
+		return
+	}
+
+	detailedActivities, err := services.GetDetailedActivitiesFromRange(from, to, user.Id)
+	if err != nil {
+		handleError(c, err, activiteSTR)
+		return
+	}
+
+	if detailedActivities == nil {
+		c.JSON(http.StatusOK, gin.H{"activities": []DTOs.DetailedActivityDTO{}})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"activities": detailedActivities})
+}

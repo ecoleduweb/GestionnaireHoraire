@@ -9,6 +9,7 @@ export interface Activity {
     endDate: Date;
     userId: number;
     projectId: number;
+    projectName: string;
     categoryId: number;
 }
 

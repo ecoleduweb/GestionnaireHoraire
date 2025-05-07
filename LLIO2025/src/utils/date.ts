@@ -151,4 +151,34 @@ export const formatHours = (hours: number | null | undefined): string => {
         ? `0${minutes}`
         : minutes
   }`;
-};  
+}; 
+
+export const formatDateHoursWorked = (date) => {
+  let dateObj;
+  
+  if (date instanceof Date) {
+      dateObj = date;
+  } else if (typeof date === 'string') {
+      const parts = date.split('-');
+      dateObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), 12, 0, 0);
+  }
+  
+  return new Intl.DateTimeFormat('fr-FR', {
+      day: 'numeric',
+      month: 'long'
+  }).format(dateObj);
+};
+
+export const areDatesEqual = (dateStart, dateEnd) => {
+  if (!dateStart || !dateEnd) return false;
+  return dateStart == dateEnd;
+};
+
+export const getHoursFromRange = (activity) => {
+  const start = activity.startDate instanceof Date ? activity.startDate : new Date(activity.startDate);
+  const end = activity.endDate instanceof Date ? activity.endDate : new Date(activity.endDate);    
+
+  const diffMilliseconds = end.getTime() - start.getTime();
+  const hours = diffMilliseconds / (1000 * 60 * 60);
+  return hours;
+};

@@ -51,12 +51,13 @@ func TestUpdateActivity(t *testing.T) {
 	assertResponse(t, w, http.StatusOK, nil)
 
 	var updateResponseBody struct {
-		UpdatedActivity DAOs.Activity `json:"updated_activity"`
+		UpdatedActivity DTOs.DetailedActivityDTO `json:"updated_activity"`
 	}
 	err = json.Unmarshal(w.Body.Bytes(), &updateResponseBody)
 	assert.NoError(t, err)
 	assert.Equal(t, updateActivity.Name, updateResponseBody.UpdatedActivity.Name)
 	assert.Equal(t, updateActivity.Description, updateResponseBody.UpdatedActivity.Description)
+	assert.Equal(t, doNotDeleteProject.Name, updateResponseBody.UpdatedActivity.ProjectName)
 }
 
 func TestUpdateActivityWithInvalidId(t *testing.T) {
