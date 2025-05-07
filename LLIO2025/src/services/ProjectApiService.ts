@@ -57,9 +57,20 @@ const getProject = async(id: number): Promise<Project> => {
   }
 }
 
+const getDetailedProjects = async(): Promise<Project[]> => {
+  try {
+    const response = await GET<{projects: Project[]}>("/projects/detailed");
+    return response.projects;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des projets:", error);
+    throw new Error("Échec de la récupération des projets. Veuillez réessayer.");
+  }
+}
+
 export const ProjectApiService = {
   createProject,
   updateProject,
   getProjects,
   getProject,
+  getDetailedProjects,
 };

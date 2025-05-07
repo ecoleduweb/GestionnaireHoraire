@@ -38,12 +38,6 @@ func GetProjectActivities(projectId int) ([]DAOs.ActivityWithTimeSpent, error) {
 	return tempResults, err
 }
 
-func GetProjectsList() ([]*DAOs.Project, error) {
-	var projects []*DAOs.Project
-	err := database.DB.Find(&projects).Error
-	return projects, DBErrorManager(err)
-}
-
 func GetProjectsByManagerId(id int) ([]*DAOs.Project, error) {
 	var projects []*DAOs.Project
 	err := database.DB.Find(&projects, "manager_id = ?", id).Error

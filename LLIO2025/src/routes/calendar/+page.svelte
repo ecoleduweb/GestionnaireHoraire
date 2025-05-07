@@ -129,7 +129,7 @@
   async function loadProjects() {
     try {
       isLoading = true;
-      const response = await ProjectApiService.getProjects();
+      const response = await ProjectApiService.getDetailedProjects();
       projects = response;
     } catch (err) {
       console.error('Erreur lors de la récupération des projets:', err);

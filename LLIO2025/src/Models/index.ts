@@ -74,4 +74,6 @@ export interface Project extends ProjectBase {
     totalTimeSpent: number;
     isArchived?: boolean;
     status: ProjectStatus; // Devenu obligatoire
+    createdAt: Date;
+    updatedAt: Date;
 }
