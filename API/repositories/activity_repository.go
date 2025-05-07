@@ -25,6 +25,13 @@ func GetActivityById(id string) (*DAOs.Activity, error) {
 	return &activity, DBErrorManager(err)
 }
 
+func GetDetailedActivityById(id int) (*DAOs.Activity, error) {
+	var activity DAOs.Activity
+
+	err := database.DB.Preload("Project").First(&activity, id).Error
+	return &activity, DBErrorManager(err)
+}
+
 func UpdateActivity(ActivityDAO *DAOs.Activity) (*DAOs.Activity, error) {
 	err := database.DB.Updates(ActivityDAO).Error
 	return ActivityDAO, DBErrorManager(err)

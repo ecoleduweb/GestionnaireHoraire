@@ -11,13 +11,14 @@
   type Props = {
     projects: Project[];
     currentUser: UserInfo | null;
+    totalHours: number;
+    dateStart: string;
+    dateEnd: string;
+    textHoursWorked: string;
   };
 
-  let {
-    projects,
-    currentUser
-  }: Props = $props();
-
+  import HoursWorkedDashboard from "./HoursWorkedDashboard.svelte";
+  const { totalHours, projects = [], dateStart, dateEnd, textHoursWorked, currentUser } : Props = $props();
   let isArchivedVisible = $state(false);
 
 </script>
@@ -97,6 +98,11 @@
       {/if}
     </div>
   </div>
+  <HoursWorkedDashboard 
+  dateStart={dateStart}
+  dateEnd={dateEnd}
+  hoursTotal={totalHours}
+  textHoursWorked = {textHoursWorked} />
 </div>
 
 <style>
