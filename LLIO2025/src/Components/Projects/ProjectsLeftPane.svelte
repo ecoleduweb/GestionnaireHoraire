@@ -68,7 +68,6 @@
         </div>
       {/if}
     </div>  
-    HAAAAAAAAA pro
   </div>
   
 </div>
