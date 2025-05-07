@@ -304,7 +304,7 @@ export const projectMocks = {
     response: {
       status: 200,
       json: {
-        projets: [
+        projects: [
           {
             id: 1,
             managerId: 0,

@@ -13,7 +13,7 @@
   };
 
   let {
-    projects,
+    projects = [],
     currentUser
   }: Props = $props();
 

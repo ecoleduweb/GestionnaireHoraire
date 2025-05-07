@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { ApiMocker } from "../Helper/mockApi";
 import { activityMocks } from "../Helper/Mocks/activity.mock";
 import { projectMocks } from "../Helper/Mocks/project.mock";
-import { userMocks } from "../Helper/Mocks/user.Mock";
+import { UserMocks } from "../Helper/Mocks/user.Mock";
 
 test.describe("checkAddActivity", () => {
   test.beforeEach(async ({ page }) => {
@@ -12,7 +12,7 @@ test.describe("checkAddActivity", () => {
         activityMocks.getByIdSuccess,
         activityMocks.getAllActivityEmpty,
         projectMocks.getProjectsListSuccess,
-        userMocks.userMeSuccess,
+        UserMocks.userMeSuccess,
       ])
       .apply();
     await page.clock.install({ time: new Date("2025-03-22T08:00:00") });
@@ -34,7 +34,7 @@ test.describe("checkAddActivity", () => {
     await page.getByText("Créer").click();
 
     await page.waitForSelector(".fc-event", { state: "visible" });
-    await expect(page.getByText("Projet sous-sol")).toBeVisible();
+    await expect(page.locator(".fc-event").getByText("Projet sous-sol")).toBeVisible();
   });
 
   test("ajouterUneActiviteSansNomDescription", async ({ page }) => {

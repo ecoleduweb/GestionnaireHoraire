@@ -1,6 +1,6 @@
 import { MockConfig } from "../types";
 
-export const userMocks = {
+export const UserMocks = {
     userMeSuccess: {
         url: '/user/me',
         method: 'GET',
