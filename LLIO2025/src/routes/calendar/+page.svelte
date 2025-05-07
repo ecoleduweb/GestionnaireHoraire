@@ -25,7 +25,10 @@
   let activeView = $state('timeGridWeek');
   let currentViewTitle = $state('');
   let isLoading = $state(false);
-  let activities = [];
+  let activities = $state([]);
+  let dateStart = $state(null), dateEnd = $state(null);
+  let textHoursWorked = $state('');
+  
 
   const timeRanges = [
     { label: 'Heures de bureau', start: '06:00:00', end: '19:00:00', default: true },
@@ -72,7 +75,7 @@
   async function loadActivities() {
     isLoading = true;
    
-    let dateStart, dateEnd, day, diff;
+    let day, diff;
     try {
       switch (activeView)
       {
@@ -80,6 +83,7 @@
           dateStart = calendarService.calendar.getDate()
           dateStart.setDate(1); // Premier jour du mois
           dateEnd = new Date(dateStart.getFullYear(), dateStart.getMonth() + 1, 0); // Dernier jour du mois
+          textHoursWorked = "ce mois-ci";
           break;  
         
         case 'timeGridWeek':
@@ -90,11 +94,13 @@
 
               dateEnd = new Date(dateStart);
               dateEnd.setDate(dateStart.getDate() + 6);
+              textHoursWorked = "cette semaine";
               break;
         case 'timeGridDay':
           
           dateStart = calendarService.calendar.getDate()
           dateEnd = new Date(dateStart);
+          textHoursWorked = "aujourd'hui";
           break;
         default:
           dateStart = calendarService.calendar.getDate()
@@ -112,6 +118,7 @@
       
       activities = await ActivityApiService.getAllActivitesFromRange(dateStart, dateEnd);
 
+      
       // Utiliser la méthode du service pour ajouter les activités au calendrier
       if (activities && calendarService) {
         calendarService.loadActivities(activities);
@@ -249,6 +256,7 @@
       end: activityData.endDate,
       extendedProps: { ...activityData },
     });
+    activities = [...activities, activityData];
   }
 
   async function handleActivityUpdate(activity: Activity) {
@@ -265,6 +273,9 @@
 
       const updatedActivity = await ActivityApiService.updateActivity(activity);
       calendarService.updateEvent(updatedActivity);
+      activities = activities.map(act => 
+        act.id === updatedActivity.id ? updatedActivity : act
+      );
     } catch (error) {
       console.error('Erreur lors de la mise à jour de l\'activité', error);
 
@@ -282,6 +293,9 @@
       const updatedActivity = await ActivityApiService.updateActivity(activity);
 
       calendarService.updateEvent(updatedActivity);
+      activities = activities.map(act => 
+        act.id === updatedActivity.id ? updatedActivity : act
+      );
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'activité", error);
       alert("Une erreur est survenue lors de la mise à jour de l'activité.");
@@ -294,6 +308,7 @@
     try {
       await ActivityApiService.deleteActivity(activity.id);
       calendarService.deleteActivity(activity.id.toString());
+      activities = activities.filter(act => act.id !== activity.id);
     } catch (error) {
       console.error("Erreur lors de la suppression de l'activité", error);
       throw error;
@@ -404,8 +419,7 @@
 
 <div class="flex">
   <!-- Dashboard toujours visible à gauche -->
-  <DashboardLeftPane {projects} />
-
+  <DashboardLeftPane {projects} {dateStart}  {dateEnd} {activities} {textHoursWorked} />
   <!-- Contenu principal (calendrier) avec marge pour s'adapter au dashboard -->
   <div class="space-between-dashboard-calendar w-full h-full bg-white px-4 py-6">
     <div class="max-w-7xl mx-auto">

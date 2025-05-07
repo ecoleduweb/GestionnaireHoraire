@@ -4,10 +4,7 @@
   import { slide } from "svelte/transition";
   import DashboardProjectItem from "../Projects/DashboardPaneProjectItem.svelte";
   import HoursWorkedDashboard from "./HoursWorkedDashboard.svelte";
-  import { $props } from "svelte";
-  const { activities }: { activities: any[] } = $props();
-
-  let { projects } = $props();
+  const { activities = [], projects = [], dateStart, dateEnd, textHoursWorked } = $props();
   let isArchivedVisible = $state(false);
 
 </script>
@@ -72,7 +69,11 @@
       {/if}
     </div>
   </div>
-  <HoursWorkedDashboard />
+  <HoursWorkedDashboard 
+  dateStart={dateStart}
+  dateEnd={dateEnd}
+  activities={activities}
+  textHoursWorked = {textHoursWorked} />
 </div>
 
 <style>
