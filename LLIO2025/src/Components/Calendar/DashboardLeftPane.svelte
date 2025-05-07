@@ -3,7 +3,6 @@
   import { quintOut } from "svelte/easing";
   import { slide } from "svelte/transition";
   import DashboardProjectItem from "../Projects/DashboardPaneProjectItem.svelte";
-  import { Plus } from "lucide-svelte";
   import type { Project, UserInfo } from '../../Models/index.ts';
   import { UserRole } from '../../lib/types/enums';
 

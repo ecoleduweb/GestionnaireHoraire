@@ -70,86 +70,6 @@
   const {form, errors} = validateProjectForm(handleSubmit, project)
 </script>
 
-<style>
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-
-  .modal {
-    background-color: white;
-    border-radius: 4px;
-    width: 400px;
-    max-width: 90%;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-
-  .modal-header {
-    padding: 12px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #eee;
-  }
-
-  .modal-title {
-    font-size: 18px;
-    margin: 0;
-    color: #333;
-  }
-
-  .modal-content {
-    padding: 24px;
-  }
-
-  .form-group {
-    margin-bottom: 16px;
-  }
-
-  label {
-    display: block;
-    margin-bottom: 8px;
-    color: #666;
-    font-size: 14px;
-  }
-
-  input,
-  textarea,
-  select {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-
-  input[type='checkbox'] {
-    width: auto;
-    margin-right: 8px;
-  }
-
-  .modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 24px;
-  }
-
-  .error-text {
-    color: #e53e3e;
-    font-size: 14px;
-    margin-top: 4px;
-  }
-</style>
-
 {#if show}
   <div class="modal-overlay">
     <div class="modal">
@@ -286,3 +206,83 @@
     </div>
   </div>
 {/if}
+
+<style>
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .modal {
+    background-color: white;
+    border-radius: 4px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .modal-header {
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+  }
+
+  .modal-title {
+    font-size: 18px;
+    margin: 0;
+    color: #333;
+  }
+
+  .modal-content {
+    padding: 24px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    color: #666;
+    font-size: 14px;
+  }
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  input[type='checkbox'] {
+    width: auto;
+    margin-right: 8px;
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .error-text {
+    color: #e53e3e;
+    font-size: 14px;
+    margin-top: 4px;
+  }
+</style>
