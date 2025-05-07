@@ -462,5 +462,15 @@ export const activityMocks = {
       },
     },
   },
+  getAllActivitiesEmptyDefaultWeekSuccess: {
+    url: "/activities/me?startDate=2025-03-17&endDate=2025-03-23",
+    method: "GET",
+    response: {
+      status: 200,
+      json: {
+        activities: [],
+      },
+    },
+  },
 } satisfies Record<string, MockConfig>;
 
