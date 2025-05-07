@@ -677,9 +677,7 @@
                     }
                     categoryDropdownOpen = !categoryDropdownOpen;
                     if (categoryDropdownOpen) {
-                      setTimeout(() => {
-                        document.getElementById('activity-category-search')?.focus();
-                      }, 0);
+                      document.getElementById('activity-category-search')?.focus();
                     }
                   }}
                 >
