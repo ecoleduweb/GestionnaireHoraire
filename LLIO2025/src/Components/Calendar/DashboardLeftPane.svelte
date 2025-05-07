@@ -17,7 +17,7 @@
   };
 
   import HoursWorkedDashboard from "./HoursWorkedDashboard.svelte";
-  const { totalHours, projects, dateStart, dateEnd, textHoursWorked, currentUser } : Props = $props();
+  const { totalHours, projects = [], dateStart, dateEnd, textHoursWorked, currentUser } : Props = $props();
   let isArchivedVisible = $state(false);
 
 </script>

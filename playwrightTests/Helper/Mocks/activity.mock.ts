@@ -86,7 +86,7 @@ export const activityMocks = {
     },
   },
   getAllActivitySuccess: {
-    url: "*/**/activities",
+    url: "/activities",
     method: "GET",
     response: {
       status: 200,
@@ -157,7 +157,7 @@ export const activityMocks = {
     },
   },
   getAllActivityEmpty: {
-    url: "*/**/activities/me/detailed?startDate=2025-03-17&endDate=2025-03-23",
+    url: "/activities/me/detailed?startDate=2025-03-17&endDate=2025-03-23",
     method: "GET",
     response: {
       status: 200,
@@ -165,7 +165,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesDefaultWeekSuccess: {
-    url: "*/**/activities/me/detailed?startDate=2025-03-17&endDate=2025-03-23",
+    url: "/activities/me/detailed?startDate=2025-03-17&endDate=2025-03-23",
     method: "GET",
     response: {
       status: 200,
@@ -209,7 +209,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesDaySuccess: {
-    url: "*/**/activities/me/detailed?startDate=2025-03-22&endDate=2025-03-22",
+    url: "/activities/me/detailed?startDate=2025-03-22&endDate=2025-03-22",
     method: "GET",
     response: {
       status: 200,
@@ -242,7 +242,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesMonthSuccess: {
-    url: "*/**/activities/me/detailed?startDate=2025-03-01&endDate=2025-03-31",
+    url: "/activities/me/detailed?startDate=2025-03-01&endDate=2025-03-31",
     method: "GET",
     response: {
       status: 200,
@@ -308,7 +308,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesPreviousWeekSuccess: {
-    url: "*/**/activities/me/detailed?startDate=2025-03-10&endDate=2025-03-16",
+    url: "/activities/me/detailed?startDate=2025-03-10&endDate=2025-03-16",
     method: "GET",
     response: {
       status: 200,
@@ -330,7 +330,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesNextWeekSuccess: {
-    url: "*/**/activities/me/detailed?startDate=2025-03-24&endDate=2025-03-30",
+    url: "/activities/me/detailed?startDate=2025-03-24&endDate=2025-03-30",
     method: "GET",
     response: {
       status: 200,
@@ -353,7 +353,7 @@ export const activityMocks = {
   },
 
   getAllActivitiesPreviousMonthSuccess: {
-    url: "*/**/activities/me/detailed?startDate=2025-02-01&endDate=2025-02-28",
+    url: "/activities/me/detailed?startDate=2025-02-01&endDate=2025-02-28",
     method: "GET",
     response: {
       status: 200,
@@ -375,7 +375,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesNextMonthSuccess: {
-    url: "*/**/activities/me/detailed?startDate=2025-04-01&endDate=2025-04-30",
+    url: "/activities/me/detailed?startDate=2025-04-01&endDate=2025-04-30",
     method: "GET",
     response: {
       status: 200,
@@ -397,7 +397,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesPreviousDaySuccess: {
-    url: "*/**/activities/me/detailed?startDate=2025-03-21&endDate=2025-03-21",
+    url: "/activities/me/detailed?startDate=2025-03-21&endDate=2025-03-21",
     method: "GET",
     response: {
       status: 200,
@@ -430,7 +430,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesNextDaySuccess: {
-    url: "*/**/activities/me/detailed?startDate=2025-03-23&endDate=2025-03-23",
+    url: "/activities/me/detailed?startDate=2025-03-23&endDate=2025-03-23",
     method: "GET",
     response: {
       status: 200,
