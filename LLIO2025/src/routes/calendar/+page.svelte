@@ -72,9 +72,8 @@
 
   // Fonction pour charger toutes les activités
   async function loadActivities() {
-    isLoading = true;
    
-    let day, diff;
+    let dateStart, dateEnd, day, diff;
     try {
       switch (activeView)
       {
@@ -419,8 +418,9 @@
   {#if isLoading}
     <div class="fixed left-0 top-0 w-[300px] h-full bg-gray-100 animate-pulse"></div>
   {:else if currentUser}
-    <DashboardLeftPane {projects} {dateStart}  {dateEnd} {totalHours} {textHoursWorked} {currentUser} />
+    <DashboardLeftPane {projects} {currentUser} {dateStart}  {dateEnd} {totalHours} {textHoursWorked} />
   {/if}
+
   <!-- Contenu principal (calendrier) avec marge pour s'adapter au dashboard -->
   <div class="space-between-dashboard-calendar w-full h-full bg-white px-4 py-6">
     <div class="max-w-7xl mx-auto">
