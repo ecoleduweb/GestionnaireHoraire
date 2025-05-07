@@ -29,7 +29,7 @@ export const activityMocks = {
     },
   },
   addActivitySuccess: {
-    url: "*/**/activity",
+    url: "/activity",
     method: "POST",
     response: {
       status: 201,
@@ -50,7 +50,7 @@ export const activityMocks = {
     },
   },
   addActivitySuccessNoNameNoDescription: {
-    url: "*/**/activity",
+    url: "/activity",
     method: "POST",
     response: {
       status: 201,
@@ -71,7 +71,7 @@ export const activityMocks = {
     },
   },
   addActivityFailEndDateBeforeStartDate: {
-    url: "*/**/activity",
+    url: "/activity",
     method: "POST",
     response: {
       status: 400,
