@@ -73,7 +73,6 @@ test.describe("showHoursWorked", () => {
       .addMocks([activityMocks.getAllActivitiesEmptyDefaultWeekSuccess])
       .apply();
     await page.goto("http://localhost:5002/calendar");
-    await page.waitForSelector(".fc-event", { state: "visible" });
     await page.getByRole("button", { name: "Jour", exact: true }).click();
     await page.getByText("Bilan du 22 mars");
     await page.waitForTimeout(1000);
@@ -85,4 +84,3 @@ test.describe("showHoursWorked", () => {
     ).toBeVisible();
   });
 });
-
