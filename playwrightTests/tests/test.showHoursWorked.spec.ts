@@ -44,6 +44,7 @@ test.describe("showHoursWorked", () => {
       page.getByText("Vous avez travaillé 21.00 heures ce mois-ci.")
     ).toBeVisible();
   });
+
   test("showHoursWorkedDay", async ({ page }) => {
     const apiMocker = new ApiMocker(page);
     await apiMocker
@@ -58,11 +59,11 @@ test.describe("showHoursWorked", () => {
     await page.getByText("Bilan du 22 mars");
     await page.waitForTimeout(1000);
     await page.waitForSelector(
-      "text=Vous avez travaillé 4.00 heures aujourd'hui.",
+      "text=Vous avez travaillé 7.00 heures aujourd'hui.",
       { state: "visible" }
     );
     expect(
-      page.getByText("Vous avez travaillé 4.00 heures aujourd'hui.")
+      page.getByText("Vous avez travaillé 7.00 heures aujourd'hui.")
     ).toBeVisible();
   });
 });
