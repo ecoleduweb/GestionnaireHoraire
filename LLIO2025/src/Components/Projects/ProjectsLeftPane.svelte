@@ -7,6 +7,7 @@
   import ProjectModal from './ProjectModal.svelte';
   import type { Project } from '../../Models';
   import { UserRole } from '$lib/types/enums';
+  import { ProjectApiService } from '../../services/ProjectApiService';
 
   let { projects, currentUser } = $props();
   let isArchivedVisible = $state(false);
@@ -15,12 +16,21 @@
 
   console.log(currentUser)
 
+  async function loadProjects() {
+    try {
+      const response = await ProjectApiService.getDetailedProjects();
+      projects = response;
+    } catch (err) {
+      console.error('Erreur lors de la récupération des projets:', err);
+    }
+  }
+
   const handleProjectSubmit = async (projectData: Project) => {
-    //
+    loadProjects();
   };
 
   const handleProjectUpdate = async (projectData: Project) => {
-    //
+    loadProjects();
   };
 
   function handleNewProject() {
