@@ -46,6 +46,18 @@ func CreateProject(projectDTO *DTOs.ProjectDTO) (*DTOs.ProjectDTO, error) {
 		return nil, err
 	}
 
+	_, err = repositories.CreateCategory(&DAOs.Category{
+		Name:        "Par défaut",
+		Description: "Catégorie par défaut",
+		ProjectId:   projectDAOAdded.Id,
+		CreatedAt:   projectDAOAdded.CreatedAt,
+		UpdatedAt:   projectDAOAdded.UpdatedAt,
+		Activities:  []DAOs.Activity{},
+		UserId:      projectDAOAdded.ManagerId,
+	})
+	if err != nil {
+		return nil, err
+	}
 	projectDTOResponse := &DTOs.ProjectDTO{}
 	err = copier.Copy(projectDTOResponse, projectDAOAdded)
 	return projectDTOResponse, err
