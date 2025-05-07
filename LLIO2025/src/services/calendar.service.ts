@@ -137,4 +137,19 @@ export class CalendarService {
       });
     });
   }
+
+  getTotalHours(){
+    const events = this.calendar?.getEvents() || [];
+    let totalHours = 0;
+    events.forEach((event) => {
+      const start = event.start as Date;
+      const end = event.end as Date;
+      if (start && end) {
+        const duration = (end.getTime() - start.getTime()) / (1000 * 60 * 60); // Convertir en heures
+        totalHours += duration;
+      }
+    });
+    return totalHours;
+
+  }
 }
