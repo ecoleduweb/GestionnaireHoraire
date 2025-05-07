@@ -41,6 +41,7 @@ test.describe('showHoursWorked', () => {
         await page.getByRole('button', { name: 'Mois', exact : true }).click();
         await page.getByText('Bilan du 1 mars au 31 mars');
         await page.waitForTimeout(1000); 
+        await page.waitForSelector('text=Vous avez travaillé 21.00 heures ce mois-ci.', { state: 'visible' });
         expect(page.getByText('Vous avez travaillé 21.00 heures ce mois-ci.')).toBeVisible();
     });
 
