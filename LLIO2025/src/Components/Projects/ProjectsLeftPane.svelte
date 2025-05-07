@@ -21,15 +21,12 @@
       const response = await ProjectApiService.getDetailedProjects();
       projects = response;
     } catch (err) {
+      alert('Erreur lors de la récupération des projets. Veuillez rafraichir.');
       console.error('Erreur lors de la récupération des projets:', err);
     }
   }
 
-  const handleProjectSubmit = async (projectData: Project) => {
-    loadProjects();
-  };
-
-  const handleProjectUpdate = async (projectData: Project) => {
+  const handleProjectsRefresh = async (projectData: Project) => {
     loadProjects();
   };
 
@@ -169,7 +166,6 @@
 <ProjectModal
   show={showModal}
   projectToEdit={projectToEdit}
-  onSubmit={handleProjectSubmit}
-  onUpdate={handleProjectUpdate}
+  onSuccess={handleProjectsRefresh}
   onClose={handleCloseModal}
 />
