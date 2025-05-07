@@ -6,6 +6,7 @@
   import '../../style/app.css';
   import { X } from 'lucide-svelte';
   import { onMount } from 'svelte';
+  import * as yup from 'yup';
 
   type Props = {
     show: boolean;
@@ -15,11 +16,35 @@
     onUpdate: (project: Project) => void;
   };
 
+  const schema = yup.object({
+    name: yup.string().required('Le nom du projet est requis').max(50),
+    manager_id: yup
+      .number()
+      .required('Un chargé de projet est requis')
+      .positive('Un chargé de projet est requis'),
+    description: yup.string().max(20000).nullable(),
+    billable: yup.boolean().required(),
+    status: yup.number(),
+  });
+
   let { show, projectIdToEdit, onClose, onSubmit, onUpdate }: Props = $props();
 
   const editMode = $derived(projectIdToEdit !== null);
 
   const getInitialProject = () => ({ ...projectTemplate.generate() });
+
+  let errors = $state<Record<string, string>>({});
+
+  const validateField = async (field: string) => {
+    try {
+      await (yup.reach(schema, field) as yup.Schema<any>).validate(project[field]);
+      errors = { ...errors, [field]: '' };
+    } catch (err) {
+      if (hasSubmitted || touchedFields[field]) {
+        errors = { ...errors, [field]: err.message };
+      }
+    }
+  };
 
   let isSubmitting = $state(false);
   let isLoadingManagers = $state(true);
@@ -28,8 +53,36 @@
   let error = $state<string | null>(null);
   let project = $state<ProjectBase>(getInitialProject());
   let fullProject = $state<Project | null>(null);
+  let hasSubmitted = $state(false);
+  let touchedFields = $state<Record<string, boolean>>({});
 
-  async function loadProjectIfNeeded() {
+  $effect(() => {
+    (async () => {
+      await validateField('name');
+    })();
+  });
+  $effect(() => {
+    (async () => {
+      await validateField('manager_id');
+    })();
+  });
+  $effect(() => {
+    (async () => {
+      await validateField('description');
+    })();
+  });
+  $effect(() => {
+    (async () => {
+      await validateField('billable');
+    })();
+  });
+  $effect(() => {
+    (async () => {
+      await validateField('status');
+    })();
+  });
+
+  const loadProjectIfNeeded = async () => {
     if (show && editMode && projectIdToEdit) {
       try {
         isLoadingProject = true;
@@ -50,7 +103,7 @@
         isLoadingProject = false;
       }
     }
-  }
+  };
 
   $effect(() => {
     if (!show) {
@@ -91,8 +144,32 @@
 
   const handleSubmit = async () => {
     if (isSubmitting) return;
+
+    // Marquer tous les champs comme touchés et valider
+    touchedFields = Object.keys(project).reduce(
+      (acc, key) => {
+        acc[key] = true;
+        return acc;
+      },
+      {} as Record<string, boolean>
+    );
+
+    hasSubmitted = true;
+
+    await Promise.all(Object.keys(project).map((field) => validateField(field)));
+
+    const hasErrors = Object.values(errors).some((error) => error !== '');
+    if (hasErrors) {
+      error = 'Veuillez corriger les erreurs dans le formulaire';
+      return;
+    }
+
     isSubmitting = true;
+    error = null;
+
     try {
+      await schema.validate(project, { abortEarly: false });
+
       if (editMode && fullProject) {
         const updatedProject = await ProjectApiService.updateProject({
           ...fullProject,
@@ -106,7 +183,12 @@
       onClose();
     } catch (err) {
       console.error('Erreur lors de la soumission du projet', err);
-      error = 'Une erreur est survenue. Veuillez réessayer.';
+
+      if (err instanceof yup.ValidationError) {
+        error = err.errors.join(', ');
+      } else {
+        error = 'Une erreur est survenue. Veuillez réessayer.';
+      }
     } finally {
       isSubmitting = false;
     }
@@ -204,6 +286,9 @@
       </div>
 
       <div class="modal-content">
+        {#if error}
+          <div class="error-text">{error}</div>
+        {/if}
         {#if isLoadingProject}
           <div class="py-2 px-4 bg-gray-100 rounded">Chargement du projet...</div>
         {:else}
@@ -211,29 +296,47 @@
             <div class="form-group">
               <label for="project-name">Identifiant unique du projet*</label>
               {#if editMode}
-              <label>
-                <input id="project-name" name="name" type="text" bind:value={project.name} readonly />
-              </label>
+                <label>
+                  <input
+                    id="project-name"
+                    name="name"
+                    type="text"
+                    bind:value={project.name}
+                    readonly
+                  />
+                </label>
               {:else}
-              <label>
-                <input id="project-name" name="name" type="text" bind:value={project.name} required />
-              </label>
+                <label>
+                  <input
+                    id="project-name"
+                    name="name"
+                    type="text"
+                    bind:value={project.name}
+                    onblur={() => {
+                      touchedFields = { ...touchedFields, name: true };
+                      validateField('name');
+                    }}
+                  />
+                </label>
               {/if}
-              
+              {#if errors.name}
+                <div class="error-text">{errors.name}</div>
+              {/if}
             </div>
 
             <div class="form-group">
               <label for="project-manager">Chargé de projet*</label>
               {#if isLoadingManagers}
                 <div class="py-2 px-4 bg-gray-100 rounded">Chargement des managers...</div>
-              {:else if error}
-                <div class="error-text">{error}</div>
               {:else}
                 <select
                   id="project-manager"
                   name="manager_id"
                   bind:value={project.manager_id}
-                  required
+                  onblur={() => {
+                    touchedFields = { ...touchedFields, manager_id: true };
+                    validateField('manager_id');
+                  }}
                 >
                   <option value="">-- Sélectionner un manager --</option>
                   {#each managers as manager}
@@ -243,6 +346,9 @@
                     </option>
                   {/each}
                 </select>
+                {#if errors.manager_id}
+                  <div class="error-text">{errors.manager_id}</div>
+                {/if}
               {/if}
             </div>
 
@@ -253,21 +359,28 @@
                 name="description"
                 bind:value={project.description}
                 rows="3"
+                onblur={() => {
+                  touchedFields = { ...touchedFields, description: true };
+                  validateField('description');
+                }}
               >
               </textarea>
+              {#if errors.description}
+                <div class="error-text">{errors.description}</div>
+              {/if}
             </div>
 
             <div class="form-group">
               {#if editMode}
-              <label>
-                <input type="checkbox" bind:checked={project.billable} disabled/>
-                Facturable
-              </label>
+                <label>
+                  <input type="checkbox" bind:checked={project.billable} disabled />
+                  Facturable
+                </label>
               {:else}
-              <label>
-                <input type="checkbox" bind:checked={project.billable} />
-                Facturable
-              </label>
+                <label>
+                  <input type="checkbox" bind:checked={project.billable} />
+                  Facturable
+                </label>
               {/if}
             </div>
 
