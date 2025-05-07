@@ -210,7 +210,16 @@
           <form class="flex flex-col h-full" onsubmit={handleSubmit}>
             <div class="form-group">
               <label for="project-name">Identifiant unique du projet*</label>
-              <input id="project-name" name="name" type="text" bind:value={project.name} required />
+              {#if editMode}
+              <label>
+                <input id="project-name" name="name" type="text" bind:value={project.name} readonly />
+              </label>
+              {:else}
+              <label>
+                <input id="project-name" name="name" type="text" bind:value={project.name} required />
+              </label>
+              {/if}
+              
             </div>
 
             <div class="form-group">
@@ -249,10 +258,17 @@
             </div>
 
             <div class="form-group">
+              {#if editMode}
+              <label>
+                <input type="checkbox" bind:checked={project.billable} disabled/>
+                Facturable
+              </label>
+              {:else}
               <label>
                 <input type="checkbox" bind:checked={project.billable} />
                 Facturable
               </label>
+              {/if}
             </div>
 
             <div class="modal-footer">
