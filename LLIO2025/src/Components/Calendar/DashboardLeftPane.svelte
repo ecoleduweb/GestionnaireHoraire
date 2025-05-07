@@ -3,8 +3,21 @@
   import { quintOut } from "svelte/easing";
   import { slide } from "svelte/transition";
   import DashboardProjectItem from "../Projects/DashboardPaneProjectItem.svelte";
+  import type { Project, UserInfo } from '../../Models/index.ts';
+  import { UserRole } from '../../lib/types/enums';
+
+
+  type Props = {
+    projects: Project[];
+    currentUser: UserInfo | null;
+    totalHours: number;
+    dateStart: string;
+    dateEnd: string;
+    textHoursWorked: string;
+  };
+
   import HoursWorkedDashboard from "./HoursWorkedDashboard.svelte";
-  const { totalHours, projects = [], dateStart, dateEnd, textHoursWorked } = $props();
+  const { totalHours, projects, dateStart, dateEnd, textHoursWorked, currentUser } : Props = $props();
   let isArchivedVisible = $state(false);
 
 </script>
@@ -31,6 +44,21 @@
         >
           Projets
         </button>
+      </div>
+      <div class="mt-4">
+        {#if currentUser.role === UserRole.Admin}
+          <button 
+            onclick={() => goto('./users')}
+            id="user-button"
+            type="button" 
+            class="w-full py-2 px-4 text-sm font-medium transition-colors bg-[#e6f0f0] text-[#005e61] rounded-md hover:bg-[#d0e6e6] flex items-center justify-center cursor-pointer"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+            Utilisateurs
+          </button>
+        {/if}
       </div>
     </div>
 

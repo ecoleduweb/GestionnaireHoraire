@@ -124,8 +124,6 @@
       }
     } catch (error) {
       alert('Une erreur est survenue lors du chargement des activités.');
-    } finally {
-      isLoading = false;
     }
   }
 
@@ -143,6 +141,7 @@
   }
 
   onMount(async () => {
+    isLoading = true;
     if (calendarEl) {
       calendarService = new CS();
 
@@ -234,8 +233,8 @@
       // Charger les activités
       await loadActivities();
     }
-
     loadProjects();
+    isLoading = false;
   });
 
   function setView(viewName: string) {
@@ -417,7 +416,11 @@
 
 <div class="flex">
   <!-- Dashboard toujours visible à gauche -->
-  <DashboardLeftPane {projects} {dateStart}  {dateEnd} {totalHours} {textHoursWorked} />
+  {#if isLoading}
+    <div class="fixed left-0 top-0 w-[300px] h-full bg-gray-100 animate-pulse"></div>
+  {:else if currentUser}
+    <DashboardLeftPane {projects} {dateStart}  {dateEnd} {totalHours} {textHoursWorked} {currentUser} />
+  {/if}
   <!-- Contenu principal (calendrier) avec marge pour s'adapter au dashboard -->
   <div class="space-between-dashboard-calendar w-full h-full bg-white px-4 py-6">
     <div class="max-w-7xl mx-auto">
