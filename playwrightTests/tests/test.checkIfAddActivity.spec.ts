@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import { ApiMocker } from "../Helper/mockApi";
 import { activityMocks } from "../Helper/Mocks/activity.mock";
 import { projectMocks } from "../Helper/Mocks/project.mock";
+import { UserMocks } from "../Helper/Mocks/user.Mock";
 
 test.describe("checkAddActivity", () => {
   test.beforeEach(async ({ page }) => {
@@ -10,7 +11,8 @@ test.describe("checkAddActivity", () => {
       .addMocks([
         activityMocks.getByIdSuccess,
         activityMocks.getAllActivityEmpty,
-        projectMocks.getProjectsSuccess,
+        projectMocks.getProjectsListSuccess,
+        UserMocks.userMeSuccess,
       ])
       .apply();
     await page.clock.install({ time: new Date("2025-03-22T08:00:00") });
@@ -23,15 +25,17 @@ test.describe("checkAddActivity", () => {
     await apiMocker.addMocks([activityMocks.addActivitySuccess]).apply();
 
     await page.getByText("Nouvelle activité").click();
+    await page.waitForTimeout(2000);
+
     await page.getByPlaceholder("Nom de l'activité...").fill("asd");
     await page.locator("#activity-description").fill("asd");
     await page.locator("#activity-project").selectOption("1");
-
+    await page.locator("#activity-category").selectOption("1");
     await page.getByText("Créer").click();
 
     await page.waitForSelector(".fc-event", { state: "visible" });
     await expect(
-      page.getByText("Fête de Jean-Félix et Sherlock")
+      page.locator(".fc-event").getByText("Projet sous-sol")
     ).toBeVisible();
   });
 
@@ -42,10 +46,15 @@ test.describe("checkAddActivity", () => {
       .apply();
 
     await page.getByText("Nouvelle activité").click();
+    await page.waitForTimeout(2000);
+
     await page.locator("#activity-project").selectOption("1");
-    await page.locator("");
+    await page.locator("#activity-category").selectOption("1");
     await page.getByText("Créer").click();
 
-    await expect(page.locator(".fc-event-title-container")).toBeVisible(); //Valide l'existence de l'activité (Sans contenir de nom)
+    await expect(page.locator(".fc-event-title-container")).toBeVisible();
+    await expect(
+      page.locator(".fc-event").getByText("Projet sous-sol")
+    ).toBeVisible();
   });
 });

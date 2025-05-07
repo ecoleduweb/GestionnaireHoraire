@@ -42,6 +42,7 @@ export const activityMocks = {
           endDate: "2025-03-22T13:15:00-04:00",
           userId: 1,
           projectId: 1,
+          projectName: "Projet sous-sol",
           categoryId: 1,
         },
         reponse: "L'activité a bien été ajoutée à la base de données.",
@@ -62,6 +63,7 @@ export const activityMocks = {
           endDate: "2025-03-22T14:15:00Z",
           userId: 1,
           projectId: 1,
+          projectName: "Projet sous-sol",
           categoryId: 1,
         },
         reponse: "L'activité a bien été ajoutée à la base de données.",
@@ -99,6 +101,7 @@ export const activityMocks = {
             endDate: "2025-02-05T07:25:47-05:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
           {
@@ -110,6 +113,7 @@ export const activityMocks = {
             endDate: "2025-04-02T15:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
           {
@@ -121,6 +125,7 @@ export const activityMocks = {
             endDate: "2025-04-03T11:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
           {
@@ -132,6 +137,7 @@ export const activityMocks = {
             endDate: "2025-04-03T11:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
           {
@@ -143,6 +149,7 @@ export const activityMocks = {
             endDate: "2025-04-03T11:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
         ],
@@ -150,7 +157,7 @@ export const activityMocks = {
     },
   },
   getAllActivityEmpty: {
-    url: "/activities/me?startDate=2025-03-17&endDate=2025-03-23",
+    url: "/activities/me/detailed?startDate=2025-03-17&endDate=2025-03-23",
     method: "GET",
     response: {
       status: 200,
@@ -158,7 +165,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesDefaultWeekSuccess: {
-    url: "/activities/me?startDate=2025-03-17&endDate=2025-03-23",
+    url: "/activities/me/detailed?startDate=2025-03-17&endDate=2025-03-23",
     method: "GET",
     response: {
       status: 200,
@@ -172,6 +179,7 @@ export const activityMocks = {
             endDate: "2025-03-22T14:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
           {
@@ -182,6 +190,7 @@ export const activityMocks = {
             endDate: "2025-03-21T09:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
           {
@@ -192,6 +201,7 @@ export const activityMocks = {
             endDate: "2025-03-22T20:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
         ],
@@ -199,7 +209,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesDaySuccess: {
-    url: "/activities/me?startDate=2025-03-22&endDate=2025-03-22",
+    url: "/activities/me/detailed?startDate=2025-03-22&endDate=2025-03-22",
     method: "GET",
     response: {
       status: 200,
@@ -213,6 +223,7 @@ export const activityMocks = {
             endDate: "2025-03-22T14:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
           {
@@ -223,6 +234,7 @@ export const activityMocks = {
             endDate: "2025-03-22T21:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
         ],
@@ -230,7 +242,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesMonthSuccess: {
-    url: "/activities/me?startDate=2025-03-01&endDate=2025-03-31",
+    url: "/activities/me/detailed?startDate=2025-03-01&endDate=2025-03-31",
     method: "GET",
     response: {
       status: 200,
@@ -244,6 +256,7 @@ export const activityMocks = {
             endDate: "2025-03-22T14:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
           {
@@ -254,6 +267,7 @@ export const activityMocks = {
             endDate: "2025-03-21T09:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
           {
@@ -264,6 +278,7 @@ export const activityMocks = {
             endDate: "2025-03-29T14:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
           {
@@ -274,6 +289,7 @@ export const activityMocks = {
             endDate: "2025-03-22T21:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
           {
@@ -284,6 +300,7 @@ export const activityMocks = {
             endDate: "2025-03-15T08:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
         ],
@@ -291,7 +308,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesPreviousWeekSuccess: {
-    url: "/activities/me?startDate=2025-03-10&endDate=2025-03-16",
+    url: "/activities/me/detailed?startDate=2025-03-10&endDate=2025-03-16",
     method: "GET",
     response: {
       status: 200,
@@ -305,6 +322,7 @@ export const activityMocks = {
             endDate: "2025-03-15T08:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
         ],
@@ -312,7 +330,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesNextWeekSuccess: {
-    url: "/activities/me?startDate=2025-03-24&endDate=2025-03-30",
+    url: "/activities/me/detailed?startDate=2025-03-24&endDate=2025-03-30",
     method: "GET",
     response: {
       status: 200,
@@ -326,6 +344,7 @@ export const activityMocks = {
             endDate: "2025-03-29T14:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
         ],
@@ -334,7 +353,7 @@ export const activityMocks = {
   },
 
   getAllActivitiesPreviousMonthSuccess: {
-    url: "/activities/me?startDate=2025-02-01&endDate=2025-02-28",
+    url: "/activities/me/detailed?startDate=2025-02-01&endDate=2025-02-28",
     method: "GET",
     response: {
       status: 200,
@@ -348,6 +367,7 @@ export const activityMocks = {
             endDate: "2025-02-14T08:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
         ],
@@ -355,7 +375,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesNextMonthSuccess: {
-    url: "/activities/me?startDate=2025-04-01&endDate=2025-04-30",
+    url: "/activities/me/detailed?startDate=2025-04-01&endDate=2025-04-30",
     method: "GET",
     response: {
       status: 200,
@@ -369,6 +389,7 @@ export const activityMocks = {
             endDate: "2025-04-01T14:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
         ],
@@ -376,7 +397,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesPreviousDaySuccess: {
-    url: "/activities/me?startDate=2025-03-21&endDate=2025-03-21",
+    url: "/activities/me/detailed?startDate=2025-03-21&endDate=2025-03-21",
     method: "GET",
     response: {
       status: 200,
@@ -390,6 +411,7 @@ export const activityMocks = {
             endDate: "2025-03-21T09:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
           {
@@ -400,6 +422,7 @@ export const activityMocks = {
             endDate: "2025-03-21T21:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
         ],
@@ -407,7 +430,7 @@ export const activityMocks = {
     },
   },
   getAllActivitiesNextDaySuccess: {
-    url: "/activities/me?startDate=2025-03-23&endDate=2025-03-23",
+    url: "/activities/me/detailed?startDate=2025-03-23&endDate=2025-03-23",
     method: "GET",
     response: {
       status: 200,
@@ -421,6 +444,7 @@ export const activityMocks = {
             endDate: "2025-03-23T12:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
           {
@@ -431,51 +455,20 @@ export const activityMocks = {
             endDate: "2025-03-23T21:00:00-04:00",
             userId: 1,
             projectId: 1,
+            projectName: "Projet sous-sol",
             categoryId: 1,
           },
         ],
       },
     },
   },
-  getAllActivitiesAfterAdd: {
-    url: "*/**/activities/me*",
+  getAllActivitiesEmptyDefaultWeekSuccess: {
+    url: "/activities/me?startDate=2025-03-17&endDate=2025-03-23",
     method: "GET",
     response: {
       status: 200,
       json: {
-        activities: [
-          {
-            id: 1,
-            name: "Fête de Jean-Félix et Sherlock",
-            description: "asd",
-            startDate: "2025-03-22T08:00:00-04:00",
-            endDate: "2025-03-22T09:00:00-04:00",
-            userId: 1,
-            projectId: 1,
-            categoryId: null,
-          },
-        ],
-      },
-    },
-  },
-  getAllActivitiesAfterAddNoName: {
-    url: "*/**/activities/me*",
-    method: "GET",
-    response: {
-      status: 200,
-      json: {
-        activities: [
-          {
-            id: 2,
-            name: "",
-            description: "",
-            startDate: "2025-03-22T08:00:00-04:00",
-            endDate: "2025-03-22T09:00:00-04:00",
-            userId: 1,
-            projectId: 1,
-            categoryId: null,
-          },
-        ],
+        activities: [],
       },
     },
   },

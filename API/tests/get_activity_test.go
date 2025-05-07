@@ -37,3 +37,4 @@ func TestGetFromToActivities(t *testing.T) {
 	assertResponse(t, w, http.StatusOK, nil)
 	assert.NotNil(t, w.Body)
 }
+

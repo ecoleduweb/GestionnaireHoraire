@@ -10,6 +10,7 @@ export const activityTemplate = {
       userId: 1,
       projectId: 0,
       categoryId: null,
+      projectName: '',
       startDate,
       endDate,
     };

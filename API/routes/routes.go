@@ -37,6 +37,7 @@ func RegisterRoutes(r *gin.Engine) {
 		usersActivitiesGroup := activitiesGroup.Group("/me")
 		{
 			usersActivitiesGroup.GET("", controllers.GetActivitiesFromRange)
+			usersActivitiesGroup.GET("/detailed", controllers.GetDetailedActivitiesFromRange)
 		}
 	}
 
