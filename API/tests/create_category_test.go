@@ -81,7 +81,7 @@ func TestCreateCategoryWithSameNameDifferentProjects(t *testing.T) {
 	// Vérification du corps de la réponse
 	var responseBody struct {
 		Reponse  string        `json:"reponse"`
-		Category DAOs.Category `json:"activity"`
+		Category DAOs.Category `json:"category"`
 	}
 	err := json.Unmarshal(w.Body.Bytes(), &responseBody)
 	assert.NoError(t, err)
