@@ -1,402 +1,450 @@
 import { MockConfig } from "../types";
 
 export const activityMocks = {
-    getByIdFail: {
-        url: '/activity/*',
-        method: 'GET',
-        response: {
-            status: 404,
-            json: {"error":"Le(La) activité n'a pas été trouvé(e)"}
-        }
+  getByIdFail: {
+    url: "/activity/*",
+    method: "GET",
+    response: {
+      status: 404,
+      json: { error: "Le(La) activité n'a pas été trouvé(e)" },
     },
-    getByIdSuccess: {
-        url: '/activity/*',
-        method: 'GET',
-        response: {
-            status: 200,
-            json: {"activity":
-                {"id": 1,
-                    "name": "Fête de Jean-Félix et Sherlock",
-                    "description": "Fête de Jean-Félix et Sherlock",
-                    "startDate": "2025-03-22T18:04:00Z",
-                    "endDate": "2025-03-22T20:34:00Z",
-                    "userId": 1,
-                    "projectId": 1,
-                    "categoryId": 1
-                }
-            }
-        }
+  },
+  getByIdSuccess: {
+    url: "/activity/*",
+    method: "GET",
+    response: {
+      status: 200,
+      json: {
+        activity: {
+          id: 1,
+          name: "Fête de Jean-Félix et Sherlock",
+          description: "Fête de Jean-Félix et Sherlock",
+          startDate: "2025-03-22T18:04:00Z",
+          endDate: "2025-03-22T20:34:00Z",
+          userId: 1,
+          projectId: 1,
+          categoryId: 1,
+        },
+      },
     },
-    addActivitySuccess: {
-        url: '/activity',
-        method: 'POST',
-        response: {
-            status: 201,
-            json: {
-                "activity": {
-                    "id": 1,
-                    "name": "Fête de Jean-Félix et Sherlock",
-                    "description": "Fête de Jean-Félix et Sherlock",
-                    "startDate": "2025-03-22T12:00:00-04:00",
-                    "endDate": "2025-03-22T13:15:00-04:00",
-                    "userId": 1,
-                    "projectId": 1,
-                    "categoryId": 1
-                },
-                "reponse": "L'activité a bien été ajoutée à la base de données."
-            }
-        }
+  },
+  addActivitySuccess: {
+    url: "/activity",
+    method: "POST",
+    response: {
+      status: 201,
+      json: {
+        activity: {
+          id: 1,
+          name: "Fête de Jean-Félix et Sherlock",
+          description: "Fête de Jean-Félix et Sherlock",
+          startDate: "2025-03-22T12:00:00-04:00",
+          endDate: "2025-03-22T13:15:00-04:00",
+          userId: 1,
+          projectId: 1,
+          categoryId: 1,
+        },
+        reponse: "L'activité a bien été ajoutée à la base de données.",
+      },
     },
-    addActivitySuccessNoNameNoDescription: {
-        url: '/activity',
-        method: 'POST',
-        response: {
-            status: 201,
-            json: {
-                "activity": {
-                    "id": 1,
-                    "name": "",
-                    "description": "",
-                    "startDate": "2025-03-22T13:00:00Z",
-                    "endDate": "2025-03-22T14:15:00Z",
-                    "userId": 1,
-                    "projectId": 1,
-                    "categoryId": 1
-                },
-                "reponse": "L'activité a bien été ajoutée à la base de données."
-            }
-        }
+  },
+  addActivitySuccessNoNameNoDescription: {
+    url: "/activity",
+    method: "POST",
+    response: {
+      status: 201,
+      json: {
+        activity: {
+          id: 1,
+          name: "",
+          description: "",
+          startDate: "2025-03-22T13:00:00Z",
+          endDate: "2025-03-22T14:15:00Z",
+          userId: 1,
+          projectId: 1,
+          categoryId: 1,
+        },
+        reponse: "L'activité a bien été ajoutée à la base de données.",
+      },
     },
-    addActivityFailEndDateBeforeStartDate: {
-        url: '/activity',
-        method: 'POST',
-        response: {
-            status: 400,
-            json: {
-                "errors": [
-                    {
-                        "field": "startDate",
-                        "message": "La date de début doit être avant la date de fin"
-                    }
-                ]
-            }
-        }
+  },
+  addActivityFailEndDateBeforeStartDate: {
+    url: "/activity",
+    method: "POST",
+    response: {
+      status: 400,
+      json: {
+        errors: [
+          {
+            field: "startDate",
+            message: "La date de début doit être avant la date de fin",
+          },
+        ],
+      },
     },
-    getAllActivitySuccess: {
-        url: '/activities',
-        method: 'GET',
-        response: {
-            status: 200,
-            json: {"activities":[
-                {"id":1,"name":"A","description":"aaa","billable":false,"startDate":"2025-02-05T05:25:47-05:00",
-                 "endDate":"2025-02-05T07:25:47-05:00","userId":1,"projectId":1,"categoryId":1},
-                {"id":2,"name":"asd","description":"asd","billable":false,"startDate":"2025-04-02T08:00:00-04:00",
-                 "endDate":"2025-04-02T15:00:00-04:00","userId":1,"projectId":1,"categoryId":1},{"id":3,"name":"new!","description":"new!!","billable":false,"startDate":"2025-04-03T08:00:00-04:00","endDate":"2025-04-03T11:00:00-04:00","userId":1,"projectId":1,"categoryId":1},{"id":4,"name":"asd","description":"asd","billable":false,"startDate":"2025-04-03T08:00:00-04:00","endDate":"2025-04-03T11:00:00-04:00","userId":1,"projectId":1,"categoryId":1},
-                {"id":5,"name":"new!","description":"new!","billable":false,"startDate":"2025-04-03T08:00:00-04:00",
-                 "endDate":"2025-04-03T11:00:00-04:00","userId":1,"projectId":1,"categoryId":1}]
-            }
-        }
+  },
+  getAllActivitySuccess: {
+    url: "/activities",
+    method: "GET",
+    response: {
+      status: 200,
+      json: {
+        activities: [
+          {
+            id: 1,
+            name: "A",
+            description: "aaa",
+            billable: false,
+            startDate: "2025-02-05T05:25:47-05:00",
+            endDate: "2025-02-05T07:25:47-05:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+          {
+            id: 2,
+            name: "asd",
+            description: "asd",
+            billable: false,
+            startDate: "2025-04-02T08:00:00-04:00",
+            endDate: "2025-04-02T15:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+          {
+            id: 3,
+            name: "new!",
+            description: "new!!",
+            billable: false,
+            startDate: "2025-04-03T08:00:00-04:00",
+            endDate: "2025-04-03T11:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+          {
+            id: 4,
+            name: "asd",
+            description: "asd",
+            billable: false,
+            startDate: "2025-04-03T08:00:00-04:00",
+            endDate: "2025-04-03T11:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+          {
+            id: 5,
+            name: "new!",
+            description: "new!",
+            billable: false,
+            startDate: "2025-04-03T08:00:00-04:00",
+            endDate: "2025-04-03T11:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+        ],
+      },
     },
-    getAllActivityEmpty: {
-        url: '/activities',
-        method: 'GET',
-        response: {
-            status: 200,
-            json: {"activities":[]}
-        }
+  },
+  getAllActivityEmpty: {
+    url: "/activities",
+    method: "GET",
+    response: {
+      status: 200,
+      json: { activities: [] },
     },
-    getAllActivitiesDefaultWeekSuccess: {
-        url: '/activities/me?startDate=2025-03-17&endDate=2025-03-23',
-        method: 'GET',
-        response: {
-                status: 200,
-                json:
-                {
-                    "activities": [
-                        {
-                            "id": 13,
-                            "name": "Fête de Jean-Félix et Sherlock",
-                            "description": "Youpi !",
-                            "startDate": "2025-03-22T09:00:00-04:00",
-                            "endDate": "2025-03-22T14:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        },
-                        {
-                            "id": 14,
-                            "name": "Veille de la fête ",
-                            "description": "C'est juste avant",
-                            "startDate": "2025-03-21T07:00:00-04:00",
-                            "endDate": "2025-03-21T09:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        },
-                        {
-                            "id": 18,
-                            "name": "Après party ! ",
-                            "description": "Sous-sol !",
-                            "startDate": "2025-03-22T19:00:00-04:00",
-                            "endDate": "2025-03-22T20:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        }
-                    ]
-                }
-        }
+  },
+  getAllActivitiesDefaultWeekSuccess: {
+    url: "/activities/me?startDate=2025-03-17&endDate=2025-03-23",
+    method: "GET",
+    response: {
+      status: 200,
+      json: {
+        activities: [
+          {
+            id: 13,
+            name: "Fête de Jean-Félix et Sherlock",
+            description: "Youpi !",
+            startDate: "2025-03-22T09:00:00-04:00",
+            endDate: "2025-03-22T14:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+          {
+            id: 14,
+            name: "Veille de la fête ",
+            description: "C'est juste avant",
+            startDate: "2025-03-21T07:00:00-04:00",
+            endDate: "2025-03-21T09:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+          {
+            id: 18,
+            name: "Après party ! ",
+            description: "Sous-sol !",
+            startDate: "2025-03-22T19:00:00-04:00",
+            endDate: "2025-03-22T20:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+        ],
+      },
     },
-    getAllActivitiesDaySuccess: {
-        url: '/activities/me?startDate=2025-03-22&endDate=2025-03-22',
-        method: 'GET',
-        response: {
-                status: 200,
-                json:
-                {
-                    "activities": [
-                        {
-                            "id": 13,
-                            "name": "Fête de Jean-Félix et Sherlock",
-                            "description": "Youpi !",
-                            "startDate": "2025-03-22T09:00:00-04:00",
-                            "endDate": "2025-03-22T14:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        },
-                        {
-                            "id": 18,
-                            "name": "Après party ! ",
-                            "description": "Sous-sol !",
-                            "startDate": "2025-03-22T19:00:00-04:00",
-                            "endDate": "2025-03-22T21:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        }
-                    ]
-                }
-        }
+  },
+  getAllActivitiesDaySuccess: {
+    url: "/activities/me?startDate=2025-03-22&endDate=2025-03-22",
+    method: "GET",
+    response: {
+      status: 200,
+      json: {
+        activities: [
+          {
+            id: 13,
+            name: "Fête de Jean-Félix et Sherlock",
+            description: "Youpi !",
+            startDate: "2025-03-22T09:00:00-04:00",
+            endDate: "2025-03-22T14:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+          {
+            id: 18,
+            name: "Après party ! ",
+            description: "Sous-sol !",
+            startDate: "2025-03-22T19:00:00-04:00",
+            endDate: "2025-03-22T21:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+        ],
+      },
     },
-    getAllActivitiesMonthSuccess: {
-        url: '/activities/me?startDate=2025-03-01&endDate=2025-03-31',
-        method: 'GET',
-        response: {
-                status: 200,
-                json:
-                {
-                    "activities": [
-                        {
-                            "id": 13,
-                            "name": "Fête de Jean-Félix et Sherlock",
-                            "description": "Youpi !",
-                            "startDate": "2025-03-22T09:00:00-04:00",
-                            "endDate": "2025-03-22T14:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        },
-                        {
-                            "id": 14,
-                            "name": "Veille de la fête ",
-                            "description": "C'est juste avant",
-                            "startDate": "2025-03-21T07:00:00-04:00",
-                            "endDate": "2025-03-21T09:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        },
-                        {
-                            "id": 17,
-                            "name": "Party d'après fête ! ",
-                            "description": "Une semaine plus tard :D",
-                            "startDate": "2025-03-29T06:30:00-04:00",
-                            "endDate": "2025-03-29T14:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        },
-                        {
-                            "id": 18,
-                            "name": "Après party ! ",
-                            "description": "Sous-sol !",
-                            "startDate": "2025-03-22T19:00:00-04:00",
-                            "endDate": "2025-03-22T21:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        },
-                        {
-                            "id": 19,
-                            "name": "Avant fête !",
-                            "description": "Une semaine d'avance",
-                            "startDate": "2025-03-15T03:30:00-04:00",
-                            "endDate": "2025-03-15T08:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        }
-                    ]
-                }
-        }
+  },
+  getAllActivitiesMonthSuccess: {
+    url: "/activities/me?startDate=2025-03-01&endDate=2025-03-31",
+    method: "GET",
+    response: {
+      status: 200,
+      json: {
+        activities: [
+          {
+            id: 13,
+            name: "Fête de Jean-Félix et Sherlock",
+            description: "Youpi !",
+            startDate: "2025-03-22T09:00:00-04:00",
+            endDate: "2025-03-22T14:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+          {
+            id: 14,
+            name: "Veille de la fête ",
+            description: "C'est juste avant",
+            startDate: "2025-03-21T07:00:00-04:00",
+            endDate: "2025-03-21T09:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+          {
+            id: 17,
+            name: "Party d'après fête ! ",
+            description: "Une semaine plus tard :D",
+            startDate: "2025-03-29T06:30:00-04:00",
+            endDate: "2025-03-29T14:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+          {
+            id: 18,
+            name: "Après party ! ",
+            description: "Sous-sol !",
+            startDate: "2025-03-22T19:00:00-04:00",
+            endDate: "2025-03-22T21:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+          {
+            id: 19,
+            name: "Avant fête !",
+            description: "Une semaine d'avance",
+            startDate: "2025-03-15T03:30:00-04:00",
+            endDate: "2025-03-15T08:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+        ],
+      },
     },
-    getAllActivitiesPreviousWeekSuccess: {
-        url: '/activities/me?startDate=2025-03-10&endDate=2025-03-16',
-        method: 'GET',
-        response: {
-                status: 200,
-                json:
-                {
-                    "activities": [{
-                        "id": 19,
-                        "name": "Avant fête !",
-                        "description": "Une semaine d'avance",
-                        "startDate": "2025-03-15T03:30:00-04:00",
-                        "endDate": "2025-03-15T08:00:00-04:00",
-                        "userId": 1,
-                        "projectId": 1,
-                        "categoryId": 1
-                        }
-                    ]
-                }
-        }
+  },
+  getAllActivitiesPreviousWeekSuccess: {
+    url: "/activities/me?startDate=2025-03-10&endDate=2025-03-16",
+    method: "GET",
+    response: {
+      status: 200,
+      json: {
+        activities: [
+          {
+            id: 19,
+            name: "Avant fête !",
+            description: "Une semaine d'avance",
+            startDate: "2025-03-15T03:30:00-04:00",
+            endDate: "2025-03-15T08:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+        ],
+      },
     },
-    getAllActivitiesNextWeekSuccess: {
-        url: '/activities/me?startDate=2025-03-24&endDate=2025-03-30',
-        method: 'GET',
-        response: {
-                status: 200,
-                json:
-                {
-                    "activities": [
-                        {
-                            "id": 17,
-                            "name": "Party d'après fête ! ",
-                            "description": "Une semaine plus tard :D",
-                            "startDate": "2025-03-29T06:30:00-04:00",
-                            "endDate": "2025-03-29T14:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        }
-                    ]
-                }
-        }
+  },
+  getAllActivitiesNextWeekSuccess: {
+    url: "/activities/me?startDate=2025-03-24&endDate=2025-03-30",
+    method: "GET",
+    response: {
+      status: 200,
+      json: {
+        activities: [
+          {
+            id: 17,
+            name: "Party d'après fête ! ",
+            description: "Une semaine plus tard :D",
+            startDate: "2025-03-29T06:30:00-04:00",
+            endDate: "2025-03-29T14:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+        ],
+      },
     },
+  },
 
-    getAllActivitiesPreviousMonthSuccess: {
-        url: '/activities/me?startDate=2025-02-01&endDate=2025-02-28',
-        method: 'GET',
-        response: {
-                status: 200,
-                json:
-                {
-                    "activities": [{
-                        "id": 19,
-                        "name": "Saint-Valentin !",
-                        "description": "La saison des amours",
-                        "startDate": "2025-02-14T03:30:00-04:00",
-                        "endDate": "2025-02-14T08:00:00-04:00",
-                        "userId": 1,
-                        "projectId": 1,
-                        "categoryId": 1
-                        }
-                    ]
-                }
-        }
+  getAllActivitiesPreviousMonthSuccess: {
+    url: "/activities/me?startDate=2025-02-01&endDate=2025-02-28",
+    method: "GET",
+    response: {
+      status: 200,
+      json: {
+        activities: [
+          {
+            id: 19,
+            name: "Saint-Valentin !",
+            description: "La saison des amours",
+            startDate: "2025-02-14T03:30:00-04:00",
+            endDate: "2025-02-14T08:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+        ],
+      },
     },
-    getAllActivitiesNextMonthSuccess: {
-        url: '/activities/me?startDate=2025-04-01&endDate=2025-04-30',
-        method: 'GET',
-        response: {
-                status: 200,
-                json:
-                {
-                    "activities": [
-                        {
-                            "id": 17,
-                            "name": "Poisson d'avril !",
-                            "description": "C'est une blague :p",
-                            "startDate": "2025-04-01T06:30:00-04:00",
-                            "endDate": "2025-04-01T14:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        }
-                    ]
-                }
-        }
+  },
+  getAllActivitiesNextMonthSuccess: {
+    url: "/activities/me?startDate=2025-04-01&endDate=2025-04-30",
+    method: "GET",
+    response: {
+      status: 200,
+      json: {
+        activities: [
+          {
+            id: 17,
+            name: "Poisson d'avril !",
+            description: "C'est une blague :p",
+            startDate: "2025-04-01T06:30:00-04:00",
+            endDate: "2025-04-01T14:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+        ],
+      },
     },
-    getAllActivitiesPreviousDaySuccess: {
-        url: '/activities/me?startDate=2025-03-21&endDate=2025-03-21',
-        method: 'GET',
-        response: {
-                status: 200,
-                json:
-                {
-                    "activities": [
-                        {
-                            "id": 14,
-                            "name": "Veille de la fête ",
-                            "description": "C'est juste avant",
-                            "startDate": "2025-03-21T07:00:00-04:00",
-                            "endDate": "2025-03-21T09:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        },
-                        {
-                            "id": 21,
-                            "name": "La veille mais tard",
-                            "description": "Mais trop tard",
-                            "startDate": "2025-03-21T19:00:00-04:00",
-                            "endDate": "2025-03-21T21:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        }
-                    ]
-                }
-        }
+  },
+  getAllActivitiesPreviousDaySuccess: {
+    url: "/activities/me?startDate=2025-03-21&endDate=2025-03-21",
+    method: "GET",
+    response: {
+      status: 200,
+      json: {
+        activities: [
+          {
+            id: 14,
+            name: "Veille de la fête ",
+            description: "C'est juste avant",
+            startDate: "2025-03-21T07:00:00-04:00",
+            endDate: "2025-03-21T09:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+          {
+            id: 21,
+            name: "La veille mais tard",
+            description: "Mais trop tard",
+            startDate: "2025-03-21T19:00:00-04:00",
+            endDate: "2025-03-21T21:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+        ],
+      },
     },
-    getAllActivitiesNextDaySuccess: {
-        url: '/activities/me?startDate=2025-03-23&endDate=2025-03-23',
-        method: 'GET',
-        response: {
-                status: 200,
-                json:
-                {
-                    "activities": [
-                        {
-                            "id": 20,
-                            "name": "Lendemain de la fête ",
-                            "description": "adsdf",
-                            "startDate": "2025-03-23T07:30:00-04:00",
-                            "endDate": "2025-03-23T12:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        },
-                        {
-                            "id": 22,
-                            "name": "Le lendemain mais tard",
-                            "description": "Trop tard",
-                            "startDate": "2025-03-23T19:00:00-04:00",
-                            "endDate": "2025-03-23T21:00:00-04:00",
-                            "userId": 1,
-                            "projectId": 1,
-                            "categoryId": 1
-                        }
-                    ]
-                }
-        }
+  },
+  getAllActivitiesNextDaySuccess: {
+    url: "/activities/me?startDate=2025-03-23&endDate=2025-03-23",
+    method: "GET",
+    response: {
+      status: 200,
+      json: {
+        activities: [
+          {
+            id: 20,
+            name: "Lendemain de la fête ",
+            description: "adsdf",
+            startDate: "2025-03-23T07:30:00-04:00",
+            endDate: "2025-03-23T12:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+          {
+            id: 22,
+            name: "Le lendemain mais tard",
+            description: "Trop tard",
+            startDate: "2025-03-23T19:00:00-04:00",
+            endDate: "2025-03-23T21:00:00-04:00",
+            userId: 1,
+            projectId: 1,
+            categoryId: 1,
+          },
+        ],
+      },
     },
-
-
-
-
-
-
-
+  },
+  getAllActivitiesEmptyDefaultWeekSuccess: {
+    url: "/activities/me?startDate=2025-03-17&endDate=2025-03-23",
+    method: "GET",
+    response: {
+      status: 200,
+      json: {
+        activities: [],
+      },
+    },
+  },
 } satisfies Record<string, MockConfig>;
