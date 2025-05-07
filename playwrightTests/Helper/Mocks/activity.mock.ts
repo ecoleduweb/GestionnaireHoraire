@@ -473,4 +473,3 @@ export const activityMocks = {
     },
   },
 } satisfies Record<string, MockConfig>;
-

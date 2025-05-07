@@ -44,7 +44,10 @@ export interface Employee {
 }
 
 export interface Category {
+    id: number;
     name: string;
+    description?: string;
+    billable?: boolean;
     timeSpent: number;
     timeEstimated: number;
 }
