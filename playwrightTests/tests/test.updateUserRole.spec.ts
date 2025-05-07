@@ -23,25 +23,33 @@ test.describe('updateUserRole', () => {
             UserMocks.usersSuccess,
         ]).apply();
         
-        await page.locator('#userSelect').selectOption('1');
-        await page.locator('#roleSelect').selectOption('1');
+        // Configurer un écouteur pour intercepter l'alerte
+        page.on('dialog', async dialog => {
+            expect(dialog.message()).toBe('Rôle mis à jour avec succès');
+            await dialog.accept();
+        });
+        
+        await page.locator('#userSelect').selectOption('JérémieTest Lapointe');
+        await page.locator('#roleSelect').selectOption('Chargé de projet');
         
         await page.getByText('Confirmer').click();
-        
-        await expect(page.locator('text=Rôle mis à jour avec succès')).toBeVisible();
     });
-
+    
     test('updateRoleError', async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
             UserMocks.updateUserRoleError,
         ]).apply();
         
-        await page.locator('#userSelect').selectOption('1');
-        await page.locator('#roleSelect').selectOption('1');
+        // Configurer un écouteur pour intercepter l'alerte
+        page.on('dialog', async dialog => {
+            expect(dialog.message()).toBe('Erreur lors de la mise à jour du rôle');
+            await dialog.accept();
+        });
+        
+        await page.locator('#userSelect').selectOption('JérémieTest Lapointe');
+        await page.locator('#roleSelect').selectOption('Chargé de projet');
         
         await page.getByText('Confirmer').click();
-        
-        await expect(page.locator('text=Erreur lors de la mise à jour du rôle')).toBeVisible();
     });
 });

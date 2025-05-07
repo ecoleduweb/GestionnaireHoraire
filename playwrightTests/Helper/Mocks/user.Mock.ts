@@ -15,7 +15,7 @@ export const UserMocks = {
         }
     },
     usersSuccess: {
-        url: '*/**api/users',
+        url: '**/*api/users',
         method: 'GET',
         response: {
                 status: 200,
@@ -23,20 +23,20 @@ export const UserMocks = {
                 [
                     {
                         "id": 1,
-                        "first_Name": "Usager",
-                        "last_Name": "test",
+                        "first_name": "Usager",
+                        "last_name": "test",
                         "role": 2
                     },
                     {
                         "id": 2,
-                        "first_Name": "JérémieTest",
-                        "last_Name": "Lapointe",
+                        "first_name": "JérémieTest",
+                        "last_name": "Lapointe",
                         "role": 1
                     },
                     {
                         "id": 3,
-                        "first_Name": "Charle-ÉtienneTest",
-                        "last_Name": "Soucy",
+                        "first_name": "Charle-ÉtienneTest",
+                        "last_name": "Soucy",
                         "role": 0
                     }
                 ]
