@@ -79,7 +79,7 @@ test.describe('showActivities', () => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
             activityMocks.getAllActivitiesMonthSuccess,
-            projectMocks.getProjectsSuccess,
+            projectMocks.getDetailedProjectsSuccess,
             activityMocks.getAllActivitiesDefaultWeekSuccess
         ]).apply();
         // Load la page et fait la requête de base 
@@ -94,7 +94,7 @@ test.describe('showActivities', () => {
     test('showActivitiesPreviousWeek', async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
-            projectMocks.getProjectsSuccess,
+            projectMocks.getDetailedProjectsSuccess,
             activityMocks.getAllActivitiesPreviousWeekSuccess,
             activityMocks.getAllActivitiesDefaultWeekSuccess
         ]).apply();
@@ -110,7 +110,7 @@ test.describe('showActivities', () => {
     test('showActivitiesNextWeek', async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
-            projectMocks.getProjectsSuccess,
+            projectMocks.getDetailedProjectsSuccess,
             activityMocks.getAllActivitiesNextWeekSuccess,
             activityMocks.getAllActivitiesDefaultWeekSuccess
         ]).apply();
@@ -126,7 +126,7 @@ test.describe('showActivities', () => {
     test('showActivitiesPreviousMonth', async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
-            projectMocks.getProjectsSuccess,
+            projectMocks.getDetailedProjectsSuccess,
             activityMocks.getAllActivitiesPreviousMonthSuccess,
             activityMocks.getAllActivitiesDefaultWeekSuccess
         ]).apply();
@@ -145,7 +145,7 @@ test.describe('showActivities', () => {
     test('showActivitiesNextMonth', async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
-            projectMocks.getProjectsSuccess,
+            projectMocks.getDetailedProjectsSuccess,
             activityMocks.getAllActivitiesNextMonthSuccess,
             activityMocks.getAllActivitiesDefaultWeekSuccess
         ]).apply();
@@ -164,7 +164,7 @@ test.describe('showActivities', () => {
     test('showActivitiesPreviousDay', async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
-            projectMocks.getProjectsSuccess,
+            projectMocks.getDetailedProjectsSuccess,
             activityMocks.getAllActivitiesPreviousDaySuccess,
             activityMocks.getAllActivitiesDefaultWeekSuccess
         ]).apply();
@@ -189,7 +189,7 @@ test.describe('showActivities', () => {
     test('showActivitiesNextDay', async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
-            projectMocks.getProjectsSuccess,
+            projectMocks.getDetailedProjectsSuccess,
             activityMocks.getAllActivitiesNextDaySuccess,
             activityMocks.getAllActivitiesDefaultWeekSuccess
         ]).apply();
@@ -213,7 +213,7 @@ test.describe('showActivities', () => {
     test('showActivitiesToday', async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
-            projectMocks.getProjectsSuccess,
+            projectMocks.getDetailedProjectsSuccess,
             activityMocks.getAllActivitiesDaySuccess,
             activityMocks.getAllActivitiesDefaultWeekSuccess
         ]).apply();
