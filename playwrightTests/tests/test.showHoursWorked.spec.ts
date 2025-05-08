@@ -2,12 +2,12 @@ import { test, expect } from "@playwright/test";
 import { ApiMocker } from "../Helper/mockApi";
 import { activityMocks } from "../Helper/Mocks/activity.mock";
 import { projectMocks } from "../Helper/Mocks/project.mock";
-import { UserMocks } from "../Helper/Mocks/user.Mock";
+import { userMocks } from "../Helper/Mocks/user.Mock";
 
 test.describe("showHoursWorked", () => {
   test.beforeEach(async ({ page }) => {
     const apiMocker = new ApiMocker(page);
-    await apiMocker.addMocks([UserMocks.userMeSuccess]).apply();
+    await apiMocker.addMocks([userMocks.userMeSuccess]).apply();
     await page.clock.install({ time: new Date("2025-03-22T08:00:00-04:00") });
   });
 
