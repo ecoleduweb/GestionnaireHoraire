@@ -259,7 +259,7 @@ func formatProjectWithActivities(project *DAOs.Project, activities []DAOs.Activi
 		"totalTimeRemaining": totalTimeEstimated - totalTimeSpent,
 		"totalTimeSpent":     totalTimeSpent,
 		"isArchived":         project.Status == enums.ProjectStatus(enums.Finish),
-		"manager_id":         project.ManagerId,
+		"managerId":          project.ManagerId,
 		"createdAt":          project.CreatedAt,
 		"updatedAt":          project.UpdatedAt,
 		"billable":           project.Billable,

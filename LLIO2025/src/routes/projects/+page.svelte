@@ -29,13 +29,26 @@
     }
   }
 
+  const handleProjectsRefresh = async () => {
+    try {
+      isLoading = true;
+      error = null;
+      const response = await ProjectApiService.getDetailedProjects();
+      projects = response;
+    } catch (err) {
+      console.error('Erreur lors de la récupération des projets:', err);
+      error = "Impossible de charger les projets. Veuillez réessayer plus tard.";
+    } finally {
+      isLoading = false;
+    }
+  };
+
   onMount(async () => {
     try {
         currentUser = await UserApiService.getUserInfo();
-        console.log("Current user")
-        console.log(currentUser)
       } catch (error) {
         console.error('Erreur lors du chargement des informations utilisateur:', error);
+        alert('Impossible de charger les informations utilisateur.');
       }
     loadProjects();
   });
@@ -43,7 +56,7 @@
 
 <div class="bg-gray-100">
   {#if currentUser}
-  <ProjectsLeftPane {projects} {currentUser} />
+  <ProjectsLeftPane {projects} {currentUser} onProjectsRefresh={handleProjectsRefresh} />
   {/if}
   
   <div class="flex flex-col" style="padding-left: 300px;">
