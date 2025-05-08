@@ -1,12 +1,13 @@
 <script lang="ts">
   import type { CalendarService } from '../../services/calendar.service';
   import { UserApiService } from '../../services/UserApiService';
+  import { ProjectApiService } from '../../services/ProjectApiService';
   import { CalendarService as CS } from '../../services/calendar.service';
   import { onMount } from 'svelte';
   import ActivityModal from '../../Components/Calendar/ActivityModal.svelte';
   import DashboardLeftPane from '../../Components/Calendar/DashboardLeftPane.svelte';
   import { ActivityApiService } from '../../services/ActivityApiService';
-  import type { Activity, Project, UserInfo } from '../../Models/index.ts';
+  import type { Activity, UserInfo, Project } from '../../Models/index.ts';
   // Importez le fichier CSS
   import '../../style/modern-calendar.css';
   import { getDateOrDefault, formatDate } from '../../utils/date';
@@ -14,7 +15,6 @@
   import frLocale from '@fullcalendar/core/locales/fr';
   import { formatViewTitle } from '../../utils/date';
   import { Plus, Calendar, ChevronLeft, ChevronRight, LogOut } from 'lucide-svelte';
-  import { ProjectApiService } from '../../services/ProjectApiService';
 
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
@@ -25,10 +25,10 @@
   let activeView = $state('timeGridWeek');
   let currentViewTitle = $state('');
   let isLoading = $state(false);
-  let dateStart = $state(null), dateEnd = $state(null);
+  let dateStart = $state(null),
+    dateEnd = $state(null);
   let textHoursWorked = $state('');
   let totalHours = $state(0);
-  
 
   const timeRanges = [
     { label: 'Heures de bureau', start: '06:00:00', end: '19:00:00', default: true },
@@ -40,9 +40,7 @@
   let currentUser = $state<UserInfo | null>(null);
   let projects = $state<Project[]>([]);
 
-  const users = [{ id: 1, name: 'Test ManuDev' }];
-  const categories = [{ id: 1, name: 'Categorie Test ManuDev' }];
-
+  // Fonction pour attribuer une couleur à chaque événement
   function getEventClassName(eventInfo: any) {
     const eventTypes = [
       'event-blue',
@@ -72,36 +70,32 @@
 
   // Fonction pour charger toutes les activités
   async function loadActivities() {
-   
     let dateStart, dateEnd, day, diff;
     try {
-      switch (activeView)
-      {
+      switch (activeView) {
         case 'dayGridMonth':
-          dateStart = calendarService.calendar.getDate()
+          dateStart = calendarService.calendar.getDate();
           dateStart.setDate(1); // Premier jour du mois
           dateEnd = new Date(dateStart.getFullYear(), dateStart.getMonth() + 1, 0); // Dernier jour du mois
-          textHoursWorked = "ce mois-ci";
-          break;  
-        
-        case 'timeGridWeek':
-              dateStart = calendarService.calendar.getDate()
-              day = dateStart.getDay();
-              diff = dateStart.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
-              dateStart.setDate(diff);
+          textHoursWorked = 'ce mois-ci';
+          break;
 
-              dateEnd = new Date(dateStart);
-              dateEnd.setDate(dateStart.getDate() + 6);
-              textHoursWorked = "cette semaine";
-              break;
+        case 'timeGridWeek':
+          dateStart = calendarService.calendar.getDate();
+          day = dateStart.getDay();
+          diff = dateStart.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
+          dateStart.setDate(diff);
+          dateEnd = new Date(dateStart);
+          dateEnd.setDate(dateStart.getDate() + 6);
+          textHoursWorked = 'cette semaine';
+          break;
         case 'timeGridDay':
-          
-          dateStart = calendarService.calendar.getDate()
+          dateStart = calendarService.calendar.getDate();
           dateEnd = new Date(dateStart);
           textHoursWorked = "aujourd'hui";
           break;
         default:
-          dateStart = calendarService.calendar.getDate()
+          dateStart = calendarService.calendar.getDate();
           day = dateStart.getDay();
           diff = dateStart.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
           dateStart.setDate(diff);
@@ -113,9 +107,8 @@
 
       dateStart = formatDate(dateStart);
       dateEnd = formatDate(dateEnd);
-      
       let activities = await ActivityApiService.getAllActivitesFromRange(dateStart, dateEnd);
-      
+
       // Utiliser la méthode du service pour ajouter les activités au calendrier
       if (activities && calendarService) {
         calendarService.loadActivities(activities);
@@ -200,7 +193,7 @@
         editMode = true;
         editActivity = {
           id: info.event.extendedProps.id,
-          name: info.event.extendedProps.name,
+          name: info.event.title,
           description: info.event.extendedProps.description,
           userId: info.event.extendedProps.userId,
           projectId: info.event.extendedProps.projectId,
@@ -229,8 +222,9 @@
       // Mettre à jour le titre initial
       updateViewTitle();
 
-      // Charger les activités
       await loadActivities();
+
+      await loadProjects();
     }
     loadProjects();
     isLoading = false;
@@ -253,7 +247,6 @@
       end: activityData.endDate,
       extendedProps: { ...activityData },
     });
-
     totalHours = calendarService.getTotalHours();
   }
 
@@ -273,7 +266,7 @@
       calendarService.updateEvent(updatedActivity);
       totalHours = calendarService.getTotalHours();
     } catch (error) {
-      console.error('Erreur lors de la mise à jour de l\'activité', error);
+      console.error("Erreur lors de la mise à jour de l'activité", error);
 
       alert("Une erreur est survenue lors de la mise à jour de l'activité.");
 
@@ -290,7 +283,6 @@
 
       calendarService.updateEvent(updatedActivity);
       totalHours = calendarService.getTotalHours();
-      
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'activité", error);
       alert("Une erreur est survenue lors de la mise à jour de l'activité.");
@@ -304,7 +296,6 @@
       await ActivityApiService.deleteActivity(activity.id);
       calendarService.deleteActivity(activity.id.toString());
       totalHours = calendarService.getTotalHours();
-      
     } catch (error) {
       console.error("Erreur lors de la suppression de l'activité", error);
       throw error;
@@ -418,7 +409,14 @@
   {#if isLoading}
     <div class="fixed left-0 top-0 w-[300px] h-full bg-gray-100 animate-pulse"></div>
   {:else if currentUser}
-    <DashboardLeftPane {projects} {currentUser} {dateStart}  {dateEnd} {totalHours} {textHoursWorked} />
+    <DashboardLeftPane
+      {projects}
+      {currentUser}
+      {dateStart}
+      {dateEnd}
+      {totalHours}
+      {textHoursWorked}
+    />
   {/if}
 
   <!-- Contenu principal (calendrier) avec marge pour s'adapter au dashboard -->
@@ -555,9 +553,7 @@
 {#if showModal}
   <ActivityModal
     show={showModal}
-    {users}
     {projects}
-    {categories}
     activityToEdit={editActivity}
     {selectedDate}
     onDelete={handleActivityDelete}

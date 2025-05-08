@@ -1,15 +1,26 @@
 // ProjectApiService.ts
 import { ProjectStatus } from "$lib/types/enums";
-import type { ProjectBase, Project, UpdateProject } from "../Models/index";
+import type { ProjectBase, Project } from "../Models/index";
 import { GET, POST, PUT } from "../ts/server";
 
-interface ProjectResponse {
-  project: ProjectBase;
+interface ProjectsResponse {
+  projects: Project[];
 }
 
-interface ProjectUpdateResponse {
+interface ProjectResponse {
   project: Project;
 }
+
+// Récupérer tous les projets
+const getAllProjects = async (): Promise<Project[]> => {
+  try {
+    const response = await GET<ProjectsResponse>("/projects");
+    return response.projects; 
+  } catch (error) {
+    console.error("Erreur lors de la récupération des projets:", error);
+    return [];
+  }
+};
 
 const createProject = async (project: ProjectBase): Promise<ProjectBase> => {
   if (project.status === undefined) {
@@ -29,7 +40,7 @@ const updateProject = async (project: ProjectBase): Promise<ProjectBase> => {
     project.status = ProjectStatus.InProgress;
   }
   try {
-    const response = await PUT<ProjectBase, ProjectUpdateResponse>("/project", project);
+    const response = await PUT<ProjectBase, ProjectResponse>("/project", project);
     return response.project;
   } catch (error) {
     console.error("Erreur lors de la création du projet:", error);
