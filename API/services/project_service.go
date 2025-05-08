@@ -69,7 +69,7 @@ func GetDetailedProjects() ([]map[string]any, error) {
 		return nil, err
 	}
 
-	result, err := formatProjects(projects, err)
+	result, err := formatProjects(projects)
 	if err != nil {
 		return nil, err
 	}
@@ -86,11 +86,7 @@ func GetProjects() ([]*DTOs.ProjectDTO, error) {
 		return make([]*DTOs.ProjectDTO, 0), nil
 	}
 
-	projectsDTO := make([]*DTOs.ProjectDTO, len(projects))
-	for i := range projectsDTO {
-		projectsDTO[i] = &DTOs.ProjectDTO{}
-	}
-
+	var projectsDTO []*DTOs.ProjectDTO
 	if err := copier.Copy(&projectsDTO, &projects); err != nil {
 		return nil, err
 	}
@@ -104,7 +100,7 @@ func GetProjectsByManagerId(id int) ([]map[string]any, error) {
 		return nil, err
 	}
 
-	result, err := formatProjects(projects, err)
+	result, err := formatProjects(projects)
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +137,7 @@ func UpdateProject(projectDTO *DTOs.ProjectDTO) (*DTOs.ProjectDTO, error) {
 	return projectDTOResponse, err
 }
 
-func formatProjects(projects []*DAOs.Project, err error) ([]map[string]any, error) {
+func formatProjects(projects []*DAOs.Project) ([]map[string]any, error) {
 	users, err := repositories.GetAllUsers()
 	if err != nil {
 		return nil, err

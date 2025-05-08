@@ -16,5 +16,5 @@ type ProjectDTO struct {
 	Categories  []CategoryDTO       `json:"categories"`
 	CreatedAt   time.Time           `json:"createdAt"`
 	UpdatedAt   time.Time           `json:"updatedAt"`
-	EndAt       time.Time           `json:"end_at"`
+	EndAt       time.Time           `json:"endAt"`
 }

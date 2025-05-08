@@ -9,20 +9,16 @@
   import { UserRole } from '$lib/types/enums';
 
   type Props = {
-    projects: Project[] | null;
+    projects: Project[];
     currentUser: UserInfo;
     onProjectsRefresh: () => void;
   };
 
-  let { projects, currentUser, onProjectsRefresh }: Props = $props();
+  let { projects = [], currentUser, onProjectsRefresh }: Props = $props();
   let isArchivedVisible = $state(false);
   let showModal = $state(false);
-  let projectToEdit = $state(null);
-
-  const handleProjectsRefresh = () => {
-    onProjectsRefresh();
-  };
-
+  let projectToEdit = $state<Project | null>(null);
+    
   function handleNewProject() {
     projectToEdit = null;
     showModal = true;
@@ -121,13 +117,10 @@
 {#if showModal}
 <ProjectModal
   projectToEdit={projectToEdit}
-  onSuccess={handleProjectsRefresh}
+  onSuccess={onProjectsRefresh}
   onClose={handleCloseModal}
 />
-
 {/if}
-
-
 
 <style>
   .dashboard-panel {

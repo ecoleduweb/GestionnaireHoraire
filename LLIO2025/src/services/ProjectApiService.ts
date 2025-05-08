@@ -11,18 +11,7 @@ interface ProjectResponse {
   project: Project;
 }
 
-// Récupérer tous les projets
-const getAllProjects = async (): Promise<Project[]> => {
-  try {
-    const response = await GET<ProjectsResponse>("/projects");
-    return response.projects; 
-  } catch (error) {
-    console.error("Erreur lors de la récupération des projets:", error);
-    return [];
-  }
-};
-
-const createProject = async (project: ProjectBase): Promise<ProjectBase> => {
+const createProject = async (project: ProjectBase): Promise<Project> => {
   if (project.status === undefined) {
     project.status = ProjectStatus.InProgress;
   }
@@ -35,7 +24,7 @@ const createProject = async (project: ProjectBase): Promise<ProjectBase> => {
   }
 };
 
-const updateProject = async (project: ProjectBase): Promise<ProjectBase> => {
+const updateProject = async (project: ProjectBase): Promise<Project> => {
   if (project.status === undefined) {
     project.status = ProjectStatus.InProgress;
   }
@@ -44,7 +33,7 @@ const updateProject = async (project: ProjectBase): Promise<ProjectBase> => {
     return response.project;
   } catch (error) {
     console.error("Erreur lors de la création du projet:", error);
-    throw new Error("Échec de la création du projet. Veuillez réessayer.");
+    throw new Error("Échec de la mise à jour du projet. Veuillez réessayer.");
   }
 };
 

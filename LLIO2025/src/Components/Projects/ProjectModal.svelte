@@ -47,6 +47,7 @@
   const handleSubmit = async () => {
     if (isSubmitting) return;
     try {
+      isSubmitting = true;
       if (editMode) {
         await ProjectApiService.updateProject(project);
       } else {
@@ -102,8 +103,7 @@
                   <option value="">-- Sélectionner un manager --</option>
                   {#each managers as manager}
                     <option value={manager.id}>
-                      {manager.first_name}
-                      {manager.last_name}
+                      {`${manager.firstName} ${manager.lastName}`}
                     </option>
                   {/each}
                 </select>

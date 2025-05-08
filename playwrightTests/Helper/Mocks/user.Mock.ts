@@ -23,20 +23,20 @@ export const UserMocks = {
                 [
                     {
                         "id": 1,
-                        "first_name": "Usager",
-                        "last_name": "test",
+                        "firstName": "Usager",
+                        "lastName": "test",
                         "role": 2
                     },
                     {
                         "id": 2,
-                        "first_name": "JérémieTest",
-                        "last_name": "Lapointe",
+                        "firstName": "JérémieTest",
+                        "lastName": "Lapointe",
                         "role": 1
                     },
                     {
                         "id": 3,
-                        "first_name": "Charle-ÉtienneTest",
-                        "last_name": "Soucy",
+                        "firstName": "Charle-ÉtienneTest",
+                        "lastName": "Soucy",
                         "role": 0
                     }
                 ]
@@ -50,8 +50,8 @@ export const UserMocks = {
                 json:
                 {
                     "id": 2,
-                    "first_name": "JérémieTest",
-                    "last_name": "Lapointe",
+                    "firstName": "JérémieTest",
+                    "lastName": "Lapointe",
                     "email": "jeremietest.lapointe@llio.com",
                     "role": 2
                 }

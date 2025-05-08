@@ -29,20 +29,6 @@
     }
   }
 
-  const handleProjectsRefresh = async () => {
-    try {
-      isLoading = true;
-      error = null;
-      const response = await ProjectApiService.getDetailedProjects();
-      projects = response;
-    } catch (err) {
-      console.error('Erreur lors de la récupération des projets:', err);
-      error = "Impossible de charger les projets. Veuillez réessayer plus tard.";
-    } finally {
-      isLoading = false;
-    }
-  };
-
   onMount(async () => {
     try {
         currentUser = await UserApiService.getUserInfo();
@@ -56,7 +42,7 @@
 
 <div class="bg-gray-100">
   {#if currentUser}
-  <ProjectsLeftPane {projects} {currentUser} onProjectsRefresh={handleProjectsRefresh} />
+  <ProjectsLeftPane {projects} {currentUser} onProjectsRefresh={loadProjects} />
   {/if}
   
   <div class="flex flex-col" style="padding-left: 300px;">
