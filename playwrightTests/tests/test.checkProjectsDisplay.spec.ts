@@ -1,13 +1,15 @@
 import { test, expect } from '@playwright/test';
 import { ApiMocker } from '../Helper/mockApi';
 import { projectMocks } from '../Helper/Mocks/project.mock';
+import { userMocks } from '../Helper/Mocks/user.Mock';
 
 test.describe('checkProjectsDisplay', () => {
 
     test.beforeEach(async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
-            projectMocks.getProjectsSuccess,      
+            projectMocks.getDetailedProjectsSuccess,
+            userMocks.userMeSuccess
         ])
             .apply();
         await page.clock.install({ time: new Date('2025-03-22T08:00:00') });

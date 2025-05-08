@@ -1,7 +1,21 @@
 <script lang="ts">
   import { formatHours } from '../../utils/date';
+  import { Pencil, User } from 'lucide-svelte';
+  import type { Project, UserInfo } from '../../Models';
+  import { UserRole } from '$lib/types/enums';
 
-  let { project } = $props();
+  type Props = {
+    project: Project;
+    currentUser: UserInfo | null;
+    onEdit: (project: Project) => void;
+  };
+
+  let { project, currentUser, onEdit } = $props();
+
+  const handleEdit = (event: MouseEvent) =>{
+    event.stopPropagation(); // Empêche la propagation du clic aux éléments parents
+    onEdit(project);
+  }
 </script>
 
 <div class="border-l-10 border-b" style="border-left-color: {project.color}">
@@ -14,6 +28,16 @@
         <span class="text-gray-500 ml-2">|</span>
         <span class="text-gray-500 ml-2">{project.description}</span>
       </div>
+      <!-- svelte-ignore event_directive_deprecated -->
+      {#if currentUser.role == UserRole.Admin || currentUser.role == UserRole.ProjectManager}
+        <button
+          class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+          onclick={handleEdit}
+          aria-label="Modifier le projet"
+        >
+          <Pencil size={16} />
+        </button>
+      {/if}
     </div>
 
     <div class="mt-2 flex items-center text-xs text-gray-500">

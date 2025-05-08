@@ -3,19 +3,22 @@
   import "../../style/app.css"
   import ProjectsLeftPane from "../../Components/Projects/ProjectsLeftPane.svelte";
   import ProjectComponent from "../../Components/Projects/ProjectComponent.svelte";
-  import type { Project } from '../../Models/index.ts';
+  import type { Project, UserInfo } from '../../Models/index.ts';
   import { ProjectApiService } from "../../services/ProjectApiService";
+  import { UserApiService } from "../../services/UserApiService";
 
   // État des projets
   let projects = $state<Project[]>([]);
   let isLoading = $state(true);
   let error = $state<string | null>(null);
 
-  async function loadProjects() {
+  let currentUser = $state<UserInfo | null>(null);
+
+  const loadProjects = async () => {
     try {
       isLoading = true;
       error = null;
-      const response = await ProjectApiService.getProjects();
+      const response = await ProjectApiService.getDetailedProjects();
       projects = response;
     } catch (err) {
       console.error('Erreur lors de la récupération des projets:', err);
@@ -26,13 +29,22 @@
     }
   }
 
-  onMount(() => {
+  onMount(async () => {
+    try {
+        currentUser = await UserApiService.getUserInfo();
+      } catch (error) {
+        console.error('Erreur lors du chargement des informations utilisateur:', error);
+        alert('Impossible de charger les informations utilisateur.');
+      }
     loadProjects();
   });
 </script>
 
 <div class="bg-gray-100">
-  <ProjectsLeftPane {projects} />
+  {#if currentUser}
+  <ProjectsLeftPane {projects} {currentUser} onProjectsRefresh={loadProjects} />
+  {/if}
+  
   <div class="flex flex-col" style="padding-left: 300px;">
     <!-- Project Details -->
     <div class="p-4">

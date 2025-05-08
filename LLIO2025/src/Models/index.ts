@@ -1,4 +1,3 @@
-import { bool } from "yup";
 import { ProjectStatus, UserRole } from "../lib/types/enums";
 
 export interface Activity {
@@ -13,29 +12,18 @@ export interface Activity {
     categoryId: number;
 }
 
-export interface User {
-    id: number;
-    name: string;
-}
-
-export interface UserInfo {	
+export interface UserInfo {
     firstName: string;
     lastName: string;
     role : UserRole;
 }
 
-export interface Project {
+export interface User {
     id: number;
-    name: string;
-    description: string;
-    color: string;
-    lead: string;
-    coLeads: string[];
-    employees: Employee[];
-    totalTimeEstimated: number;
-    totalTimeRemaining: number;
-    totalTimeSpent: number;
-    isArchived?: boolean;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: UserRole;
 }
 
 export interface Employee {
@@ -56,15 +44,41 @@ export interface ActivityUpdateResponse {
     updated_activity: Activity;
 }
 
-export interface CreateProject {
+/*************** Project ***************/
+export interface ProjectBase {
     name: string;
     description: string;
-    status: ProjectStatus;
+    managerId: number;
     billable: boolean;
+    status?: ProjectStatus;
 }
 
-export interface UpdateProject {
-    name: string;
+export interface UpdateProject extends ProjectBase {
+    id: number;
+}
+
+export interface Project extends UpdateProject {
+    color: string;
+    totalTimeEstimated: number;
+    totalTimeRemaining: number;
+    totalTimeSpent: number;
+    isArchived?: boolean;
     status: ProjectStatus;
-    billable: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface DetailedProject extends Project {
+    id: number;
+    color: string;
+    lead: string;
+    coLeads: string[];
+    employees: Employee[];
+    totalTimeEstimated: number;
+    totalTimeRemaining: number;
+    totalTimeSpent: number;
+    isArchived?: boolean;
+    status: ProjectStatus;
+    createdAt: Date;
+    updatedAt: Date;
 }

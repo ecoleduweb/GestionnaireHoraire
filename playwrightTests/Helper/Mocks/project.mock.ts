@@ -1,8 +1,8 @@
 import { MockConfig } from "../types";
 
 export const projectMocks = {
-  getProjectsSuccess: {
-    url: "/projects",
+  getDetailedProjectsSuccess: {
+    url: "/projects/detailed",
     method: "GET",
     response: {
       status: 200,
@@ -307,15 +307,15 @@ export const projectMocks = {
         projects: [
           {
             id: 1,
-            managerId: 0,
+            managerId: 1,
             name: "Projet sous-sol",
             description: "Nommer le projet",
             status: 1,
             billable: false,
             activities: [],
             categories: [],
-            created_at: "2025-03-22T08:00:00",
-            updated_at: "2025-03-22T08:00:00",
+            createdAt: "2025-03-22T08:00:00",
+            updatedAt: "2025-03-22T08:00:00",
             end_at: null,
           },
         ],

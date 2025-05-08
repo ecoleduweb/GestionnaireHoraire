@@ -7,7 +7,7 @@
   import ActivityModal from '../../Components/Calendar/ActivityModal.svelte';
   import DashboardLeftPane from '../../Components/Calendar/DashboardLeftPane.svelte';
   import { ActivityApiService } from '../../services/ActivityApiService';
-  import type { Activity, UserInfo, Project } from '../../Models/index.ts';
+  import type { Activity, UserInfo, Project, DetailedProject } from '../../Models/index.ts';
   // Importez le fichier CSS
   import '../../style/modern-calendar.css';
   import { getDateOrDefault, formatDate } from '../../utils/date';
@@ -19,7 +19,7 @@
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
   let showModal = $state(false);
-  let selectedDate: { start: Date; end: Date } | null = null;
+  let selectedDate: { start: Date; end: Date } | null = $state(null);
   let editMode = $state(false);
   let editActivity = $state(null);
   let activeView = $state('timeGridWeek');
@@ -39,9 +39,10 @@
 
   let currentUser = $state<UserInfo | null>(null);
   let projects = $state<Project[]>([]);
+  let detailedProjects = $state<DetailedProject[]>([]);
 
   // Fonction pour attribuer une couleur à chaque événement
-  function getEventClassName(eventInfo: any) {
+  const getEventClassName = (eventInfo: any) => {
     const eventTypes = [
       'event-blue',
       'event-green',
@@ -60,7 +61,7 @@
   }
 
   // Fonction pour mettre à jour le titre de la période courante
-  function updateViewTitle() {
+  const updateViewTitle = () => {
     if (calendarService?.calendar) {
       const dateAPI = calendarService.calendar.getDate();
       const viewType = calendarService.calendar.view.type;
@@ -69,7 +70,7 @@
   }
 
   // Fonction pour charger toutes les activités
-  async function loadActivities() {
+  const loadActivities = async () =>{
     let dateStart, dateEnd, day, diff;
     try {
       switch (activeView) {
@@ -119,14 +120,16 @@
     }
   }
 
-  async function loadProjects() {
+  const loadProjects = async () =>{
     try {
       isLoading = true;
-      const response = await ProjectApiService.getProjects();
-      projects = response;
+      projects = await ProjectApiService.getProjects();
+      detailedProjects = await ProjectApiService.getDetailedProjects();
     } catch (err) {
       console.error('Erreur lors de la récupération des projets:', err);
+      alert('Une erreur est survenue lors de la récupération des projets.');
       projects = [];
+      detailedProjects = [];
     } finally {
       isLoading = false;
     }
@@ -223,14 +226,12 @@
       updateViewTitle();
 
       await loadActivities();
-
       await loadProjects();
     }
-    loadProjects();
     isLoading = false;
   });
 
-  function setView(viewName: string) {
+  const setView = (viewName: string) => {
     if (calendarService) {
       calendarService.setView(viewName);
       activeView = viewName;
@@ -239,7 +240,7 @@
     }
   }
 
-  async function handleActivitySubmit(activityData: Activity) {
+  const handleActivitySubmit = async (activityData: Activity) =>{
     calendarService.addEvent({
       id: activityData.id.toString(),
       title: activityData.projectName,
@@ -248,9 +249,10 @@
       extendedProps: { ...activityData },
     });
     totalHours = calendarService.getTotalHours();
+    detailedProjects = await ProjectApiService.getDetailedProjects();
   }
 
-  async function handleActivityUpdate(activity: Activity) {
+  const handleActivityUpdate = async (activity: Activity) =>{
     if (!calendarService?.calendar) return;
 
     try {
@@ -265,6 +267,7 @@
       const updatedActivity = await ActivityApiService.updateActivity(activity);
       calendarService.updateEvent(updatedActivity);
       totalHours = calendarService.getTotalHours();
+      detailedProjects = await ProjectApiService.getDetailedProjects();
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'activité", error);
 
@@ -273,9 +276,21 @@
       throw error;
     }
   }
+  const handleActivityDelete = async (activity: Activity) =>{
+    if (!calendarService?.calendar || !activity.id) return;
+    try {
+      await ActivityApiService.deleteActivity(activity.id);
+      calendarService.deleteActivity(activity.id.toString());
+      totalHours = calendarService.getTotalHours();
+      detailedProjects = await ProjectApiService.getDetailedProjects();
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'activité", error);
+      throw error;
+    }
+  }
 
   // Fonction pour gérer le déplacement et le redimmensionnement d'une tâche
-  async function handleEventDropOrResize(info) {
+  const handleEventDropOrResize = async (info) =>{
     try {
       const activity = calendarService.eventToActivity(info);
 
@@ -283,6 +298,8 @@
 
       calendarService.updateEvent(updatedActivity);
       totalHours = calendarService.getTotalHours();
+      detailedProjects = await ProjectApiService.getDetailedProjects();
+
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'activité", error);
       alert("Une erreur est survenue lors de la mise à jour de l'activité.");
@@ -290,19 +307,8 @@
     }
   }
 
-  async function handleActivityDelete(activity: Activity) {
-    if (!calendarService?.calendar || !activity.id) return;
-    try {
-      await ActivityApiService.deleteActivity(activity.id);
-      calendarService.deleteActivity(activity.id.toString());
-      totalHours = calendarService.getTotalHours();
-    } catch (error) {
-      console.error("Erreur lors de la suppression de l'activité", error);
-      throw error;
-    }
-  }
 
-  function handleNewActivity() {
+  const handleNewActivity = () => {
     editMode = false;
     editActivity = null;
     selectedDate = {
@@ -312,25 +318,25 @@
     showModal = true;
   }
 
-  function prevPeriod() {
+  const prevPeriod = () => {
     calendarService?.prev();
     updateViewTitle();
     loadActivities();
   }
 
-  function nextPeriod() {
+  const nextPeriod = () => {
     calendarService?.next();
     updateViewTitle();
     loadActivities();
   }
 
-  function goToday() {
+  const goToday = () => {
     calendarService?.today();
     updateViewTitle();
     loadActivities();
   }
 
-  function setTimeRange(range) {
+  const setTimeRange = (range) => {
     activeTimeRange = range;
 
     if (calendarService?.calendar) {
@@ -361,56 +367,13 @@
   });
 </script>
 
-<!-- CSS supplémentaire pour rendre le calendrier plus compact -->
-<style>
-  :global(.fc .fc-timegrid-slot) {
-    height: 25px !important;
-    min-height: 25px !important;
-    max-height: 25px !important;
-  }
-
-  :global(.fc-timegrid-event) {
-    min-height: 20px !important;
-    max-height: none !important;
-  }
-
-  :global(.fc-timegrid-slot-label) {
-    vertical-align: top !important;
-    padding-top: 2px !important;
-  }
-
-  :global(.fc-theme-standard td),
-  :global(.fc-theme-standard th) {
-    padding: 1px !important;
-  }
-
-  :global(.fc .fc-daygrid-day-frame) {
-    padding: 2px !important;
-  }
-
-  /* Couleur personnalisée pour l'indicateur de l'heure actuelle */
-  :global(.fc .fc-timegrid-now-indicator-line) {
-    border-color: #015e61 !important;
-  }
-
-  :global(.fc .fc-timegrid-now-indicator-arrow) {
-    border-color: #015e61 !important;
-    background-color: #015e61 !important;
-  }
-
-  /* Gestion espace dashboard */
-  .space-between-dashboard-calendar {
-    margin-left: 300px;
-  }
-</style>
-
 <div class="flex">
   <!-- Dashboard toujours visible à gauche -->
   {#if isLoading}
     <div class="fixed left-0 top-0 w-[300px] h-full bg-gray-100 animate-pulse"></div>
   {:else if currentUser}
     <DashboardLeftPane
-      {projects}
+      {detailedProjects}
       {currentUser}
       {dateStart}
       {dateEnd}
@@ -564,3 +527,45 @@
     }}
   />
 {/if}
+
+<style>
+  :global(.fc .fc-timegrid-slot) {
+    height: 25px !important;
+    min-height: 25px !important;
+    max-height: 25px !important;
+  }
+
+  :global(.fc-timegrid-event) {
+    min-height: 20px !important;
+    max-height: none !important;
+  }
+
+  :global(.fc-timegrid-slot-label) {
+    vertical-align: top !important;
+    padding-top: 2px !important;
+  }
+
+  :global(.fc-theme-standard td),
+  :global(.fc-theme-standard th) {
+    padding: 1px !important;
+  }
+
+  :global(.fc .fc-daygrid-day-frame) {
+    padding: 2px !important;
+  }
+
+  /* Couleur personnalisée pour l'indicateur de l'heure actuelle */
+  :global(.fc .fc-timegrid-now-indicator-line) {
+    border-color: #015e61 !important;
+  }
+
+  :global(.fc .fc-timegrid-now-indicator-arrow) {
+    border-color: #015e61 !important;
+    background-color: #015e61 !important;
+  }
+
+  /* Gestion espace dashboard */
+  .space-between-dashboard-calendar {
+    margin-left: 300px;
+  }
+</style>

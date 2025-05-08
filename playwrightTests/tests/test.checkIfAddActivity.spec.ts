@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { ApiMocker } from "../Helper/mockApi";
 import { activityMocks } from "../Helper/Mocks/activity.mock";
 import { projectMocks } from "../Helper/Mocks/project.mock";
-import { UserMocks } from "../Helper/Mocks/user.Mock";
+import { userMocks } from "../Helper/Mocks/user.Mock";
 import { categoryMocks } from "../Helper/Mocks/category.mock";
 
 test.describe("checkAddActivity", () => {
@@ -13,7 +13,8 @@ test.describe("checkAddActivity", () => {
         activityMocks.getByIdSuccess,
         activityMocks.getAllActivityEmpty,
         projectMocks.getProjectsListSuccess,
-        UserMocks.userMeSuccess,
+        projectMocks.getDetailedProjectsSuccess,
+        userMocks.userMeSuccess,
         categoryMocks.getCategoriesByProjectSuccess,
       ])
       .apply();

@@ -36,7 +36,6 @@ func VerifyProjectJSON(projectDTO *DTOs.ProjectDTO) []DTOs.FieldErrorDTO {
 func CreateProject(projectDTO *DTOs.ProjectDTO) (*DTOs.ProjectDTO, error) {
 
 	project := &DAOs.Project{}
-	projectDTO.Description = ""
 	err := copier.Copy(project, projectDTO)
 	if err != nil {
 		return nil, err
@@ -47,26 +46,25 @@ func CreateProject(projectDTO *DTOs.ProjectDTO) (*DTOs.ProjectDTO, error) {
 		return nil, err
 	}
 
+	_, err = repositories.CreateCategory(&DAOs.Category{
+		Name:        "Par défaut",
+		Description: "Catégorie par défaut",
+		ProjectId:   projectDAOAdded.Id,
+		CreatedAt:   projectDAOAdded.CreatedAt,
+		UpdatedAt:   projectDAOAdded.UpdatedAt,
+		Activities:  []DAOs.Activity{},
+		UserId:      projectDAOAdded.ManagerId,
+	})
+	if err != nil {
+		return nil, err
+	}
 	projectDTOResponse := &DTOs.ProjectDTO{}
 	err = copier.Copy(projectDTOResponse, projectDAOAdded)
 	return projectDTOResponse, err
 }
 
-func GetProjects() ([]map[string]any, error) {
+func GetProjects() ([]*DTOs.ProjectDTO, error) {
 	projects, err := repositories.GetProjects()
-	if err != nil {
-		return nil, err
-	}
-
-	result, err := formatProjects(projects, err)
-	if err != nil {
-		return nil, err
-	}
-	return result, err
-}
-
-func GetProjectsList() ([]*DTOs.ProjectDTO, error) {
-	projects, err := repositories.GetProjectsList()
 	if err != nil {
 		return nil, err
 	}
@@ -75,11 +73,7 @@ func GetProjectsList() ([]*DTOs.ProjectDTO, error) {
 		return make([]*DTOs.ProjectDTO, 0), nil
 	}
 
-	projectsDTO := make([]*DTOs.ProjectDTO, len(projects))
-	for i := range projectsDTO {
-		projectsDTO[i] = &DTOs.ProjectDTO{}
-	}
-
+	var projectsDTO []*DTOs.ProjectDTO
 	if err := copier.Copy(&projectsDTO, &projects); err != nil {
 		return nil, err
 	}
@@ -87,17 +81,30 @@ func GetProjectsList() ([]*DTOs.ProjectDTO, error) {
 	return projectsDTO, nil
 }
 
-func GetProjectsByManagerId(id int) ([]map[string]any, error) {
+func GetDetailedProjects() ([]map[string]any, error) {
+	projects, err := repositories.GetProjects()
+	if err != nil {
+		return nil, err
+	}
+
+	return formatProjects(projects, nil)
+}
+
+func GetDetailedProjectsByManagerId(id int) ([]map[string]any, error) {
 	projects, err := repositories.GetProjectsByManagerId(id)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := formatProjects(projects, err)
+	return formatProjects(projects, nil)
+}
+
+func GetDetailedProjectsByUserId(id int) ([]map[string]any, error) {
+	projects, err := repositories.GetProjectsByUserId(id)
 	if err != nil {
 		return nil, err
 	}
-	return result, err
+	return formatProjects(projects, &id)
 }
 
 func GetProjectById(id string) (*DTOs.ProjectDTO, error) {
@@ -130,7 +137,7 @@ func UpdateProject(projectDTO *DTOs.ProjectDTO) (*DTOs.ProjectDTO, error) {
 	return projectDTOResponse, err
 }
 
-func formatProjects(projects []*DAOs.Project, err error) ([]map[string]any, error) {
+func formatProjects(projects []*DAOs.Project, userId *int) ([]map[string]any, error) {
 	users, err := repositories.GetAllUsers()
 	if err != nil {
 		return nil, err
@@ -151,7 +158,12 @@ func formatProjects(projects []*DAOs.Project, err error) ([]map[string]any, erro
 
 	var result []map[string]any
 	for _, project := range projects {
-		tempActivities, err := repositories.GetProjectActivities(project.Id)
+		var tempActivities []DAOs.ActivityWithTimeSpent
+		if userId != nil {
+			tempActivities, err = repositories.GetProjectActivitiesFromUser(project.Id, userId)
+		} else {
+			tempActivities, err = repositories.GetProjectActivities(project.Id)
+		}
 		if err != nil {
 			return nil, err
 		}
@@ -248,5 +260,9 @@ func formatProjectWithActivities(project *DAOs.Project, activities []DAOs.Activi
 		"totalTimeRemaining": totalTimeEstimated - totalTimeSpent,
 		"totalTimeSpent":     totalTimeSpent,
 		"isArchived":         project.Status == enums.ProjectStatus(enums.Finish),
+		"managerId":          project.ManagerId,
+		"createdAt":          project.CreatedAt,
+		"updatedAt":          project.UpdatedAt,
+		"billable":           project.Billable,
 	}
 }

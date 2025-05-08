@@ -1,14 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { ApiMocker } from '../Helper/mockApi';
-import { UserMocks } from '../Helper/Mocks/user.Mock';
+import { userMocks } from '../Helper/Mocks/user.Mock';
 
 test.describe('updateUserRole', () => {
 
     test.beforeEach(async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
-            UserMocks.usersSuccess,
-            UserMocks.userMeSuccess,
+            userMocks.usersSuccess,
+            userMocks.userMeSuccess,
         ])
             .apply();
         await page.clock.install({ time: new Date('2025-03-22T08:00:00') });
@@ -19,7 +19,7 @@ test.describe('updateUserRole', () => {
     test('updateRoleSuccess', async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
-            UserMocks.updateUserRoleSuccess,
+            userMocks.updateUserRoleSuccess,
         ]).apply();
         
         // Configurer un écouteur pour intercepter l'alerte
@@ -37,7 +37,7 @@ test.describe('updateUserRole', () => {
     test('updateRoleError', async ({ page }) => {
         const apiMocker = new ApiMocker(page);
         await apiMocker.addMocks([
-            UserMocks.updateUserRoleError,
+            userMocks.updateUserRoleError,
         ]).apply();
         
         // Configurer un écouteur pour intercepter l'alerte

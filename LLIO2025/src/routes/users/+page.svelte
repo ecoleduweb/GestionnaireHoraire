@@ -11,7 +11,7 @@
   let selectedUser = $state(null);
   let selectedRole = $state(undefined);
 
-  async function handleConfirmClick() {
+  const handleConfirmClick = async () =>{
     if (!selectedUser) return;
     if (selectedRole === undefined) return;
     try {
@@ -50,7 +50,7 @@
             <select id="userSelect" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" bind:value={selectedUser}>
               <option value={null}>Choisir un utilisateur</option>
               {#each users as user}
-                <option value={user}>{user.first_name} {user.last_name}</option>
+                <option value={user}>{user.firstName} {user.lastName}</option>
               {/each}
             </select>
           </div>

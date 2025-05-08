@@ -1,12 +1,40 @@
 <script lang="ts">
-  import { goto } from "$app/navigation"
-  import { quintOut } from "svelte/easing";
-  import { slide } from "svelte/transition";
-  import ProjectItem from "./ProjectPaneItem.svelte";
+  import { goto } from '$app/navigation';
+  import { quintOut } from 'svelte/easing';
+  import { slide } from 'svelte/transition';
+  import ProjectItem from './ProjectPaneItem.svelte';
+  import { Plus } from 'lucide-svelte';
+  import ProjectModal from './ProjectModal.svelte';
+  import type { Project, UserInfo } from '../../Models';
+  import { UserRole } from '$lib/types/enums';
 
-  let { projects } = $props();
+  type Props = {
+    projects: Project[];
+    currentUser: UserInfo;
+    onProjectsRefresh: () => void;
+  };
+
+  let { projects = [], currentUser, onProjectsRefresh }: Props = $props();
   let isArchivedVisible = $state(false);
+  let showModal = $state(false);
+  let projectToEdit = $state<Project | null>(null);
+    
+  const handleNewProject = () =>{
+    projectToEdit = null;
+    showModal = true;
+  }
+
+  const handleEditProject = (project) =>{
+    projectToEdit = projects.find((x) => x.id === project.id);
+    showModal = true;
+  }
+
+  const handleCloseModal = () =>{
+    showModal = false;
+    projectToEdit = null;
+  }
 </script>
+
 
 <div class="dashboard-panel">
   <!-- En-tête du dashboard -->
@@ -17,50 +45,66 @@
     <!-- Éléments du dashboard -->
     <div class="dashboard-item">
       <div class="inline-flex rounded-md shadow-xs" role="group">
-        <button 
+        <button
           onclick={() => goto('./calendar')}
-          type="button" 
+          type="button"
           class="py-2 px-4 text-sm transition-colors font-semibold bg-gray-200 text-gray-900 rounded-l-lg hover:bg-[#014446] hover:text-white cursor-pointer"
-          >
+        >
           Calendrier
         </button>
-        <button 
-          type="button" 
+        <button
+          type="button"
           class="px-4 py-2 text-sm transition-colors font-semibold bg-[#014446] text-white rounded-r-lg"
-          >
+        >
           Projets
         </button>
       </div>
+
+      {#if currentUser.role == UserRole.Admin || currentUser.role == UserRole.ProjectManager}
+        <button
+          type="button"
+          onclick={handleNewProject}
+          class="ml-12 px-3 py-2 text-sm transition-colors font-semibold bg-gray-200 text-gray-900 rounded-lg hover:bg-[#014446] hover:text-white cursor-pointer"
+        >
+          <Plus class="h-4 w-4" />
+        </button>
+      {/if}
     </div>
 
     <div class="overflow-y-auto max-h-[calc(100vh-150px)]">
-      {#each projects.filter(x => !x.isArchived) as project}
-        <ProjectItem project={project} />
+      {#each projects.filter((x) => !x.isArchived) as project}
+        <ProjectItem {project} {currentUser} onEdit={handleEditProject} />
       {/each}
 
       <!-- Projets archivés -->
-      {#if projects.some(x => x.isArchived)}
+      {#if projects.some((x) => x.isArchived)}
         <div>
           <button
             class="w-full p-4 flex items-center justify-between text-gray-600 hover:bg-gray-50 cursor-pointer"
             onclick={() => (isArchivedVisible = !isArchivedVisible)}
           >
-            <span class="font-medium">Projets archivés ({projects.filter(x => x.isArchived).length})</span>
+            <span class="font-medium"
+              >Projets archivés ({projects.filter((x) => x.isArchived).length})</span
+            >
             <svg
               class="w-5 h-5 transform transition-transform {isArchivedVisible ? 'rotate-180' : ''}"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
               ></path>
             </svg>
           </button>
 
           {#if isArchivedVisible}
             <div transition:slide={{ duration: 300, easing: quintOut }}>
-              {#each projects.filter(x => x.isArchived) as project}
-                <ProjectItem project={project} />
+              {#each projects.filter((x) => x.isArchived) as project}
+                <ProjectItem {project} {currentUser} onEdit={handleEditProject} />
               {/each}
             </div>
           {/if}
@@ -69,6 +113,14 @@
     </div>
   </div>
 </div>
+
+{#if showModal}
+<ProjectModal
+  projectToEdit={projectToEdit}
+  onSuccess={onProjectsRefresh}
+  onClose={handleCloseModal}
+/>
+{/if}
 
 <style>
   .dashboard-panel {
