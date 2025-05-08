@@ -30,7 +30,7 @@ func ValidateTokenAndExtractUser(accessToken string) (*DTOs.UserDTO, error) {
 	}
 
 	user := &DTOs.UserDTO{
-		Id:        int(claims["user_id"].(float64)),
+		Id:        int(claims["userId"].(float64)),
 		Email:     claims["email"].(string),
 		FirstName: claims["firstName"].(string),
 		LastName:  claims["lastName"].(string),

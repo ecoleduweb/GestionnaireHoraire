@@ -285,210 +285,6 @@
   const { form, errors } = validateActivityForm(handleSubmit, activity);
 </script>
 
-<style>
-  /* Animation pour le panneau latéral - ne peut pas être fait en Tailwind standard */
-  @keyframes slideIn {
-    from {
-      transform: translateX(-100%);
-    }
-    to {
-      transform: translateX(0);
-    }
-  }
-
-  .animate-slideIn {
-    animation: slideIn 0.3s forwards;
-  }
-
-  /* Classe condensée pour tous les selects */
-  .form-select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-color: white;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
-    padding-right: 2.5rem;
-    color: #4b5563;
-    transition: all 0.2s;
-  }
-
-  .form-select:focus {
-    outline: none;
-    border-color: #015e61;
-    box-shadow: 0 0 0 3px rgba(1, 94, 97, 0.2);
-  }
-
-  .form-select-flex {
-    flex: 1;
-  }
-
-  .form-select::-ms-expand {
-    display: none;
-  }
-
-  .form-input {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    transition: all 0.2s;
-    background-color: white;
-    color: #4b5563;
-  }
-
-  .form-input:focus {
-    outline: none;
-    border-color: #015e61;
-    box-shadow: 0 0 0 3px rgba(1, 94, 97, 0.2);
-  }
-
-  .select-container {
-    position: relative;
-    width: 100%;
-  }
-
-  .select-icon {
-    position: absolute;
-    right: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: #606060;
-  }
-
-  .fixed {
-    z-index: 40; /* Plus élevé que le dashboard */
-  }
-
-  /* Styles pour le dropdown de catégories */
-  .category-dropdown-container {
-    position: relative;
-    width: 100%;
-  }
-
-  .custom-select {
-    width: 100%;
-    height: 42px; /* Hauteur fixe pour correspondre aux autres champs */
-    background-color: white;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    color: #4b5563;
-    position: relative;
-    cursor: pointer;
-  }
-
-  .custom-select:focus,
-  .custom-select:focus-within {
-    outline: none;
-    border-color: #015e61;
-    box-shadow: 0 0 0 3px rgba(1, 94, 97, 0.2);
-  }
-
-  .search-input {
-    width: 100%;
-    height: 100%;
-    padding: 0 1rem;
-    padding-right: 2.5rem; /* Espace pour la flèche */
-    border: none;
-    background: transparent;
-    font-size: inherit;
-    color: inherit;
-    outline: none;
-    cursor: text;
-  }
-
-  .search-input::placeholder {
-    color: #9ca3af;
-  }
-
-  .select-value {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    padding: 0 1rem;
-    padding-right: 2.5rem; /* Espace pour la flèche */
-    display: flex;
-    align-items: center;
-    pointer-events: none;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .arrow-icon {
-    position: absolute;
-    right: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none; /* permet les clics à travers */
-    cursor: pointer;
-  }
-
-  .dropdown-content {
-    position: absolute;
-    width: 100%;
-    max-height: 300px;
-    background-color: white;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    margin-top: 0.25rem;
-    z-index: 50;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
-
-  .category-list {
-    max-height: 200px;
-    overflow-y: auto;
-  }
-
-  .category-item {
-    padding: 0.75rem 1rem;
-    cursor: pointer;
-    transition: background-color 0.15s;
-  }
-
-  .category-item:hover {
-    background-color: #f3f4f6;
-  }
-
-  .category-item.selected {
-    background-color: #e5e7eb;
-  }
-
-  .add-category {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    border-top: 1px solid #e5e7eb;
-    color: #015e61;
-    cursor: pointer;
-    font-weight: 500;
-    background-color: #f9fafb;
-  }
-
-  .add-category:hover {
-    background-color: #f3f4f6;
-  }
-
-  .no-results {
-    padding: 0.75rem 1rem;
-    color: #6b7280;
-    text-align: center;
-  }
-
-  .disabled-select {
-    background-color: #f3f4f6;
-    cursor: not-allowed;
-    opacity: 0.7;
-  }
-</style>
-
 <svelte:window onclick={handleOutsideClick} />
 
 {#if show}
@@ -815,3 +611,208 @@
     }}
   />
 {/if}
+
+
+<style>
+  /* Animation pour le panneau latéral - ne peut pas être fait en Tailwind standard */
+  @keyframes slideIn {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  .animate-slideIn {
+    animation: slideIn 0.3s forwards;
+  }
+
+  /* Classe condensée pour tous les selects */
+  .form-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    padding-right: 2.5rem;
+    color: #4b5563;
+    transition: all 0.2s;
+  }
+
+  .form-select:focus {
+    outline: none;
+    border-color: #015e61;
+    box-shadow: 0 0 0 3px rgba(1, 94, 97, 0.2);
+  }
+
+  .form-select-flex {
+    flex: 1;
+  }
+
+  .form-select::-ms-expand {
+    display: none;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    background-color: white;
+    color: #4b5563;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #015e61;
+    box-shadow: 0 0 0 3px rgba(1, 94, 97, 0.2);
+  }
+
+  .select-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .select-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #606060;
+  }
+
+  .fixed {
+    z-index: 40; /* Plus élevé que le dashboard */
+  }
+
+  /* Styles pour le dropdown de catégories */
+  .category-dropdown-container {
+    position: relative;
+    width: 100%;
+  }
+
+  .custom-select {
+    width: 100%;
+    height: 42px; /* Hauteur fixe pour correspondre aux autres champs */
+    background-color: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    color: #4b5563;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .custom-select:focus,
+  .custom-select:focus-within {
+    outline: none;
+    border-color: #015e61;
+    box-shadow: 0 0 0 3px rgba(1, 94, 97, 0.2);
+  }
+
+  .search-input {
+    width: 100%;
+    height: 100%;
+    padding: 0 1rem;
+    padding-right: 2.5rem; /* Espace pour la flèche */
+    border: none;
+    background: transparent;
+    font-size: inherit;
+    color: inherit;
+    outline: none;
+    cursor: text;
+  }
+
+  .search-input::placeholder {
+    color: #9ca3af;
+  }
+
+  .select-value {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0 1rem;
+    padding-right: 2.5rem; /* Espace pour la flèche */
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .arrow-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* permet les clics à travers */
+    cursor: pointer;
+  }
+
+  .dropdown-content {
+    position: absolute;
+    width: 100%;
+    max-height: 300px;
+    background-color: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    margin-top: 0.25rem;
+    z-index: 50;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .category-list {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .category-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.15s;
+  }
+
+  .category-item:hover {
+    background-color: #f3f4f6;
+  }
+
+  .category-item.selected {
+    background-color: #e5e7eb;
+  }
+
+  .add-category {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid #e5e7eb;
+    color: #015e61;
+    cursor: pointer;
+    font-weight: 500;
+    background-color: #f9fafb;
+  }
+
+  .add-category:hover {
+    background-color: #f3f4f6;
+  }
+
+  .no-results {
+    padding: 0.75rem 1rem;
+    color: #6b7280;
+    text-align: center;
+  }
+
+  .disabled-select {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+</style>

@@ -24,12 +24,12 @@ const handleResponse = async <T>(response: Response, redirectToLoginOn401 = true
     return response.json() as Promise<T>
 }
 
-async function request<T>(
+const request = async <T>(
     method: string,
     url: string,
     body?: any,
     redirectToLoginOn401 = true
-): Promise<T> {
+): Promise<T> =>{
     try {
         const options: RequestInit = {
             method,

@@ -7,11 +7,11 @@
   let { project } = $props();
   let isDetailsVisible = $state([]);
 
-  function calculateRemainingTime(timeSpent: number, timeEstimated: number): number {
+  const calculateRemainingTime = (timeSpent: number, timeEstimated: number): number =>{
     return timeEstimated - timeSpent;
   }
 
-  function calculateEmployeeTime(employee: any, type: 'spent' | 'estimated'): number {
+  const calculateEmployeeTime = (employee: any, type: 'spent' | 'estimated'): number =>{
     return employee.categories.reduce(
       (sum: number, cat: any) => sum + (type === 'spent' ? cat.timeSpent : cat.timeEstimated),
       0

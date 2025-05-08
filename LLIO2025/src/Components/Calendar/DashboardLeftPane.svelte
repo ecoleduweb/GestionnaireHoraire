@@ -3,12 +3,12 @@
   import { quintOut } from "svelte/easing";
   import { slide } from "svelte/transition";
   import DashboardProjectItem from "../Projects/DashboardPaneProjectItem.svelte";
-  import type { Project, UserInfo } from '../../Models/index.ts';
+  import type { DetailedProject, UserInfo } from '../../Models/index.ts';
   import { UserRole } from '../../lib/types/enums';
 
 
   type Props = {
-    projects: Project[];
+    detailedProjects: DetailedProject[];
     currentUser: UserInfo | null;
     totalHours: number;
     dateStart: string;
@@ -17,7 +17,7 @@
   };
 
   import HoursWorkedDashboard from "./HoursWorkedDashboard.svelte";
-  const { totalHours, projects = [], dateStart, dateEnd, textHoursWorked, currentUser } : Props = $props();
+  const { totalHours, detailedProjects = [], dateStart, dateEnd, textHoursWorked, currentUser } : Props = $props();
   let isArchivedVisible = $state(false);
 
 </script>
@@ -64,18 +64,18 @@
 
     <!-- Projets en cours -->
     <div class="overflow-y-auto max-h-[calc(100vh-150px)]">
-      {#each projects.filter(x => !x.isArchived) as project}
+      {#each detailedProjects.filter(x => !x.isArchived) as project}
         <DashboardProjectItem project={project} />
       {/each}
 
       <!-- Projets archivés -->
-      {#if projects.some(x => x.isArchived)}
+      {#if detailedProjects.some(x => x.isArchived)}
       <div>
         <button
           class="w-full p-4 flex items-center justify-between text-gray-600 hover:bg-gray-50 cursor-pointer"
           onclick={() => isArchivedVisible = !isArchivedVisible}
         >
-          <span class="font-medium">Projets archivés ({projects.filter(x => x.isArchived).length})</span>
+          <span class="font-medium">Projets archivés ({detailedProjects.filter(x => x.isArchived).length})</span>
           <svg
             class="w-5 h-5 transform transition-transform {isArchivedVisible ? 'rotate-180' : ''}"
             fill="none"
@@ -88,7 +88,7 @@
 
         {#if isArchivedVisible}
           <div transition:slide={{ duration: 300, easing: quintOut }}>
-            {#each projects.filter(x => x.isArchived) as project}
+            {#each detailedProjects.filter(x => x.isArchived) as project}
               <DashboardProjectItem project={project} />
             {/each}
           </div>

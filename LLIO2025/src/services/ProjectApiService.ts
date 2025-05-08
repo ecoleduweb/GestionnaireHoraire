@@ -1,6 +1,6 @@
 // ProjectApiService.ts
 import { ProjectStatus } from "$lib/types/enums";
-import type { ProjectBase, Project } from "../Models/index";
+import type { ProjectBase, Project, DetailedProject } from "../Models/index";
 import { GET, POST, PUT } from "../ts/server";
 
 interface ProjectsResponse {
@@ -57,9 +57,9 @@ const getProject = async(id: number): Promise<Project> => {
   }
 }
 
-const getDetailedProjects = async(): Promise<Project[]> => {
+const getDetailedProjects = async(): Promise<DetailedProject[]> => {
   try {
-    const response = await GET<{projects: Project[]}>("/projects/detailed");
+    const response = await GET<{projects:   DetailedProject[]}>("/projects/detailed");
     return response.projects;
   } catch (error) {
     console.error("Erreur lors de la récupération des projets:", error);

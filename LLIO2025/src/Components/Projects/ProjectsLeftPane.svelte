@@ -19,17 +19,17 @@
   let showModal = $state(false);
   let projectToEdit = $state<Project | null>(null);
     
-  function handleNewProject() {
+  const handleNewProject = () =>{
     projectToEdit = null;
     showModal = true;
   }
 
-  function handleEditProject(project) {
+  const handleEditProject = (project) =>{
     projectToEdit = projects.find((x) => x.id === project.id);
     showModal = true;
   }
 
-  function handleCloseModal() {
+  const handleCloseModal = () =>{
     showModal = false;
     projectToEdit = null;
   }

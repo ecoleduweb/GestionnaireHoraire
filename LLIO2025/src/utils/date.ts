@@ -1,12 +1,12 @@
 // Extraire les heures et minutes d'un objet Date
-export function getHoursFromDate(date: Date | null | undefined): string {
+export const getHoursFromDate = (date: Date | null | undefined): string =>{
   if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
     return '12';
   }
   return date.getHours().toString().padStart(2, '0');
 };
 
-export function getMinutesFromDate(date: Date | null | undefined): string {
+export const getMinutesFromDate = (date: Date | null | undefined): string =>{
   if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
     return '00';
   }
@@ -62,7 +62,7 @@ export const applyEndTime = (
   return { endHours, endMinutes };
 };
 
-export function getDateOrDefault(dateToValidate: Date | null | undefined, defaultDate: Date): Date {
+export const getDateOrDefault = (dateToValidate: Date | null | undefined, defaultDate: Date): Date =>{
   if (!dateToValidate || !(dateToValidate instanceof Date) || isNaN(dateToValidate.getTime())) {
     return new Date(defaultDate);
   }
@@ -126,7 +126,7 @@ export const startEndDatesForFormat = ()=> {
   };
 }
 
-export function formatDate(date: Date): string {
+export const formatDate = (date: Date): string =>{
   let laDate = new Date(date);
   let year = laDate.getFullYear();
   let month = (laDate.getMonth() + 1).toString(); // Les mois commencent à 0

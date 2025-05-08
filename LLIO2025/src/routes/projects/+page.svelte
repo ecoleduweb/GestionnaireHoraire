@@ -14,7 +14,7 @@
 
   let currentUser = $state<UserInfo | null>(null);
 
-  async function loadProjects() {
+  const loadProjects = async () => {
     try {
       isLoading = true;
       error = null;

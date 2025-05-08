@@ -57,7 +57,18 @@ export interface UpdateProject extends ProjectBase {
     id: number;
 }
 
-export interface Project extends ProjectBase {
+export interface Project extends UpdateProject {
+    color: string;
+    totalTimeEstimated: number;
+    totalTimeRemaining: number;
+    totalTimeSpent: number;
+    isArchived?: boolean;
+    status: ProjectStatus;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface DetailedProject extends Project {
     id: number;
     color: string;
     lead: string;
@@ -67,7 +78,7 @@ export interface Project extends ProjectBase {
     totalTimeRemaining: number;
     totalTimeSpent: number;
     isArchived?: boolean;
-    status: ProjectStatus; // Devenu obligatoire
+    status: ProjectStatus;
     createdAt: Date;
     updatedAt: Date;
 }

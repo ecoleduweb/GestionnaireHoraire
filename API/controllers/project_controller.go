@@ -81,15 +81,9 @@ func GetDetailedProjects(c *gin.Context) {
 	case enums.Administrator:
 		projects, err = services.GetDetailedProjects()
 	case enums.ProjectManager:
-		projects, err = services.GetProjectsByManagerId(user.Id)
+		projects, err = services.GetDetailedProjectsByManagerId(user.Id)
 	case enums.Employee:
-		projectsDTO, err := services.GetProjects()
-		if err != nil {
-			handleError(c, err, projectSTR)
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{"projects": projectsDTO})
-		return
+		projects, err = services.GetDetailedProjectsByUserId(user.Id)
 	}
 
 	if err != nil {

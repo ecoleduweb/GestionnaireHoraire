@@ -11,7 +11,7 @@
   let selectedUser = $state(null);
   let selectedRole = $state(undefined);
 
-  async function handleConfirmClick() {
+  const handleConfirmClick = async () =>{
     if (!selectedUser) return;
     if (selectedRole === undefined) return;
     try {

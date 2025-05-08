@@ -12,7 +12,7 @@
 
   let { project, currentUser, onEdit } = $props();
 
-  function handleEdit(event: MouseEvent) {
+  const handleEdit = (event: MouseEvent) =>{
     event.stopPropagation(); // Empêche la propagation du clic aux éléments parents
     onEdit(project);
   }
