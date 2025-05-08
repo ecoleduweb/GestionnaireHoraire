@@ -12,18 +12,13 @@ import (
 func VerifyCreateActivityJSON(activityDTO *DTOs.ActivityDTO) []DTOs.FieldErrorDTO {
 	var errors []DTOs.FieldErrorDTO
 
-	if activityDTO.UserId == 0 {
-		errors = append(errors, DTOs.FieldErrorDTO{
-			Field:   "userId",
-			Message: "Le champ userId est invalide ou manquant",
-		})
-	}
 	if activityDTO.ProjectId == 0 {
 		errors = append(errors, DTOs.FieldErrorDTO{
 			Field:   "projectId",
 			Message: "Le champ projectId est invalide ou manquant",
 		})
 	}
+
 	if activityDTO.CategoryId == 0 {
 		errors = append(errors, DTOs.FieldErrorDTO{
 			Field:   "categoryId",
@@ -41,15 +36,14 @@ func VerifyCreateActivityJSON(activityDTO *DTOs.ActivityDTO) []DTOs.FieldErrorDT
 	return errors
 }
 
-func CreateActivity(activityDTO *DTOs.ActivityDTO) (*DTOs.DetailedActivityDTO, error) {
-
-	// Mapper le body vers le modèle Activity
+func CreateActivity(activityDTO *DTOs.ActivityDTO, currentUserId int) (*DTOs.DetailedActivityDTO, error) {
 
 	activity := &DAOs.Activity{}
 	err := copier.Copy(activity, activityDTO)
 	if err != nil {
 		return nil, err
 	}
+	activity.UserId = currentUserId
 
 	activityDAOAded, err := repositories.CreateActivity(activity)
 	if err != nil {
@@ -86,7 +80,6 @@ func GetActivityById(id string) (*DTOs.ActivityDTO, error) {
 
 	return activityDTO, err
 }
-
 
 func GetDetailedActivityById(id int) (*DTOs.DetailedActivityDTO, error) {
 	activity, err := repositories.GetDetailedActivityById(id)
@@ -157,32 +150,32 @@ func GetActivitiesFromRange(from string, to string, idUser int) ([]*DTOs.Activit
 }
 
 func GetDetailedActivitiesFromRange(from string, to string, idUser int) ([]*DTOs.DetailedActivityDTO, error) {
-    fromDate := from
-    toDate := to
+	fromDate := from
+	toDate := to
 
-    if from == to {
-        toDate = to + " 23:59:59"
-        fromDate = from + " 00:00:00"
-    }
+	if from == to {
+		toDate = to + " 23:59:59"
+		fromDate = from + " 00:00:00"
+	}
 
-    activities, err := repositories.GetActivitiesFromRange(fromDate, toDate, idUser)
-    if err != nil {
-        return nil, err
-    }
+	activities, err := repositories.GetActivitiesFromRange(fromDate, toDate, idUser)
+	if err != nil {
+		return nil, err
+	}
 
-    var detailedActivitiesDTOs []*DTOs.DetailedActivityDTO
-    for _, activity := range activities {
-        detailedActivityDTO, err := GetDetailedActivityById(activity.Id)
-        if err != nil {
-            return nil, err
-        }
-        detailedActivitiesDTOs = append(detailedActivitiesDTOs, detailedActivityDTO)
-    }
-    
-    if detailedActivitiesDTOs == nil {
-        log.Printf("Aucune activité trouvée dans la plage de dates spécifiée.")
-        return []*DTOs.DetailedActivityDTO{}, err
-    }
-    
-    return detailedActivitiesDTOs, err
+	var detailedActivitiesDTOs []*DTOs.DetailedActivityDTO
+	for _, activity := range activities {
+		detailedActivityDTO, err := GetDetailedActivityById(activity.Id)
+		if err != nil {
+			return nil, err
+		}
+		detailedActivitiesDTOs = append(detailedActivitiesDTOs, detailedActivityDTO)
+	}
+
+	if detailedActivitiesDTOs == nil {
+		log.Printf("Aucune activité trouvée dans la plage de dates spécifiée.")
+		return []*DTOs.DetailedActivityDTO{}, err
+	}
+
+	return detailedActivitiesDTOs, err
 }
