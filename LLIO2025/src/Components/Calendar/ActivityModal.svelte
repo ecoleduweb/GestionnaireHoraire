@@ -45,7 +45,7 @@
   initialActivity.projectId = '' as unknown as number;
   initialActivity.categoryId = null;
 
-  let isSubmitting = false;
+  let isSubmitting = $state(false);
   let showCategoryConfirmModal = $state(false);
   let categoryToAdd = $state('');
 
@@ -489,7 +489,7 @@
   }
 </style>
 
-<svelte:window on:click={handleOutsideClick} />
+<svelte:window onclick={handleOutsideClick} />
 
 {#if show}
   <!-- Structure principale avec Tailwind -->

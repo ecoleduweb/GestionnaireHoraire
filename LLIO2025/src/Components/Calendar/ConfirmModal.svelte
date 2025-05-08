@@ -24,7 +24,7 @@
 {#if show}
   <div class="fixed inset-0 z-50 flex items-center justify-center">
     <!-- Overlay semi-transparent avec la nouvelle syntaxe de Tailwind v4 -->
-    <div class="absolute inset-0 bg-gray-800/50 transition-opacity" on:click={onCancel}></div>
+    <div class="absolute inset-0 bg-gray-800/50 transition-opacity" onclick={onCancel}></div>
 
     <!-- Modal -->
     <div class="bg-white rounded-lg shadow-xl p-6 w-80 max-w-md z-10">
@@ -38,14 +38,14 @@
         <button
           type="button"
           class="py-2 px-4 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
-          on:click={onCancel}
+          oncclick={onCancel}
         >
           {cancelText}
         </button>
         <button
           type="button"
           class="py-2 px-4 bg-[#015e61] text-white rounded-lg font-medium hover:bg-[#014446] transition"
-          on:click={onConfirm}
+          onclick={onConfirm}
         >
           {confirmText}
         </button>

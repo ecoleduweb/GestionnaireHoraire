@@ -19,7 +19,7 @@
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
   let showModal = $state(false);
-  let selectedDate: { start: Date; end: Date } | null = null;
+  let selectedDate: { start: Date; end: Date } | null = $state(null);
   let editMode = $state(false);
   let editActivity = $state(null);
   let activeView = $state('timeGridWeek');

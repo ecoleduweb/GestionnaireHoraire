@@ -2,7 +2,7 @@ import { MockConfig } from "../types";
 
 export const projectMocks = {
   getProjectsSuccess: {
-    url: "/projects",
+    url: "/projects/detailed",
     method: "GET",
     response: {
       status: 200,
@@ -299,7 +299,7 @@ export const projectMocks = {
     },
   },
   getProjectsListSuccess: {
-    url: "/projects",
+    url: "/projects/detailed",
     method: "GET",
     response: {
       status: 200,

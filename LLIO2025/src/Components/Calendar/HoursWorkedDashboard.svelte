@@ -4,19 +4,6 @@
   areDatesEqual(dateStart, dateEnd);
 </script>
 
-<style>
-  .bilan-container {
-    padding: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  .header {
-    margin-bottom: 1rem;
-  }
-  .activites {
-    margin-top: 1rem;
-  }
-</style>
 
 <div class="bilan-container">
   <div class="header">
@@ -30,3 +17,14 @@
   </div>
   <span>Vous avez travaillé <strong>{hoursTotal}</strong> heures {textHoursWorked}.</span>
 </div>
+
+<style>
+  .bilan-container {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  .header {
+    margin-bottom: 1rem;
+  }
+</style>
