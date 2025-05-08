@@ -25,6 +25,11 @@ func CreateActivity(c *gin.Context) {
 		return
 	}
 
+	user, shouldReturn := getUserFromContext(c)
+	if shouldReturn {
+		return
+	}
+
 	messageErrs := services.VerifyCreateActivityJSON(&activityDTO)
 	if len(messageErrs) > 0 {
 		log.Printf("Une ou plusieurs erreurs de verification du format de l'activité sont survenues:%v", messageErrs)
@@ -32,7 +37,7 @@ func CreateActivity(c *gin.Context) {
 		return
 	}
 
-	activityAded, err := services.CreateActivity(&activityDTO)
+	activityAded, err := services.CreateActivity(&activityDTO, user.Id)
 	if err != nil {
 		handleError(c, err, activiteSTR)
 		return
@@ -46,15 +51,8 @@ func CreateActivity(c *gin.Context) {
 
 func GetUsersActivities(c *gin.Context) {
 
-	currentUser, exists := c.Get("current_user")
-	if !exists {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Échec lors de la sauvegarde de l'utilisateur dans la session"})
-		return
-	}
-
-	user, ok := currentUser.(*DTOs.UserDTO)
-	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur interne du serveur"})
+	user, shouldReturn := getUserFromContext(c)
+	if shouldReturn {
 		return
 	}
 	activities, err := services.GetUsersActivities(user.Id)
@@ -140,15 +138,8 @@ func GetActivitiesFromRange(c *gin.Context) {
 	from := c.Query("startDate")
 	to := c.Query("endDate")
 
-	currentUser, exists := c.Get("current_user")
-	if !exists {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Utilisateur non connecté"})
-		return
-	}
-
-	user, ok := currentUser.(*DTOs.UserDTO)
-	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur interne du serveur"})
+	user, shouldReturn := getUserFromContext(c)
+	if shouldReturn {
 		return
 	}
 
@@ -170,15 +161,8 @@ func GetDetailedActivitiesFromRange(c *gin.Context) {
 	from := c.Query("startDate")
 	to := c.Query("endDate")
 
-	currentUser, exists := c.Get("current_user")
-	if !exists {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Utilisateur non connecté"})
-		return
-	}
-
-	user, ok := currentUser.(*DTOs.UserDTO)
-	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur interne du serveur"})
+	user, shouldReturn := getUserFromContext(c)
+	if shouldReturn {
 		return
 	}
 
@@ -194,4 +178,18 @@ func GetDetailedActivitiesFromRange(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"activities": detailedActivities})
+}
+
+func getUserFromContext(c *gin.Context) (*DTOs.UserDTO, bool) {
+	currentUser, exists := c.Get("current_user")
+	if !exists {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Échec lors de la sauvegarde de l'utilisateur dans la session"})
+		return nil, true
+	}
+	user, ok := currentUser.(*DTOs.UserDTO)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur interne du serveur"})
+		return nil, true
+	}
+	return user, false
 }
