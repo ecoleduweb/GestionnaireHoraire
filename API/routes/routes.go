@@ -14,6 +14,12 @@ func RegisterRoutes(r *gin.Engine) {
 	userGroup := r.Group("/user", middleware.RoleValidationMiddleware(enums.Employee))
 	{
 		userGroup.GET("/me", controllers.GetUserInfo)
+		userGroup.PATCH("/:id/role", middleware.RoleValidationMiddleware(enums.Administrator), controllers.UpdateUserRole)
+	}
+
+	usersGroup := r.Group("/users", middleware.RoleValidationMiddleware(enums.ProjectManager))
+	{
+		usersGroup.GET("", controllers.GetAllUsers)
 	}
 
 	/*------------------- Activities -------------------*/
@@ -23,17 +29,16 @@ func RegisterRoutes(r *gin.Engine) {
 		activityGroup.GET("/:id", controllers.GetActivityById)
 		activityGroup.PUT("", controllers.UpdateActivity)
 		activityGroup.DELETE("/:id", controllers.DeleteActivity)
+
 	}
 
 	activitiesGroup := r.Group("/activities", middleware.RoleValidationMiddleware(enums.Employee))
 	{
 		usersActivitiesGroup := activitiesGroup.Group("/me")
 		{
-			usersActivitiesGroup.GET("", controllers.GetUsersActivities)
-			// "/projects/:idProjet"
-			// "/categoies/:idCategory"
+			usersActivitiesGroup.GET("", controllers.GetActivitiesFromRange)
+			usersActivitiesGroup.GET("/detailed", controllers.GetDetailedActivitiesFromRange)
 		}
-
 	}
 
 	/*------------------- Categories -------------------*/
@@ -55,11 +60,13 @@ func RegisterRoutes(r *gin.Engine) {
 		projectGroup.POST("", middleware.RoleValidationMiddleware(enums.Administrator), controllers.CreatedProject)
 		projectGroup.GET("/:id", middleware.RoleValidationMiddleware(enums.Employee), controllers.GetProjectById)
 		projectGroup.PUT("", middleware.RoleValidationMiddleware(enums.Administrator), controllers.UpdateProject)
+		projectGroup.GET("/:id/categories", middleware.RoleValidationMiddleware(enums.Employee), controllers.GetCategoriesByProjectId)
 	}
 
 	projectsGroup := r.Group("/projects", middleware.RoleValidationMiddleware(enums.Employee))
 	{
 		projectsGroup.GET("", controllers.GetProjects)
+		projectsGroup.GET("/detailed", controllers.GetDetailedProjects)
 	}
 
 }

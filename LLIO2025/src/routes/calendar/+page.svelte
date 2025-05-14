@@ -1,38 +1,34 @@
 <script lang="ts">
   import type { CalendarService } from '../../services/calendar.service';
   import { UserApiService } from '../../services/UserApiService';
+  import { ProjectApiService } from '../../services/ProjectApiService';
   import { CalendarService as CS } from '../../services/calendar.service';
   import { onMount } from 'svelte';
   import ActivityModal from '../../Components/Calendar/ActivityModal.svelte';
   import DashboardLeftPane from '../../Components/Calendar/DashboardLeftPane.svelte';
   import { ActivityApiService } from '../../services/ActivityApiService';
-  import type { Activity, UserInfo } from '../../Models/index.ts';
+  import type { Activity, UserInfo, Project, DetailedProject } from '../../Models/index.ts';
   // Importez le fichier CSS
   import '../../style/modern-calendar.css';
-  import { getDateOrDefault } from '../../utils/date';
+  import { getDateOrDefault, formatDate } from '../../utils/date';
   // Importer FullCalendar en français
   import frLocale from '@fullcalendar/core/locales/fr';
   import { formatViewTitle } from '../../utils/date';
-  import { ClientTelemetry } from '$lib/tracer';
-  import { env } from '$env/dynamic/public';
   import { Plus, Calendar, ChevronLeft, ChevronRight, LogOut } from 'lucide-svelte';
-
-  const ENABLED_TELEMETRY = env.PUBLIC_ENABLED_TELEMETRY === 'true';
-
-  if (ENABLED_TELEMETRY) {
-    const telemetry = ClientTelemetry.getInstance();
-    telemetry.start();
-  }
 
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
   let showModal = $state(false);
-  let selectedDate: { start: Date; end: Date } | null = null;
+  let selectedDate: { start: Date; end: Date } | null = $state(null);
   let editMode = $state(false);
   let editActivity = $state(null);
   let activeView = $state('timeGridWeek');
   let currentViewTitle = $state('');
   let isLoading = $state(false);
+  let dateStart = $state(null),
+    dateEnd = $state(null);
+  let textHoursWorked = $state('');
+  let totalHours = $state(0);
 
   const timeRanges = [
     { label: 'Heures de bureau', start: '06:00:00', end: '19:00:00', default: true },
@@ -42,13 +38,11 @@
   let activeTimeRange = $state(timeRanges.find((range) => range.default));
 
   let currentUser = $state<UserInfo | null>(null);
-
-  const users = [{ id: 1, name: 'Test ManuDev' }];
-  const projects = [{ id: 1, name: 'Projet manudev' }];
-  const categories = [{ id: 1, name: 'Categorie Test ManuDev' }];
+  let projects = $state<Project[]>([]);
+  let detailedProjects = $state<DetailedProject[]>([]);
 
   // Fonction pour attribuer une couleur à chaque événement
-  function getEventClassName(eventInfo: any) {
+  const getEventClassName = (eventInfo: any) => {
     const eventTypes = [
       'event-blue',
       'event-green',
@@ -67,7 +61,7 @@
   }
 
   // Fonction pour mettre à jour le titre de la période courante
-  function updateViewTitle() {
+  const updateViewTitle = () => {
     if (calendarService?.calendar) {
       const dateAPI = calendarService.calendar.getDate();
       const viewType = calendarService.calendar.view.type;
@@ -76,24 +70,73 @@
   }
 
   // Fonction pour charger toutes les activités
-  async function loadActivities() {
-    isLoading = true;
+  const loadActivities = async () =>{
+    let dateStart, dateEnd, day, diff;
     try {
-      const activities = await ActivityApiService.getAllActivites();
+      switch (activeView) {
+        case 'dayGridMonth':
+          dateStart = calendarService.calendar.getDate();
+          dateStart.setDate(1); // Premier jour du mois
+          dateEnd = new Date(dateStart.getFullYear(), dateStart.getMonth() + 1, 0); // Dernier jour du mois
+          textHoursWorked = 'ce mois-ci';
+          break;
+
+        case 'timeGridWeek':
+          dateStart = calendarService.calendar.getDate();
+          day = dateStart.getDay();
+          diff = dateStart.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
+          dateStart.setDate(diff);
+          dateEnd = new Date(dateStart);
+          dateEnd.setDate(dateStart.getDate() + 6);
+          textHoursWorked = 'cette semaine';
+          break;
+        case 'timeGridDay':
+          dateStart = calendarService.calendar.getDate();
+          dateEnd = new Date(dateStart);
+          textHoursWorked = "aujourd'hui";
+          break;
+        default:
+          dateStart = calendarService.calendar.getDate();
+          day = dateStart.getDay();
+          diff = dateStart.getDate() - day + (day === 0 ? -6 : 1); // Ajuster lorsque jour = dimanche
+          dateStart.setDate(diff);
+
+          dateEnd = new Date(dateStart);
+          dateEnd.setDate(dateStart.getDate() + 6);
+          break;
+      }
+
+      dateStart = formatDate(dateStart);
+      dateEnd = formatDate(dateEnd);
+      let activities = await ActivityApiService.getAllActivitesFromRange(dateStart, dateEnd);
 
       // Utiliser la méthode du service pour ajouter les activités au calendrier
       if (activities && calendarService) {
         calendarService.loadActivities(activities);
+        totalHours = calendarService.getTotalHours();
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des activités:', error);
       alert('Une erreur est survenue lors du chargement des activités.');
+    }
+  }
+
+  const loadProjects = async () =>{
+    try {
+      isLoading = true;
+      projects = await ProjectApiService.getProjects();
+      detailedProjects = await ProjectApiService.getDetailedProjects();
+    } catch (err) {
+      console.error('Erreur lors de la récupération des projets:', err);
+      alert('Une erreur est survenue lors de la récupération des projets.');
+      projects = [];
+      detailedProjects = [];
     } finally {
       isLoading = false;
     }
   }
 
   onMount(async () => {
+    isLoading = true;
     if (calendarEl) {
       calendarService = new CS();
 
@@ -182,30 +225,34 @@
       // Mettre à jour le titre initial
       updateViewTitle();
 
-      // Charger les activités
       await loadActivities();
+      await loadProjects();
     }
+    isLoading = false;
   });
 
-  function setView(viewName: string) {
+  const setView = (viewName: string) => {
     if (calendarService) {
       calendarService.setView(viewName);
       activeView = viewName;
       updateViewTitle();
+      loadActivities();
     }
   }
 
-  async function handleActivitySubmit(activityData: Activity) {
+  const handleActivitySubmit = async (activityData: Activity) =>{
     calendarService.addEvent({
       id: activityData.id.toString(),
-      title: activityData.name,
+      title: activityData.projectName,
       start: activityData.startDate,
       end: activityData.endDate,
       extendedProps: { ...activityData },
     });
+    totalHours = calendarService.getTotalHours();
+    detailedProjects = await ProjectApiService.getDetailedProjects();
   }
 
-  async function handleActivityUpdate(activity: Activity) {
+  const handleActivityUpdate = async (activity: Activity) =>{
     if (!calendarService?.calendar) return;
 
     try {
@@ -219,23 +266,40 @@
 
       const updatedActivity = await ActivityApiService.updateActivity(activity);
       calendarService.updateEvent(updatedActivity);
+      totalHours = calendarService.getTotalHours();
+      detailedProjects = await ProjectApiService.getDetailedProjects();
     } catch (error) {
-      console.error('Erreur lors de la mise à jour de la tâche', error);
+      console.error("Erreur lors de la mise à jour de l'activité", error);
 
       alert("Une erreur est survenue lors de la mise à jour de l'activité.");
 
       throw error;
     }
   }
+  const handleActivityDelete = async (activity: Activity) =>{
+    if (!calendarService?.calendar || !activity.id) return;
+    try {
+      await ActivityApiService.deleteActivity(activity.id);
+      calendarService.deleteActivity(activity.id.toString());
+      totalHours = calendarService.getTotalHours();
+      detailedProjects = await ProjectApiService.getDetailedProjects();
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'activité", error);
+      throw error;
+    }
+  }
 
   // Fonction pour gérer le déplacement et le redimmensionnement d'une tâche
-  async function handleEventDropOrResize(info) {
+  const handleEventDropOrResize = async (info) =>{
     try {
       const activity = calendarService.eventToActivity(info);
 
       const updatedActivity = await ActivityApiService.updateActivity(activity);
 
       calendarService.updateEvent(updatedActivity);
+      totalHours = calendarService.getTotalHours();
+      detailedProjects = await ProjectApiService.getDetailedProjects();
+
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'activité", error);
       alert("Une erreur est survenue lors de la mise à jour de l'activité.");
@@ -243,18 +307,8 @@
     }
   }
 
-  async function handleActivityDelete(activity: Activity) {
-    if (!calendarService?.calendar || !activity.id) return;
-    try {
-      await ActivityApiService.deleteActivity(activity.id);
-      calendarService.deleteActivity(activity.id.toString());
-    } catch (error) {
-      console.error("Erreur lors de la suppression de l'activité", error);
-      throw error;
-    }
-  }
 
-  function handleNewActivity() {
+  const handleNewActivity = () => {
     editMode = false;
     editActivity = null;
     selectedDate = {
@@ -264,22 +318,25 @@
     showModal = true;
   }
 
-  function prevPeriod() {
+  const prevPeriod = () => {
     calendarService?.prev();
     updateViewTitle();
+    loadActivities();
   }
 
-  function nextPeriod() {
+  const nextPeriod = () => {
     calendarService?.next();
     updateViewTitle();
+    loadActivities();
   }
 
-  function goToday() {
+  const goToday = () => {
     calendarService?.today();
     updateViewTitle();
+    loadActivities();
   }
 
-  function setTimeRange(range) {
+  const setTimeRange = (range) => {
     activeTimeRange = range;
 
     if (calendarService?.calendar) {
@@ -310,52 +367,20 @@
   });
 </script>
 
-<!-- CSS supplémentaire pour rendre le calendrier plus compact -->
-<style>
-  :global(.fc .fc-timegrid-slot) {
-    height: 25px !important;
-    min-height: 25px !important;
-    max-height: 25px !important;
-  }
-
-  :global(.fc-timegrid-event) {
-    min-height: 20px !important;
-    max-height: none !important;
-  }
-
-  :global(.fc-timegrid-slot-label) {
-    vertical-align: top !important;
-    padding-top: 2px !important;
-  }
-
-  :global(.fc-theme-standard td),
-  :global(.fc-theme-standard th) {
-    padding: 1px !important;
-  }
-
-  :global(.fc .fc-daygrid-day-frame) {
-    padding: 2px !important;
-  }
-
-  /* Couleur personnalisée pour l'indicateur de l'heure actuelle */
-  :global(.fc .fc-timegrid-now-indicator-line) {
-    border-color: #015e61 !important;
-  }
-
-  :global(.fc .fc-timegrid-now-indicator-arrow) {
-    border-color: #015e61 !important;
-    background-color: #015e61 !important;
-  }
-
-  /* Gestion espace dashboard */
-  .space-between-dashboard-calendar {
-    margin-left: 300px;
-  }
-</style>
-
 <div class="flex">
   <!-- Dashboard toujours visible à gauche -->
-  <DashboardLeftPane />
+  {#if isLoading}
+    <div class="fixed left-0 top-0 w-[300px] h-full bg-gray-100 animate-pulse"></div>
+  {:else if currentUser}
+    <DashboardLeftPane
+      {detailedProjects}
+      {currentUser}
+      {dateStart}
+      {dateEnd}
+      {totalHours}
+      {textHoursWorked}
+    />
+  {/if}
 
   <!-- Contenu principal (calendrier) avec marge pour s'adapter au dashboard -->
   <div class="space-between-dashboard-calendar w-full h-full bg-white px-4 py-6">
@@ -491,9 +516,7 @@
 {#if showModal}
   <ActivityModal
     show={showModal}
-    {users}
     {projects}
-    {categories}
     activityToEdit={editActivity}
     {selectedDate}
     onDelete={handleActivityDelete}
@@ -504,3 +527,45 @@
     }}
   />
 {/if}
+
+<style>
+  :global(.fc .fc-timegrid-slot) {
+    height: 25px !important;
+    min-height: 25px !important;
+    max-height: 25px !important;
+  }
+
+  :global(.fc-timegrid-event) {
+    min-height: 20px !important;
+    max-height: none !important;
+  }
+
+  :global(.fc-timegrid-slot-label) {
+    vertical-align: top !important;
+    padding-top: 2px !important;
+  }
+
+  :global(.fc-theme-standard td),
+  :global(.fc-theme-standard th) {
+    padding: 1px !important;
+  }
+
+  :global(.fc .fc-daygrid-day-frame) {
+    padding: 2px !important;
+  }
+
+  /* Couleur personnalisée pour l'indicateur de l'heure actuelle */
+  :global(.fc .fc-timegrid-now-indicator-line) {
+    border-color: #015e61 !important;
+  }
+
+  :global(.fc .fc-timegrid-now-indicator-arrow) {
+    border-color: #015e61 !important;
+    background-color: #015e61 !important;
+  }
+
+  /* Gestion espace dashboard */
+  .space-between-dashboard-calendar {
+    margin-left: 300px;
+  }
+</style>

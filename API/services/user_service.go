@@ -3,9 +3,12 @@ package services
 import (
 	"llio-api/models/DAOs"
 	"llio-api/models/DTOs"
+	"llio-api/models/enums"
 	"llio-api/repositories"
 
 	"github.com/jinzhu/copier"
+
+	"strconv"
 )
 
 func FirstOrCreateUser(userDTO *DTOs.UserDTO) (*DTOs.UserDTO, error) {
@@ -47,4 +50,51 @@ func GetUserByEmail(email string) (*DTOs.UserDTO, error) {
 	err = copier.Copy(userDTO, user)
 
 	return userDTO, err
+}
+
+func GetAllUsers(userRole *enums.UserRole) ([]*DTOs.UserDTO, error) {
+
+	users, err := repositories.GetAllUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	var usersDTOs []*DTOs.UserDTO
+
+	for _, user := range users {
+		if userRole != nil && user.Role != *userRole {
+			continue
+		}
+
+		userDTO := &DTOs.UserDTO{}
+		if copyErr := copier.Copy(userDTO, user); copyErr != nil {
+			return nil, copyErr
+		}
+		usersDTOs = append(usersDTOs, userDTO)
+	}
+
+	return usersDTOs, nil
+}
+
+func UpdateUserRole(userDTO *DTOs.UserDTO) (*DTOs.UserDTO, error) {
+	// Get the existing user
+	existingUser, err := repositories.GetUserById(strconv.Itoa(userDTO.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	// Only update the role
+	existingUser.Role = userDTO.Role
+
+	// Save the updated user
+	updatedUser, err := repositories.UpdateUserRole(existingUser)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert back to DTO
+	userDTOResponse := &DTOs.UserDTO{}
+	err = copier.Copy(userDTOResponse, updatedUser)
+
+	return userDTOResponse, err
 }

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"llio-api/models/DTOs"
+	"llio-api/models/enums"
 	"llio-api/services"
 	"log"
 	"net/http"
@@ -29,6 +30,12 @@ func CreatedProject(c *gin.Context) {
 		return
 	}
 
+	_, err := services.GetUserById(strconv.Itoa(projetDTO.ManagerId))
+	if err != nil {
+		handleError(c, err, userSTR)
+		return
+	}
+
 	projectAdded, err := services.CreateProject(&projetDTO)
 	if err != nil {
 		handleError(c, err, projectSTR)
@@ -53,6 +60,46 @@ func GetProjectById(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"project": project})
 }
 
+func GetDetailedProjects(c *gin.Context) {
+	currentUser, exists := c.Get("current_user")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Utilisateur non authentifié"})
+		return
+	}
+
+	user, ok := currentUser.(*DTOs.UserDTO)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur interne du serveur"})
+		c.Abort()
+		return
+	}
+
+	var projects []map[string]any
+	var err error
+
+	switch user.Role {
+	case enums.Administrator:
+		projects, err = services.GetDetailedProjects()
+	case enums.ProjectManager:
+		projects, err = services.GetDetailedProjectsByManagerId(user.Id)
+	case enums.Employee:
+		projects, err = services.GetDetailedProjectsByUserId(user.Id)
+	}
+
+	if err != nil {
+		handleError(c, err, projectSTR)
+		return
+	}
+
+	if projects == nil {
+		// Retourner une liste vide au lieu de null
+		c.JSON(http.StatusOK, gin.H{"projects": []map[string]any{}})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"projects": projects})
+}
+
 func GetProjects(c *gin.Context) {
 	projects, err := services.GetProjects()
 	if err != nil {
@@ -60,7 +107,13 @@ func GetProjects(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"projets": projects})
+	if projects == nil {
+		// Retourner une liste vide au lieu de null
+		c.JSON(http.StatusOK, gin.H{"projects": []DTOs.ProjectDTO{}})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"projects": projects})
 }
 
 func UpdateProject(c *gin.Context) {
@@ -84,6 +137,12 @@ func UpdateProject(c *gin.Context) {
 	_, err := services.GetProjectById(id)
 	if err != nil {
 		handleError(c, err, projectSTR)
+		return
+	}
+
+	_, err = services.GetUserById(strconv.Itoa(projectToUpdate.ManagerId))
+	if err != nil {
+		handleError(c, err, userSTR)
 		return
 	}
 

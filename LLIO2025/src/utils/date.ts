@@ -1,12 +1,12 @@
 // Extraire les heures et minutes d'un objet Date
-export function getHoursFromDate(date: Date | null | undefined): string {
+export const getHoursFromDate = (date: Date | null | undefined): string =>{
   if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
     return '12';
   }
   return date.getHours().toString().padStart(2, '0');
 };
 
-export function getMinutesFromDate(date: Date | null | undefined): string {
+export const getMinutesFromDate = (date: Date | null | undefined): string =>{
   if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
     return '00';
   }
@@ -62,7 +62,7 @@ export const applyEndTime = (
   return { endHours, endMinutes };
 };
 
-export function getDateOrDefault(dateToValidate: Date | null | undefined, defaultDate: Date): Date {
+export const getDateOrDefault = (dateToValidate: Date | null | undefined, defaultDate: Date): Date =>{
   if (!dateToValidate || !(dateToValidate instanceof Date) || isNaN(dateToValidate.getTime())) {
     return new Date(defaultDate);
   }
@@ -106,10 +106,79 @@ export const formatViewTitle = (viewType: string, date: Date): string => {
     });
   }
 
+
+
   // Format par défaut si le type de vue n'est pas reconnu
   return date.toLocaleDateString('fr-FR', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   });
+};
+
+export const startEndDatesForFormat = ()=> {
+  const startDate = new Date();
+  const endDate = new Date(startDate);
+  
+  return {
+    startDate: startDate.toLocaleString('fr-FR', { timeZone: 'UTC' }),
+    endDate: endDate.toLocaleString('fr-FR', { timeZone: 'UTC' })
+  };
+}
+
+export const formatDate = (date: Date): string =>{
+  let laDate = new Date(date);
+  let year = laDate.getFullYear();
+  let month = (laDate.getMonth() + 1).toString(); // Les mois commencent à 0
+  let day = laDate.getDate().toString();
+
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+}
+
+export const formatHours = (hours: number | null | undefined): string => {  
+  if (!hours || hours === 0) return "-";
+  
+  const isNegative = hours < 0;
+  const absoluteHours = Math.abs(hours);
+  const hoursInt = Math.floor(absoluteHours);
+  const minutes = Math.round((absoluteHours - hoursInt) * 60);
+  
+  // Format « h00 », « h05 », « h15 », etc.
+  return `${isNegative ? "-" : ""}${hoursInt}h${
+    minutes === 0
+      ? "00"
+      : minutes < 10
+        ? `0${minutes}`
+        : minutes
+  }`;
+}; 
+
+export const formatDateHoursWorked = (date) => {
+  let dateObj;
+  
+  if (date instanceof Date) {
+      dateObj = date;
+  } else if (typeof date === 'string') {
+      const parts = date.split('-');
+      dateObj = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), 12, 0, 0);
+  }
+  
+  return new Intl.DateTimeFormat('fr-FR', {
+      day: 'numeric',
+      month: 'long'
+  }).format(dateObj);
+};
+
+export const areDatesEqual = (dateStart, dateEnd) => {
+  if (!dateStart || !dateEnd) return false;
+  return dateStart == dateEnd;
+};
+
+export const getHoursFromRange = (activity) => {
+  const start = activity.startDate instanceof Date ? activity.startDate : new Date(activity.startDate);
+  const end = activity.endDate instanceof Date ? activity.endDate : new Date(activity.endDate);    
+
+  const diffMilliseconds = end.getTime() - start.getTime();
+  const hours = diffMilliseconds / (1000 * 60 * 60);
+  return hours;
 };

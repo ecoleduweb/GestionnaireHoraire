@@ -84,3 +84,19 @@ func UpdateCategory(categoryDTO *DTOs.CategoryDTO) (*DTOs.CategoryDTO, error) {
 	err = copier.Copy(categoryDTOResponse, categoryDAOUpdated)
 	return categoryDTOResponse, err
 }
+
+func GetCategoriesByProjectId(projectId string) ([]*DTOs.CategoryDTO, error) {
+	categories, err := repositories.GetCategoriesByProjectId(projectId)
+	if err != nil {
+		return nil, err
+	}
+
+	var categoriesDTOs []*DTOs.CategoryDTO
+	for _, category := range categories {
+		categoryDTO := &DTOs.CategoryDTO{}
+		err = copier.Copy(categoryDTO, category)
+		categoriesDTOs = append(categoriesDTOs, categoryDTO)
+	}
+
+	return categoriesDTOs, err
+}
