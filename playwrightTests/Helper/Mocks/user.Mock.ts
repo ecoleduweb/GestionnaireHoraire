@@ -68,6 +68,39 @@ export const userMocks = {
                 }
         }
     },
+    getAllManagersSuccess: {
+        url: '/users/managers',
+        method: 'GET',
+        response: {
+                status: 200,
+                json:
+                [
+                    {
+                        "id": 2,
+                        "firstName": "JérémieTest",
+                        "lastName": "Lapointe",
+                        "role": 1
+                    },
+                    {
+                        "id": 3,
+                        "firstName": "Charle-ÉtienneTest",
+                        "lastName": "Soucy",
+                        "role": 2
+                    }
+                ]
+        }
+    },
+    getAllManagersError: {
+        url: '/users/managers',
+        method: 'GET',
+        response: {
+                status: 400,
+                json:
+                {
+                    "error": "Erreur lors de la récupération des managers"
+                }
+        }
+    },
 
 
 } satisfies Record<string, MockConfig>;
