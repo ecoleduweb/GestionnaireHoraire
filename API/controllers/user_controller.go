@@ -62,6 +62,36 @@ func GetAllUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+func GetManagerAdminUsers(c *gin.Context) {
+	role1 := enums.UserRole(1)
+	users1, err := services.GetAllUsers(&role1)
+	if err != nil {
+		handleError(c, err, userSTR)
+		return
+	}
+
+	role2 := enums.UserRole(2)
+	users2, err := services.GetAllUsers(&role2)
+	if err != nil {
+		handleError(c, err, userSTR)
+		return
+	}
+
+	var allUsers []*DTOs.UserDTO
+	if users1 != nil {
+		allUsers = append(allUsers, users1...)
+	}
+	if users2 != nil {
+		allUsers = append(allUsers, users2...)
+	}
+
+	if allUsers == nil {
+		allUsers = []*DTOs.UserDTO{}
+	}
+
+	c.JSON(http.StatusOK, allUsers)
+}
+
 func UpdateUserRole(c *gin.Context) {
 	// Get the current user from context
 	userInfo, isExist := c.Get("current_user")

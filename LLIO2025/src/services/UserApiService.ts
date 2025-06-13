@@ -27,7 +27,7 @@ const getAllUsers = async (): Promise<User[]> => {
 
 const getManagerUsers = async (): Promise<User[]> => {
   try {
-    const response = await GET<User[]>("/users?role=1");
+    const response = await GET<User[]>("/users/managers");
     return response;
   } catch (error) {
     console.error("Erreur lors de la récupération des managers:", error);
