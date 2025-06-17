@@ -35,21 +35,19 @@ func GetUserInfo(c *gin.Context) {
 }
 
 func GetAllUsers(c *gin.Context) {
-	userRoleStr := c.Query("role")
+	roleParams := c.QueryArray("role")
 
-	var userRole *enums.UserRole
-
-	if userRoleStr != "" {
-		roleValue, err := strconv.Atoi(userRoleStr)
+	var userRoles []enums.UserRole
+	for _, roleStr := range roleParams {
+		roleValue, err := strconv.Atoi(roleStr)
 		if err != nil || roleValue < 0 || roleValue > 2 {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Role invalide"})
 			return
 		}
-		role := enums.UserRole(roleValue)
-		userRole = &role
+		userRoles = append(userRoles, enums.UserRole(roleValue))
 	}
 
-	users, err := services.GetAllUsers(userRole)
+	users, err := services.GetAllUsers(userRoles)
 	if err != nil {
 		handleError(c, err, userSTR)
 		return
@@ -60,36 +58,6 @@ func GetAllUsers(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, users)
-}
-
-func GetManagerAdminUsers(c *gin.Context) {
-	role1 := enums.UserRole(1)
-	users1, err := services.GetAllUsers(&role1)
-	if err != nil {
-		handleError(c, err, userSTR)
-		return
-	}
-
-	role2 := enums.UserRole(2)
-	users2, err := services.GetAllUsers(&role2)
-	if err != nil {
-		handleError(c, err, userSTR)
-		return
-	}
-
-	var allUsers []*DTOs.UserDTO
-	if users1 != nil {
-		allUsers = append(allUsers, users1...)
-	}
-	if users2 != nil {
-		allUsers = append(allUsers, users2...)
-	}
-
-	if allUsers == nil {
-		allUsers = []*DTOs.UserDTO{}
-	}
-
-	c.JSON(http.StatusOK, allUsers)
 }
 
 func UpdateUserRole(c *gin.Context) {

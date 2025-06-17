@@ -21,7 +21,6 @@ func RegisterRoutes(r *gin.Engine) {
 	{
 
 		usersGroup.GET("", controllers.GetAllUsers)
-		usersGroup.GET("managers", controllers.GetManagerAdminUsers)
 	}
 
 	/*------------------- Activities -------------------*/

@@ -322,4 +322,27 @@ export const projectMocks = {
       },
     },
   },
+  addProjectSuccess: {
+    url: "/project",
+    method: "POST",
+    response: {
+      status: 201,
+      json: {
+          "project": {
+              "id": 6,
+              "managerId": 3,
+              "name": "Jérémie Lapointe",
+              "description": "das",
+              "status": 0,
+              "billable": true,
+              "activities": [],
+              "categories": [],
+              "createdAt": "2025-03-23T15:07:14.991-04:00",
+              "updatedAt": "2025-03-23T15:07:14.991-04:00",
+              "endAt": "0001-01-01T00:00:00Z"
+          },
+          "response": "Le projet a bien été ajouté à la base de données"
+      },
+    },
+  },
 } satisfies Record<string, MockConfig>;
