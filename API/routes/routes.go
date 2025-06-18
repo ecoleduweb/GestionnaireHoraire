@@ -19,6 +19,7 @@ func RegisterRoutes(r *gin.Engine) {
 
 	usersGroup := r.Group("/users", middleware.RoleValidationMiddleware(enums.ProjectManager))
 	{
+
 		usersGroup.GET("", controllers.GetAllUsers)
 	}
 

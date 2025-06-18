@@ -26,9 +26,9 @@ const getAllUsers = async (): Promise<User[]> => {
   }
 };
 
-const getManagerUsers = async (): Promise<User[]> => {
+const getAllManagersAdmin = async (): Promise<User[]> => {
   try {
-    const response = await GET<User[]>("/users?role=1");
+    const response = await GET<User[]>("/users?role=1&role=2");
     return response;
   } catch (error) {
     console.error("Erreur lors de la récupération des managers:", error);
@@ -70,7 +70,7 @@ const logOut = async (): Promise<void> => {
 
 export const UserApiService = {
   getAllUsers,
-  getManagerUsers,
+  getAllManagersAdmin,
   getUserInfo,
   getUsers,
   updateUserRole,

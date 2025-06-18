@@ -31,7 +31,7 @@
   onMount(async () => {
     try {
       isLoadingManagers = true;
-      managers = await UserApiService.getManagerUsers();
+      managers = await UserApiService.getAllManagersAdmin();
     } catch (err) {
       console.error('Failed to load managers:', err);
       alert('Impossible de charger les chargés de projet.');
@@ -87,6 +87,7 @@
           >
             <div class="form-group">
               <label>
+                Nom du projet*
                 <input id="project-name" name="name" type="text" bind:value={project.name} />
               </label>
               {#if $errors.name}
