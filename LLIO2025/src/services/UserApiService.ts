@@ -1,4 +1,3 @@
-import { redirect } from '@sveltejs/kit';
 import type { User, UserInfo } from '../Models/index';
 import { GET, PATCH } from '../ts/server';
 

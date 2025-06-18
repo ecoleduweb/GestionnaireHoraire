@@ -15,6 +15,7 @@
   import frLocale from '@fullcalendar/core/locales/fr';
   import { formatViewTitle } from '../../utils/date';
   import { Plus, Calendar, ChevronLeft, ChevronRight, LogOut } from 'lucide-svelte';
+  import { goto } from '$app/navigation';
 
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
@@ -402,7 +403,7 @@
             title="Se déconnecter" 
             onclick={() => {
               UserApiService.logOut();
-              window.location.href = "/";}} 
+              goto("/");}} 
           >
             <LogOut class="w-5 h-5" />
           </button>
