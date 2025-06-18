@@ -35,21 +35,19 @@ func GetUserInfo(c *gin.Context) {
 }
 
 func GetAllUsers(c *gin.Context) {
-	userRoleStr := c.Query("role")
+	roleParams := c.QueryArray("role")
 
-	var userRole *enums.UserRole
-
-	if userRoleStr != "" {
-		roleValue, err := strconv.Atoi(userRoleStr)
+	var userRoles []enums.UserRole
+	for _, roleStr := range roleParams {
+		roleValue, err := strconv.Atoi(roleStr)
 		if err != nil || roleValue < 0 || roleValue > 2 {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Role invalide"})
 			return
 		}
-		role := enums.UserRole(roleValue)
-		userRole = &role
+		userRoles = append(userRoles, enums.UserRole(roleValue))
 	}
 
-	users, err := services.GetAllUsers(userRole)
+	users, err := services.GetAllUsers(userRoles)
 	if err != nil {
 		handleError(c, err, userSTR)
 		return

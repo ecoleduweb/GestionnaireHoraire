@@ -60,9 +60,11 @@
         </button>
       </div>
 
-      {#if currentUser.role == UserRole.Admin || currentUser.role == UserRole.ProjectManager}
+      {#if currentUser.role == UserRole.Admin || currentUser.role == UserRole.ProjectManager} 
         <button
           type="button"
+          id="new-project-button"
+          title="Créer un nouveau projet"
           onclick={handleNewProject}
           class="ml-12 px-3 py-2 text-sm transition-colors font-semibold bg-gray-200 text-gray-900 rounded-lg hover:bg-[#014446] hover:text-white cursor-pointer"
         >

@@ -16,6 +16,18 @@ func TestGetAllUsers(t *testing.T) {
 	assert.NotNil(t, w.Body)
 }
 
+func TestGetAllUsersBySingleRole(t *testing.T) {
+	w := sendRequest(router, "GET", "/users?role=1", nil, enums.ProjectManager)
+	assertResponse(t, w, http.StatusOK, nil)
+	assert.NotNil(t, w.Body)
+}
+
+func TestGetAllUsersByMultipleRoles(t *testing.T) {
+	w := sendRequest(router, "GET", "/users?role=1&role=2", nil, enums.ProjectManager)
+	assertResponse(t, w, http.StatusOK, nil)
+	assert.NotNil(t, w.Body)
+}
+
 func TestGetAllUsersWithInvalidToken(t *testing.T) {
 	// Create a request without using the sendRequest helper to avoid token generation
 	req, _ := http.NewRequest("GET", "/users", nil)
