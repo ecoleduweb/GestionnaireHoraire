@@ -69,7 +69,7 @@ export const userMocks = {
         }
     },
     getAllManagersSuccess: {
-        url: '/users/managers',
+        url: '/users?role=1&role=2',
         method: 'GET',
         response: {
                 status: 200,
