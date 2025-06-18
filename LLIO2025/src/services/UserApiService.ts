@@ -1,3 +1,4 @@
+import { redirect } from '@sveltejs/kit';
 import type { User, UserInfo } from '../Models/index';
 import { GET, PATCH } from '../ts/server';
 
@@ -58,10 +59,20 @@ const updateUserRole = async (userId: number, role: number): Promise<void> => {
   }
 }
 
+const logOut = async (): Promise<void> => {
+  try {
+    await GET('/logout');
+  } catch (error) {
+    console.error("Erreur lors de la déconnexion:", error);
+    throw error;
+  }
+}
+
 export const UserApiService = {
   getAllUsers,
   getManagerUsers,
   getUserInfo,
   getUsers,
   updateUserRole,
+  logOut,
 };
