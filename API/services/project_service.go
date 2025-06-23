@@ -251,8 +251,8 @@ func formatProjectWithActivities(project *DAOs.Project, activities []DAOs.Activi
 
 	return map[string]any{
 		"id":                 project.Id,
+		"uniqueId":           project.UniqueId,
 		"name":               project.Name,
-		"description":        project.Description,
 		"lead":               lead,
 		"coLeads":            []string{},
 		"employees":          employees,

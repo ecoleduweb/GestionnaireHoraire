@@ -23,8 +23,8 @@ func TestGetProjectById(t *testing.T) {
 	err := json.Unmarshal(w.Body.Bytes(), &responseBody)
 	assert.NoError(t, err)
 	assert.Equal(t, doNotDeleteProject.Id, responseBody.Project.Id)
+	assert.Equal(t, doNotDeleteProject.UniqueId, responseBody.Project.UniqueId)
 	assert.Equal(t, doNotDeleteProject.Name, responseBody.Project.Name)
-	assert.Equal(t, doNotDeleteProject.Description, responseBody.Project.Description)
 }
 
 func TestGetProjectWithInvalidId(t *testing.T) {
@@ -56,8 +56,8 @@ func TestGetAllProjects(t *testing.T) {
 	for _, project := range responseBody.Projects {
 		if project.Id == doNotDeleteProject.Id {
 			found = true
+			assert.Equal(t, doNotDeleteProject.UniqueId, project.UniqueId)
 			assert.Equal(t, doNotDeleteProject.Name, project.Name)
-			assert.Equal(t, doNotDeleteProject.Description, project.Description)
 			break
 		}
 	}
@@ -83,8 +83,8 @@ func TestGetAllProjects_AsEmployee(t *testing.T) {
 	for _, project := range responseBody.Projects {
 		if project.Id == doNotDeleteProject.Id {
 			found = true
+			assert.Equal(t, doNotDeleteProject.UniqueId, project.UniqueId)
 			assert.Equal(t, doNotDeleteProject.Name, project.Name)
-			assert.Equal(t, doNotDeleteProject.Description, project.Description)
 			break
 		}
 	}
