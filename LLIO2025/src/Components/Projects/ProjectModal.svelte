@@ -86,11 +86,12 @@
             }}
           >
             <div class="form-group">
+              <label for="project-uniqueId">Identifiant unique (numéro Airtable)*</label>
               <label>
-                <input id="project-name" name="name" type="text" bind:value={project.name} />
+                <input id="project-uniqueId" name="uniqueId" type="text" bind:value={project.uniqueId} />
               </label>
-              {#if $errors.name}
-                <span class="text-red-500 text-sm">{$errors.name}</span>
+              {#if $errors.uniqueId}
+                <span class="text-red-500 text-sm">{$errors.uniqueId}</span>
               {/if}
             </div>
 
@@ -114,26 +115,28 @@
             </div>
 
             <div class="form-group">
-              <label for="project-description">Description</label>
-              <textarea
-                id="project-description"
-                name="description"
-                bind:value={project.description}
-                rows="3"
+              <label for="project-name">Nom du projet</label>
+              <input
+                id="project-name"
+                name="name"
+                bind:value={project.name}
+                
               >
-              </textarea>
-              {#if $errors.description}
-                <span class="text-red-500 text-sm">{$errors.description}</span>
+              {#if $errors.name}
+                <span class="text-red-500 text-sm">{$errors.name}</span>
               {/if}
             </div>
 
-            <div class="form-group">
-              <label>
-                <input type="checkbox" bind:checked={project.billable} />
-                Facturable
-              </label>
-              {#if $errors.billable}
-                <span class="text-red-500 text-sm">{$errors.billable}</span>
+            <div>
+              <label for="estimated-hours">Heures estimées</label>
+              <input
+                id="estimated-hours"
+                name="estimatedHours"
+                type="number"
+                bind:value={project.estimatedHours}
+              >
+              {#if $errors.estimatedHours}
+                <span class="text-red-500 text-sm">{$errors.estimatedHours}</span>
               {/if}
             </div>
 
