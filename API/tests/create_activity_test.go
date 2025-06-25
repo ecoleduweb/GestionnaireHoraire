@@ -2,6 +2,7 @@ package tests
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"testing"
 	"time"
@@ -30,11 +31,13 @@ func TestCreateActivity(t *testing.T) {
 
 	// Vérification du corps de la réponse
 	var responseBody struct {
-		Reponse  string               `json:"reponse"`
+		Reponse  string                   `json:"reponse"`
 		Activity DTOs.DetailedActivityDTO `json:"activity"`
 	}
 	err := json.Unmarshal(w.Body.Bytes(), &responseBody)
 	assert.NoError(t, err)
+	log.Println("Response Body:", string(w.Body.Bytes())) // Pour débogage
+	log.Println("Response Body Struct:", responseBody.Reponse)
 	assert.Equal(t, "L'activité a bien été ajoutée à la base de données.", responseBody.Reponse)
 	assert.Equal(t, activity.Name, responseBody.Activity.Name)
 	assert.Equal(t, activity.Description, responseBody.Activity.Description)

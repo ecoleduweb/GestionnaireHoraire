@@ -41,7 +41,7 @@ var accessToken string
 
 func createAndSetAccessToken(role enums.UserRole) {
 	// Create a JWT token for the test user
-	token, err := services.CreateJWTToken(doNotDeleteActivity.Id, doNotDeleteUser.Email, doNotDeleteUser.FirstName, doNotDeleteUser.LastName, time.Now().Add(time.Hour), role)
+	token, err := services.CreateJWTToken(doNotDeleteUser.Id, doNotDeleteUser.Email, doNotDeleteUser.FirstName, doNotDeleteUser.LastName, time.Now().Add(time.Hour), role)
 	if err != nil {
 		log.Fatalf("Failed to create JWT token: %v", err)
 	}
@@ -74,27 +74,34 @@ func prepareTestData() {
 	database.DB.Create(&testUser)
 	doNotDeleteUser = testUser
 	testProject := DAOs.Project{
-		Name:        "Test Project",
-		Description: "Sample project",
-		ManagerId:   doNotDeleteUser.Id,
-		Status:      enums.ProjectStatus(enums.InProgress),
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
-		EndAt:       time.Now(),
+		Id:             1, // Assurez-vous que l'ID est unique pour le test
+		UniqueId:       "Interne-1234",
+		Name:           "Sample project",
+		ManagerId:      doNotDeleteUser.Id,
+		Status:         enums.ProjectStatus(enums.InProgress),
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+		EndAt:          time.Now(),
+		EstimatedHours: 10, // Ajout d'une valeur pour EstimatedHours
 	}
 	database.DB.Create(&testProject)
 	doNotDeleteProject = testProject
 	testProject2 := DAOs.Project{
-		Name:        "Test Project 2",
-		ManagerId:   doNotDeleteUser.Id,
-		Description: "Sample project 2",
-		Status:      enums.ProjectStatus(enums.InProgress),
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
-		EndAt:       time.Now(),
+		Id:             2, // Assurez-vous que l'ID est unique pour le test
+		UniqueId:       "Externe-6789",
+		ManagerId:      doNotDeleteUser.Id,
+		Name:           "Sample project 2",
+		Status:         enums.ProjectStatus(enums.InProgress),
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+		EndAt:          time.Now(),
+		EstimatedHours: 100, // Ajout d'une valeur pour EstimatedHours
 	}
 	database.DB.Create(&testProject2)
 	doNotDeleteProject2 = testProject2
+
+	log.Println("doNotDeleteProject2:", doNotDeleteProject2)
+	log.Println("doNotDeleteProject:", doNotDeleteProject)
 
 	testCategory := DAOs.Category{
 		Name:        "Test Category",

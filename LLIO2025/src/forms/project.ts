@@ -3,10 +3,11 @@ import type { ProjectBase } from "../Models";
 
 export const projectTemplate = {
     generate: (): ProjectBase => ({
+        uniqueId: "",
         name: "",
-        description: "",
         status: ProjectStatus.InProgress,
         billable: false,
-        managerId: 0
+        managerId: 0,
+        estimatedHours:0
     })
 };

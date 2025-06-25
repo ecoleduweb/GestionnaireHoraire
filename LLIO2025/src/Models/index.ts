@@ -46,11 +46,12 @@ export interface ActivityUpdateResponse {
 
 /*************** Project ***************/
 export interface ProjectBase {
-    name: string;
-    description: string;
+    uniqueId: string;
+    name?: string;
     managerId: number;
     billable: boolean;
     status?: ProjectStatus;
+    estimatedHours?: number;
 }
 
 export interface UpdateProject extends ProjectBase {

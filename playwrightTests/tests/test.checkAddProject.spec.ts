@@ -21,9 +21,9 @@ test.describe('checkAddProjects', () => {
 
     test('AddProjectToManager', async ({ page }) => {
         await page.getByTitle('Créer un nouveau projet').click();
-        await page.locator('#project-name').fill('Nouveau Projet');
+        await page.locator('#project-uniqueId').fill('Nouveau Projet');
         await page.locator('#project-manager').selectOption('2'); 
-        await page.locator('#project-description').fill('Description du nouveau projet');
+        await page.locator('#project-name').fill('nom projet');
         await page.getByText('Soumettre').click();
 
 
