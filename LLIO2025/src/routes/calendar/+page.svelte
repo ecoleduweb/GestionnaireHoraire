@@ -15,6 +15,7 @@
   import frLocale from '@fullcalendar/core/locales/fr';
   import { formatViewTitle } from '../../utils/date';
   import { Plus, Calendar, ChevronLeft, ChevronRight, LogOut } from 'lucide-svelte';
+  import { goto } from '$app/navigation';
 
   let calendarEl = $state<HTMLElement | null>(null);
   let calendarService = $state<CalendarService | null>(null);
@@ -399,8 +400,12 @@
           </span>
           <button
             class="ml-2 mt-1 p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-[#015e61] transition-colors"
-            title="Se déconnecter"
-          >
+            title="Se déconnecter" 
+            onclick={async () => {
+              await UserApiService.logOut();
+              goto("/");
+            }} 
+            >
             <LogOut class="w-5 h-5" />
           </button>
         </h1>

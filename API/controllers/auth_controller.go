@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/markbates/goth/gothic"
@@ -82,12 +83,21 @@ func Auth(c *gin.Context) {
 
 func Logout(c *gin.Context) {
 	useful.LoadEnv()
-	frontendURL := os.Getenv("FRONTEND_URL")
 	if err := gothic.Logout(c.Writer, c.Request); err != nil {
 		log.Printf("Erreur lors de la déconnexion: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "access_token",
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   useful.IsRunningSecure(),
+		SameSite: http.SameSiteStrictMode,
+		Expires:  time.Unix(0, 0),
+		MaxAge:   -1,
+	})
 
-	http.Redirect(c.Writer, c.Request, frontendURL, http.StatusFound)
+	c.JSON(http.StatusOK, gin.H{"message": "Déconnexion réussie"})
 }

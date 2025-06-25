@@ -101,6 +101,14 @@ export const userMocks = {
                 }
         }
     },
+    logOutSuccess: {
+        url: '/logout',
+        method: 'POST',
+        response: {
+                status: 200,
+                json: {"message":"Déconnexion réussie"}
+        }
+    },
 
 
 } satisfies Record<string, MockConfig>;
