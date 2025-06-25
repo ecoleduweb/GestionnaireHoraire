@@ -1,5 +1,5 @@
 import type { User, UserInfo } from '../Models/index';
-import { GET, PATCH } from '../ts/server';
+import { GET, PATCH, POST } from '../ts/server';
 
 interface UsersResponse {
   users: User[];
@@ -60,7 +60,7 @@ const updateUserRole = async (userId: number, role: number): Promise<void> => {
 
 const logOut = async (): Promise<void> => {
   try {
-    await GET('/logout');
+    await POST('/logout', {});
   } catch (error) {
     console.error("Erreur lors de la déconnexion:", error);
     throw error;

@@ -401,10 +401,11 @@
           <button
             class="ml-2 mt-1 p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-[#015e61] transition-colors"
             title="Se déconnecter" 
-            onclick={() => {
-              UserApiService.logOut();
-              goto("/");}} 
-          >
+            onclick={async () => {
+              await UserApiService.logOut();
+              goto("/");
+            }} 
+            >
             <LogOut class="w-5 h-5" />
           </button>
         </h1>
