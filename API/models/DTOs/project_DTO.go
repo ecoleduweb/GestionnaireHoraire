@@ -8,7 +8,7 @@ import (
 type ProjectDTO struct {
 	Id             int                 `json:"id"`
 	ManagerId      int                 `json:"managerId" binding:"required"`
-	UniqueId       string              `json:"uniqueId" binding:"required,max=50"`
+	UniqueId       string              `json:"uniqueId" binding:"required,max=20"`
 	Name           string              `json:"name"`
 	Status         enums.ProjectStatus `json:"status"` // Status du projet( si le projet est en cours ou fini)
 	Billable       bool                `json:"billable"`

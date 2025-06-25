@@ -133,6 +133,8 @@
                 id="estimated-hours"
                 name="estimatedHours"
                 type="number"
+                min="0"
+                step="1"
                 bind:value={project.estimatedHours}
               >
               {#if $errors.estimatedHours}
