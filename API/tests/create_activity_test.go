@@ -25,7 +25,7 @@ func TestCreateActivity(t *testing.T) {
 		ProjectId:   doNotDeleteProject.Id,
 		CategoryId:  doNotDeleteCategory.Id,
 	}
-	log.Println(doNotDeleteProject)
+
 	w = sendRequest(router, "POST", "/activity", activity)
 	assertResponse(t, w, http.StatusCreated, nil)
 
