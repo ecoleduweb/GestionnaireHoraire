@@ -3,7 +3,6 @@ package repositories
 import (
 	"llio-api/database"
 	"llio-api/models/DAOs"
-	"strconv"
 )
 
 func CreateActivity(activity *DAOs.Activity) (*DAOs.Activity, error) {
@@ -43,8 +42,10 @@ func DeleteActivity(id string) error {
 
 func GetActivitiesFromRange(from string, to string, idUser int) ([]*DAOs.Activity, error) {
 	var activities []*DAOs.Activity
-	idUserToString := strconv.Itoa(idUser)
-	err := database.DB.Where("Start_Date >= ? AND End_Date <= ? AND User_Id = ?",
-		from, to, idUserToString).Find(&activities).Error
+	fromWithTime := from + "T00:00:00"
+	toWithTime := to + "T23:59:59"
+
+	err := database.DB.Where("End_Date >= ? AND Start_Date <= ? AND User_Id = ?",
+		fromWithTime, toWithTime, idUser).Find(&activities).Error
 	return activities, DBErrorManager(err)
 }
