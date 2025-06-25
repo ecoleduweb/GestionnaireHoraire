@@ -52,7 +52,7 @@ func GetUserByEmail(email string) (*DTOs.UserDTO, error) {
 	return userDTO, err
 }
 
-func GetAllUsers(userRole *enums.UserRole) ([]*DTOs.UserDTO, error) {
+func GetAllUsers(userRoles []enums.UserRole) ([]*DTOs.UserDTO, error) {
 
 	users, err := repositories.GetAllUsers()
 	if err != nil {
@@ -62,8 +62,17 @@ func GetAllUsers(userRole *enums.UserRole) ([]*DTOs.UserDTO, error) {
 	var usersDTOs []*DTOs.UserDTO
 
 	for _, user := range users {
-		if userRole != nil && user.Role != *userRole {
-			continue
+		if len(userRoles) > 0 {
+			roleMatch := false
+			for _, role := range userRoles {
+				if user.Role == role {
+					roleMatch = true
+					break
+				}
+			}
+			if !roleMatch {
+				continue
+			}
 		}
 
 		userDTO := &DTOs.UserDTO{}

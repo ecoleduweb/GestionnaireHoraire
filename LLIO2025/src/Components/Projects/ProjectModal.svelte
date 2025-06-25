@@ -31,7 +31,7 @@
   onMount(async () => {
     try {
       isLoadingManagers = true;
-      managers = await UserApiService.getManagerUsers();
+      managers = await UserApiService.getAllManagersAdmin();
     } catch (err) {
       console.error('Failed to load managers:', err);
       alert('Impossible de charger les chargés de projet.');
