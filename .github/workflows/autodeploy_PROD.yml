@@ -1,8 +1,8 @@
 name: Deployer LLIO PROD
 on:
   push:
-    branches:
-      - prod
+    tags:
+      - '*'
 
 jobs:
   deploy:
