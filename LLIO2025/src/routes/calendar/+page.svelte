@@ -26,8 +26,8 @@
   let activeView = $state('timeGridWeek');
   let currentViewTitle = $state('');
   let isLoading = $state(false);
-  let dateStart = $state(null),
-    dateEnd = $state(null);
+  let dateStart = $state(null);
+  let dateEnd = $state(null);
   let textHoursWorked = $state('');
   let totalHours = $state(0);
 
@@ -72,7 +72,7 @@
 
   // Fonction pour charger toutes les activités
   const loadActivities = async () =>{
-    let dateStart, dateEnd, day, diff;
+    let day, diff;
     try {
       switch (activeView) {
         case 'dayGridMonth':
