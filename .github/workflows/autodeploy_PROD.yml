@@ -37,7 +37,7 @@ jobs:
 
             # Clone du projet (plus propre qu'un pull)
             echo "Cloning fresh repository..."
-            git clone -b mian https://github.com/ecoleduweb/GestionnaireHoraire.git
+            git clone -b main https://github.com/ecoleduweb/GestionnaireHoraire.git
 
             # Configuration API
             echo "Configuring API..."
