@@ -100,7 +100,7 @@ func GetDetailedProjectsByManagerId(id int) ([]map[string]any, error) {
 }
 
 func GetDetailedProjectsByUserId(id int) ([]map[string]any, error) {
-	projects, err := repositories.GetProjectsByUserId(id)
+	projects, err := repositories.GetProjectsByActivityPerUser(id)
 	if err != nil {
 		return nil, err
 	}
@@ -265,4 +265,23 @@ func formatProjectWithActivities(project *DAOs.Project, activities []DAOs.Activi
 		"updatedAt":          project.UpdatedAt,
 		"billable":           project.Billable,
 	}
+}
+
+// GetProjectsByActivityPerUser retrieves projects based on activities for the current user.
+func GetProjectsByActivityPerUser(userId int) ([]*DTOs.ProjectDTO, error) {
+	projects, err := repositories.GetProjectsByActivityPerUser(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(projects) == 0 {
+		return make([]*DTOs.ProjectDTO, 0), nil
+	}
+
+	var projectsDTO []*DTOs.ProjectDTO
+	if err := copier.Copy(&projectsDTO, &projects); err != nil {
+		return nil, err
+	}
+
+	return projectsDTO, nil
 }

@@ -345,4 +345,150 @@ export const projectMocks = {
       },
     },
   },
+  getDetailedProjectsByUserSuccess:{
+    url: "/projects/me/detailed",
+    method: "GET",
+    response: {
+      status: 200,
+      json: {
+        "projects": [
+          {
+            "billable": false,
+            "coLeads": [],
+            "createdAt": "2025-06-12T14:00:37-04:00",
+            "employees": [
+              {
+                "categories": [
+                  {
+                    "name": "Par défaut",
+                    "timeEstimated": 0,
+                    "timeSpent": 76
+                  }
+                ],
+                "name": " "
+              }
+            ],
+            "id": 2,
+            "isArchived": false,
+            "lead": "Usager test",
+            "managerId": 1,
+            "name": "un admin 2 est charge",
+            "totalTimeEstimated": 0,
+            "totalTimeRemaining": -76,
+            "totalTimeSpent": 76,
+            "uniqueId": "skiidi",
+            "updatedAt": "2025-06-12T14:00:37-04:00"
+          },
+          {
+            "billable": false,
+            "coLeads": [],
+            "createdAt": "2025-06-12T14:03:19-04:00",
+            "employees": [
+              {
+                "categories": [
+                  {
+                    "name": "Par défaut",
+                    "timeEstimated": 0,
+                    "timeSpent": 13
+                  }
+                ],
+                "name": " "
+              }
+            ],
+            "id": 3,
+            "isArchived": false,
+            "lead": "Usager test",
+            "managerId": 1,
+            "name": "adfasfd",
+            "totalTimeEstimated": 0,
+            "totalTimeRemaining": -13,
+            "totalTimeSpent": 13,
+            "uniqueId": "User vincent.antoineccmmm",
+            "updatedAt": "2025-06-12T14:03:19-04:00"
+          },
+          {
+            "billable": true,
+            "coLeads": [],
+            "createdAt": "2025-06-23T16:27:08-04:00",
+            "employees": [
+              {
+                "categories": [
+                  {
+                    "name": "Par défaut",
+                    "timeEstimated": 0,
+                    "timeSpent": 13.5
+                  }
+                ],
+                "name": " "
+              }
+            ],
+            "id": 8,
+            "isArchived": false,
+            "lead": "Usager test",
+            "managerId": 1,
+            "name": "projet ! apre smigration ",
+            "totalTimeEstimated": 0,
+            "totalTimeRemaining": -13.5,
+            "totalTimeSpent": 13.5,
+            "uniqueId": "migr-1324",
+            "updatedAt": "2025-06-23T16:27:08-04:00"
+          },
+          {
+            "billable": false,
+            "coLeads": [],
+            "createdAt": "2025-06-23T16:43:12-04:00",
+            "employees": [
+              {
+                "categories": [
+                  {
+                    "name": "Par défaut",
+                    "timeEstimated": 0,
+                    "timeSpent": 24
+                  }
+                ],
+                "name": " "
+              }
+            ],
+            "id": 11,
+            "isArchived": false,
+            "lead": "Toumani Camara",
+            "managerId": 4,
+            "name": "new commut",
+            "totalTimeEstimated": 0,
+            "totalTimeRemaining": -24,
+            "totalTimeSpent": 24,
+            "uniqueId": "new-1",
+            "updatedAt": "2025-06-23T16:43:12-04:00"
+          },
+          {
+            "billable": false,
+            "coLeads": [],
+            "createdAt": "2025-06-12T15:06:22-04:00",
+            "employees": [
+              {
+                "categories": [
+                  {
+                    "name": "Par défaut",
+                    "timeEstimated": 0,
+                    "timeSpent": 1
+                  }
+                ],
+                "name": " "
+              }
+            ],
+            "id": 4,
+            "isArchived": false,
+            "lead": "Usager test",
+            "managerId": 1,
+            "name": "kkkkkk",
+            "totalTimeEstimated": 0,
+            "totalTimeRemaining": -1,
+            "totalTimeSpent": 1,
+            "uniqueId": "ad",
+            "updatedAt": "2025-06-12T15:06:22-04:00"
+          }
+        ]
+      },
+    },
+  }
 } satisfies Record<string, MockConfig>;

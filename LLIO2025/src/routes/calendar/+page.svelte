@@ -125,7 +125,7 @@
     try {
       isLoading = true;
       projects = await ProjectApiService.getProjects();
-      detailedProjects = await ProjectApiService.getDetailedProjects();
+      detailedProjects = await ProjectApiService.getProjectsMe();
     } catch (err) {
       console.error('Erreur lors de la récupération des projets:', err);
       alert('Une erreur est survenue lors de la récupération des projets.');
@@ -250,7 +250,7 @@
       extendedProps: { ...activityData },
     });
     totalHours = calendarService.getTotalHours();
-    detailedProjects = await ProjectApiService.getDetailedProjects();
+    detailedProjects = await ProjectApiService.getProjectsMe();
   }
 
   const handleActivityUpdate = async (activity: Activity) =>{
@@ -268,7 +268,7 @@
       const updatedActivity = await ActivityApiService.updateActivity(activity);
       calendarService.updateEvent(updatedActivity);
       totalHours = calendarService.getTotalHours();
-      detailedProjects = await ProjectApiService.getDetailedProjects();
+      detailedProjects = await ProjectApiService.getProjectsMe();
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'activité", error);
 
@@ -283,7 +283,7 @@
       await ActivityApiService.deleteActivity(activity.id);
       calendarService.deleteActivity(activity.id.toString());
       totalHours = calendarService.getTotalHours();
-      detailedProjects = await ProjectApiService.getDetailedProjects();
+      detailedProjects = await ProjectApiService.getProjectsMe();
     } catch (error) {
       console.error("Erreur lors de la suppression de l'activité", error);
       throw error;
@@ -299,7 +299,7 @@
 
       calendarService.updateEvent(updatedActivity);
       totalHours = calendarService.getTotalHours();
-      detailedProjects = await ProjectApiService.getDetailedProjects();
+      detailedProjects = await ProjectApiService.getProjectsMe();
 
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'activité", error);
