@@ -308,8 +308,8 @@ export const projectMocks = {
           {
             id: 1,
             managerId: 1,
-            name: "Projet sous-sol",
-            description: "Nommer le projet",
+            uniqueId: "Projet sous-sol",
+            name: "Nommer le projet",
             status: 1,
             billable: false,
             activities: [],
