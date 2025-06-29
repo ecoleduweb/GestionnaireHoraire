@@ -67,7 +67,7 @@ const getDetailedProjects = async(): Promise<DetailedProject[]> => {
   }
 }
 
-const getProjectsMe = async(): Promise<DetailedProject[]> => {
+const getCurrentUserProjects = async(): Promise<DetailedProject[]> => {
   try {
     const response = await GET<{projects: DetailedProject[]}>("/projects/me/detailed");
     return response.projects;
@@ -77,17 +77,11 @@ const getProjectsMe = async(): Promise<DetailedProject[]> => {
   }
 }
 
-
-
-
-
-
-
 export const ProjectApiService = {
   createProject,
   updateProject,
   getProjects,
   getProject,
   getDetailedProjects,
-  getProjectsMe
+  getCurrentUserProjects
 };
