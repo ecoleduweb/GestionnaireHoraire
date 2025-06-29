@@ -38,6 +38,12 @@ export class CalendarService {
         minute: '2-digit',
         hour12: true,
       },
+      eventDidMount: (info: any) => {
+        let tooltipContent = info.event.title;
+        info.el.setAttribute('title', tooltipContent);
+        info.el.style.cursor = 'pointer';
+      },
+
       // Gestionnaires d'événements
       select: (info: any) => {
         if (this.onDateSelect) {
