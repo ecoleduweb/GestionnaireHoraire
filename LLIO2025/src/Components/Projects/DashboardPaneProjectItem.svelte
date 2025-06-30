@@ -15,7 +15,7 @@
     </div>
 
     <div class="mt-2 flex items-center text-xs">
-      <div class="mr-16">
+      <div class="mr-10">
         <div class="font-bold">Total</div>
       </div>
       <div class="flex">
@@ -28,7 +28,7 @@
           </div>
         </div>
         <div>
-          {#if project.totalTimeRemaining < 0}
+          {#if project.totalTimeRemaining <= 0}
             {#if project.totalTimeEstimated == 0}
               <div class="text-gray-400">
                 {formatHours(project.totalTimeRemaining)}

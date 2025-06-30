@@ -247,8 +247,6 @@ func formatProjectWithActivities(project *DAOs.Project, activities []DAOs.Activi
 		lead = manager.FirstName + " " + manager.LastName
 	}
 
-	var totalTimeEstimated float64 = 0 // À ajouter aux modèles
-
 	return map[string]any{
 		"id":                 project.Id,
 		"uniqueId":           project.UniqueId,
@@ -256,8 +254,8 @@ func formatProjectWithActivities(project *DAOs.Project, activities []DAOs.Activi
 		"lead":               lead,
 		"coLeads":            []string{},
 		"employees":          employees,
-		"totalTimeEstimated": totalTimeEstimated,
-		"totalTimeRemaining": totalTimeEstimated - totalTimeSpent,
+		"totalTimeEstimated": project.EstimatedHours,
+		"totalTimeRemaining": float64(project.EstimatedHours) - totalTimeSpent,
 		"totalTimeSpent":     totalTimeSpent,
 		"isArchived":         project.Status == enums.ProjectStatus(enums.Finish),
 		"managerId":          project.ManagerId,
