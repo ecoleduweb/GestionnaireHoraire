@@ -86,3 +86,11 @@ func UpdateProject(projectDAO *DAOs.Project) (*DAOs.Project, error) {
 	err := database.DB.Updates(projectDAO).Error
 	return projectDAO, DBErrorManager(err)
 }
+
+func GetProjectsByActivityPerUser(userId int) ([]*DAOs.Project, error) {
+	var projects []*DAOs.Project
+	err := database.DB.Distinct("projects.*").Joins("JOIN activities ON activities.project_id = projects.id").
+		Where("activities.user_id = ?", userId).
+		Find(&projects).Error
+	return projects, DBErrorManager(err)
+}

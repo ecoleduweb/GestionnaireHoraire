@@ -13,7 +13,7 @@ test.describe("checkAddActivity", () => {
         activityMocks.getByIdSuccess,
         activityMocks.getAllActivityEmpty,
         projectMocks.getProjectsListSuccess,
-        projectMocks.getDetailedProjectsSuccess,
+        projectMocks.getDetailedProjectsByUserSuccess,
         userMocks.userMeSuccess,
         categoryMocks.getCategoriesByProjectSuccess,
       ])

@@ -154,3 +154,32 @@ func UpdateProject(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"updatedProject": updatedProjectDTO})
 }
+
+func GetDetailedProjectsByUser(c *gin.Context) {
+	currentUser, exists := c.Get("current_user")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Utilisateur non authentifié"})
+		return
+	}
+
+	user, ok := currentUser.(*DTOs.UserDTO)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erreur interne du serveur"})
+		c.Abort()
+		return
+	}
+
+	projects, err := services.GetDetailedProjectsByUserId(user.Id)
+	if err != nil {
+		handleError(c, err, projectSTR)
+		return
+	}
+
+	if projects == nil {
+		// Retourner une liste vide au lieu de null
+		c.JSON(http.StatusOK, gin.H{"projects": []map[string]any{}})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"projects": projects})
+}
