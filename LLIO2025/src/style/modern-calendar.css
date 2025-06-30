@@ -99,7 +99,6 @@
   border-radius: 0.25rem !important;
   border-left-width: 2px !important;
   padding: 0.25rem !important;
-  margin: 0.125rem !important;
   background-color: #fff !important;
   border-top: 1px solid #e5e7eb !important;
   border-right: 1px solid #e5e7eb !important;
@@ -145,12 +144,14 @@
   display: -webkit-box !important;
   -webkit-line-clamp: 1 !important;
   -webkit-box-orient: vertical !important;
+  order: 1 !important;
 }
 
 .fc-event-time {
   font-size: 0.75rem !important;
   font-weight: 600 !important;
   color: inherit !important;
+  order: 2 !important;
 }
 
 .fc-event.event-blue .fc-event-time {
@@ -202,6 +203,10 @@
   font-size: 0.75rem;
   color: #015e61; /* Couleur principale */
   margin-top: 0.125rem;
+}
+
+.fc-event-title-container{
+  flex-grow: 0 !important;
 }
 
 /* Mobile adjustments */

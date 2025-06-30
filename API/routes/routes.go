@@ -68,6 +68,7 @@ func RegisterRoutes(r *gin.Engine) {
 	{
 		projectsGroup.GET("", controllers.GetProjects)
 		projectsGroup.GET("/detailed", controllers.GetDetailedProjects)
+		projectsGroup.GET("/me/detailed", controllers.GetDetailedProjectsByUser)
 	}
 
 }
