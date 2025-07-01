@@ -73,8 +73,8 @@ export const projectMocks = {
                 ],
               },
             ],
-            totalTimeEstimated: 20,
-            totalTimeRemaining: -32,
+            totalTimeEstimated: 200,
+            totalTimeRemaining: 148,
             totalTimeSpent: 52,
           },
           {
@@ -89,18 +89,18 @@ export const projectMocks = {
               {
                 name: "Katell Arnault de la Ménardière",
                 categories: [
-                  { name: "Gestion", timeSpent: 5, timeEstimated: 8 },
+                  { name: "Gestion", timeSpent: 5, timeEstimated: 5 },
                 ],
               },
               {
                 name: "Annie Côté",
                 categories: [
-                  { name: "Graphisme", timeSpent: 22, timeEstimated: 25 },
+                  { name: "Graphisme", timeSpent: 22, timeEstimated: 22 },
                 ],
               },
             ],
-            totalTimeEstimated: 20,
-            totalTimeRemaining: -7,
+            totalTimeEstimated: 27,
+            totalTimeRemaining: 0,
             totalTimeSpent: 27,
           },
           {
@@ -147,8 +147,8 @@ export const projectMocks = {
                 ],
               },
             ],
-            totalTimeEstimated: 20,
-            totalTimeRemaining: -35,
+            totalTimeEstimated: 0,
+            totalTimeRemaining: -55,
             totalTimeSpent: 55,
           },
           {
@@ -352,141 +352,114 @@ export const projectMocks = {
       status: 200,
       json: {
         "projects": [
-          {
-            "billable": false,
-            "coLeads": [],
-            "createdAt": "2025-06-12T14:00:37-04:00",
-            "employees": [
-              {
-                "categories": [
-                  {
-                    "name": "Par défaut",
-                    "timeEstimated": 0,
-                    "timeSpent": 76
-                  }
+            {
+                "billable": false,
+                "coLeads": [],
+                "createdAt": "2025-06-23T16:43:12-04:00",
+                "employees": [
+                    {
+                        "categories": [
+                            {
+                                "name": "Par défaut",
+                                "timeEstimated": 0,
+                                "timeSpent": 24
+                            }
+                        ],
+                        "name": " "
+                    }
                 ],
-                "name": " "
-              }
-            ],
-            "id": 2,
-            "isArchived": false,
-            "lead": "Usager test",
-            "managerId": 1,
-            "name": "un admin 2 est charge",
-            "totalTimeEstimated": 0,
-            "totalTimeRemaining": -76,
-            "totalTimeSpent": 76,
-            "uniqueId": "skiidi",
-            "updatedAt": "2025-06-12T14:00:37-04:00"
-          },
-          {
-            "billable": false,
-            "coLeads": [],
-            "createdAt": "2025-06-12T14:03:19-04:00",
-            "employees": [
-              {
-                "categories": [
-                  {
-                    "name": "Par défaut",
-                    "timeEstimated": 0,
-                    "timeSpent": 13
-                  }
+                "id": 11,
+                "isArchived": false,
+                "lead": "Toumani Camara",
+                "managerId": 4,
+                "name": "new commut",
+                "totalTimeEstimated": 24,
+                "totalTimeRemaining": 0,
+                "totalTimeSpent": 24,
+                "uniqueId": "new-1",
+                "updatedAt": "2025-06-30T16:50:03-04:00"
+            },
+            {
+                "billable": true,
+                "coLeads": [],
+                "createdAt": "2025-06-23T16:27:39-04:00",
+                "employees": [
+                    {
+                        "categories": [
+                            {
+                                "name": "Par défaut",
+                                "timeEstimated": 0,
+                                "timeSpent": 1
+                            }
+                        ],
+                        "name": " "
+                    }
                 ],
-                "name": " "
-              }
-            ],
-            "id": 3,
-            "isArchived": false,
-            "lead": "Usager test",
-            "managerId": 1,
-            "name": "adfasfd",
-            "totalTimeEstimated": 0,
-            "totalTimeRemaining": -13,
-            "totalTimeSpent": 13,
-            "uniqueId": "User vincent.antoineccmmm",
-            "updatedAt": "2025-06-12T14:03:19-04:00"
-          },
-          {
-            "billable": true,
-            "coLeads": [],
-            "createdAt": "2025-06-23T16:27:08-04:00",
-            "employees": [
-              {
-                "categories": [
-                  {
-                    "name": "Par défaut",
-                    "timeEstimated": 0,
-                    "timeSpent": 13.5
-                  }
+                "id": 10,
+                "isArchived": false,
+                "lead": "Toumani Camara",
+                "managerId": 4,
+                "name": "projet ! apre smigration ",
+                "totalTimeEstimated": 0,
+                "totalTimeRemaining": -1,
+                "totalTimeSpent": 1,
+                "uniqueId": "migr-2",
+                "updatedAt": "2025-06-23T16:27:39-04:00"
+            },
+            {
+                "billable": false,
+                "coLeads": [],
+                "createdAt": "2025-06-29T17:24:21-04:00",
+                "employees": [
+                    {
+                        "categories": [
+                            {
+                                "name": "Par défaut",
+                                "timeEstimated": 0,
+                                "timeSpent": 2.5
+                            }
+                        ],
+                        "name": " "
+                    }
                 ],
-                "name": " "
-              }
-            ],
-            "id": 8,
-            "isArchived": false,
-            "lead": "Usager test",
-            "managerId": 1,
-            "name": "projet ! apre smigration ",
-            "totalTimeEstimated": 0,
-            "totalTimeRemaining": -13.5,
-            "totalTimeSpent": 13.5,
-            "uniqueId": "migr-1324",
-            "updatedAt": "2025-06-23T16:27:08-04:00"
-          },
-          {
-            "billable": false,
-            "coLeads": [],
-            "createdAt": "2025-06-23T16:43:12-04:00",
-            "employees": [
-              {
-                "categories": [
-                  {
-                    "name": "Par défaut",
-                    "timeEstimated": 0,
-                    "timeSpent": 24
-                  }
+                "id": 13,
+                "isArchived": false,
+                "lead": "Usager test",
+                "managerId": 1,
+                "name": "le nom !",
+                "totalTimeEstimated": 20,
+                "totalTimeRemaining": 17.5,
+                "totalTimeSpent": 2.5,
+                "uniqueId": "123-mmm",
+                "updatedAt": "2025-06-30T16:38:53-04:00"
+            },
+            {
+                "billable": false,
+                "coLeads": [],
+                "createdAt": "2025-07-01T11:43:49-04:00",
+                "employees": [
+                    {
+                        "categories": [
+                            {
+                                "name": "Par défaut",
+                                "timeEstimated": 0,
+                                "timeSpent": 15
+                            }
+                        ],
+                        "name": " "
+                    }
                 ],
-                "name": " "
-              }
-            ],
-            "id": 11,
-            "isArchived": false,
-            "lead": "Toumani Camara",
-            "managerId": 4,
-            "name": "new commut",
-            "totalTimeEstimated": 0,
-            "totalTimeRemaining": -24,
-            "totalTimeSpent": 24,
-            "uniqueId": "new-1",
-            "updatedAt": "2025-06-23T16:43:12-04:00"
-          },
-          {
-            "billable": false,
-            "coLeads": [],
-            "createdAt": "2025-06-12T15:06:22-04:00",
-            "employees": [
-              {
-                "categories": [
-                  {
-                    "name": "Par défaut",
-                    "timeEstimated": 0,
-                    "timeSpent": 1
-                  }
-                ],
-                "name": " "
-              }
-            ],
-            "id": 4,
-            "isArchived": false,
-            "lead": "Usager test",
-            "managerId": 1,
-            "name": "kkkkkk",
-            "totalTimeEstimated": 0,
-            "totalTimeRemaining": -1,
-            "totalTimeSpent": 1,
-            "uniqueId": "ad",
-            "updatedAt": "2025-06-12T15:06:22-04:00"
-          }
+                "id": 14,
+                "isArchived": false,
+                "lead": "Toumani Camara",
+                "managerId": 4,
+                "name": "10 heures au total go negatif",
+                "totalTimeEstimated": 10,
+                "totalTimeRemaining": -5,
+                "totalTimeSpent": 15,
+                "uniqueId": "10htotal",
+                "updatedAt": "2025-07-01T11:43:49-04:00"
+            }
         ]
       },
     },

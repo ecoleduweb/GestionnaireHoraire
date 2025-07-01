@@ -1,7 +1,18 @@
 <script lang="ts">
   import { formatHours } from '../../utils/date';
+  import type { Project } from '../../Models/index.ts';
 
   let { project } = $props();
+
+  function getProjectHoursColorBasedOnEstimatedHours(project : Project){
+    if (project.totalTimeEstimated <= 0) {
+      return 'text-gray-400';
+    } else if (project.totalTimeSpent > project.totalTimeEstimated) {
+      return 'text-red-700';
+    } else {
+      return 'text-gray-700';
+    }
+  }
 </script>
 
 <div class="border-l-10 border-b" style="border-left-color: {project.color}">
@@ -28,21 +39,9 @@
           </div>
         </div>
         <div>
-          {#if project.totalTimeRemaining <= 0}
-            {#if project.totalTimeEstimated == 0}
-              <div class="text-gray-400">
+              <div class="{getProjectHoursColorBasedOnEstimatedHours(project)}">
                 {formatHours(project.totalTimeRemaining)}
               </div>
-            {:else}
-              <div class="font-medium text-red-700">
-                {formatHours(project.totalTimeRemaining)}
-              </div>
-            {/if}
-          {:else}
-            <div class="text-gray-700">
-              {formatHours(project.totalTimeRemaining)}
-            </div>
-          {/if}
         </div>
       </div>
     </div>
