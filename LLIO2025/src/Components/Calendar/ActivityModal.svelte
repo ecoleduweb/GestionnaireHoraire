@@ -223,7 +223,7 @@
       onClose();
     } catch (error) {
       console.error('Erreur lors de la soumission', error);
-      alert('Une erreur est survenue. Veuillez réessayer.');
+      alert('Activité incomplète \n' + ''  + 'Veuillez remplir tous les champs obligatoires (suivis d\'une astérisque rouge) de l\'activité avant de l\'enregistrer.');
     } finally {
       isSubmitting = false;
     }
