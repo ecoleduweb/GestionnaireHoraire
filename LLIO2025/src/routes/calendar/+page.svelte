@@ -30,7 +30,7 @@
   let dateEnd = $state(null);
   let textHoursWorked = $state('');
   let totalHours = $state(0);
-  let headerFormat;
+  let headerFormat: { weekday: string; day?: string; month?: string };
 
   const timeRanges = [
     { label: 'Heures de bureau', start: '06:00:00', end: '19:00:00', default: true },
