@@ -2,13 +2,13 @@
   import { projectTemplate } from '../../forms/project';
   import { ProjectApiService } from '../../services/ProjectApiService';
   import { UserApiService } from '../../services/UserApiService';
-  import type { ProjectBase, User } from '../../Models/index';
+  import type { Project, ProjectBase, User } from '../../Models/index';
   import { X } from 'lucide-svelte';
   import { onMount } from 'svelte';
   import { validateProjectForm } from '../../Validation/Project';
 
   type Props = {
-    projectToEdit: ProjectBase | null;
+    projectToEdit: Project | null;
     onClose: () => void;
     onSuccess: () => void;
   };
@@ -19,6 +19,7 @@
 
   if (projectToEdit) {
     Object.assign(project, projectToEdit);
+    project.estimatedHours = projectToEdit.totalTimeEstimated || 0;
   }
 
   const editMode = $derived(projectToEdit !== null);
