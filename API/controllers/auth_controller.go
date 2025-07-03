@@ -46,7 +46,7 @@ func GetAuthCallback(c *gin.Context) {
 		return
 	}
 
-	tokenDuration := userAzure.ExpiresAt.Add(time.Duration(jwtDurationHours) * time.Hour)
+	tokenDuration := time.Now().Add(time.Duration(jwtDurationHours) * time.Hour)
 	accessToken, err := services.CreateJWTToken(userInDb.Id, userAzure.Email, userAzure.FirstName, userAzure.LastName, tokenDuration, userInDb.Role)
 	if err != nil {
 		log.Printf("Erreur lors de l'authentification: %v", err)
