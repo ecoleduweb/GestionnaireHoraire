@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +18,13 @@ import (
 func GetAuthCallback(c *gin.Context) {
 	useful.LoadEnv()
 	frontendURL := os.Getenv("FRONTEND_URL")
+	jwtDurationHours, err := strconv.Atoi(os.Getenv("JWT_DURATION"))
+	if err != nil {
+		log.Printf("Erreur lors de la conversion de JWT_DURATION: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Durée JWT invalide."})
+		return
+	}
+
 	useful.SetupAuthProvider(c)
 	userAzure, err := gothic.CompleteUserAuth(c.Writer, c.Request)
 	if err != nil {
@@ -38,7 +46,8 @@ func GetAuthCallback(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := services.CreateJWTToken(userInDb.Id, userAzure.Email, userAzure.FirstName, userAzure.LastName, userAzure.ExpiresAt, userInDb.Role)
+	tokenDuration := time.Now().Add(time.Duration(jwtDurationHours) * time.Hour)
+	accessToken, err := services.CreateJWTToken(userInDb.Id, userAzure.Email, userAzure.FirstName, userAzure.LastName, tokenDuration, userInDb.Role)
 	if err != nil {
 		log.Printf("Erreur lors de l'authentification: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
