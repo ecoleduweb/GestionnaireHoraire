@@ -30,6 +30,7 @@
   let dateEnd = $state(null);
   let textHoursWorked = $state('');
   let totalHours = $state(0);
+  let headerFormat: { weekday: string; day?: string; month?: string };
 
   const timeRanges = [
     { label: 'Heures de bureau', start: '06:00:00', end: '19:00:00', default: true },
@@ -80,6 +81,7 @@
           dateStart.setDate(1); // Premier jour du mois
           dateEnd = new Date(dateStart.getFullYear(), dateStart.getMonth() + 1, 0); // Dernier jour du mois
           textHoursWorked = 'ce mois-ci';
+          headerFormat = { weekday: 'short'};
           break;
 
         case 'timeGridWeek':
@@ -90,6 +92,7 @@
           dateEnd = new Date(dateStart);
           dateEnd.setDate(dateStart.getDate() + 6);
           textHoursWorked = 'cette semaine';
+          headerFormat = { weekday: 'short', day: '2-digit', month: '2-digit' };
           break;
         case 'timeGridDay':
           dateStart = calendarService.calendar.getDate();
@@ -104,6 +107,7 @@
 
           dateEnd = new Date(dateStart);
           dateEnd.setDate(dateStart.getDate() + 6);
+          headerFormat = { weekday: 'short', day: '2-digit', month: '2-digit' };
           break;
       }
 
@@ -167,7 +171,7 @@
         contentHeight: 'auto', // Hauteur automatique
         slotHeight: 25, // Hauteur réduite des slots (plus compact)
         expandRows: true,
-        dayHeaderFormat: { weekday: 'short', day: '2-digit', month: '2-digit' },
+        dayHeaderFormat: headerFormat,
         eventClassNames: getEventClassName,
         eventTimeFormat: {
           hour: '2-digit',
