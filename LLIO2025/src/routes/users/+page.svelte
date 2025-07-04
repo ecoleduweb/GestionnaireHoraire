@@ -24,6 +24,18 @@
     }
   }
 
+  const handleDeleteUser = async () => {
+    if (!selectedUser) return;
+    try {
+      await UserApiService.deleteUser(selectedUser.id);
+      users = users.filter(user => user.email !== selectedUser.email);
+      alert('Utilisateur supprimé avec succès');
+    } catch (error) {
+      alert('Erreur lors de la suppression de l\'utilisateur');
+    }
+
+  }
+
   onMount(async () => {
     isLoading = true;
     try {
@@ -69,6 +81,13 @@
               class="bg-[#015e61] hover:bg-[#014446] text-white font-bold py-2 px-4 rounded transition-colors cursor-pointer"
               disabled={!selectedUser || !selectedRole}>
               Confirmer
+            </button>
+            <button
+              onclick={() => {
+                handleDeleteUser();
+              }} 
+              class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition-colors cursor-pointer">
+              Supprimer
             </button>
             <button 
               onclick={() => goto('./calendar')} 

@@ -117,3 +117,49 @@ func UpdateUserRole(c *gin.Context) {
 
 	c.JSON(http.StatusOK, user)
 }
+
+func DeleteUserById(c *gin.Context) {
+	// Get the current user from context
+	userInfo, isExist := c.Get("current_user")
+	if !isExist {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Utilisateur non trouvé dans le contexte"})
+		return
+	}
+
+	// Get the user ID from the URL parameters
+	userID := c.Param("id")
+	if userID == "" {
+		c.JSON(http.StatusForbidden, gin.H{"error": "ID de l'utilisateur manquant"})
+		return
+	}
+
+	userID_int, err := strconv.Atoi(userID)
+	if err != nil {
+		c.JSON(http.StatusForbidden, gin.H{"error": "ID d'utilisateur invalide"})
+		return
+	}
+
+	if userID_int == userInfo.(*DTOs.UserDTO).Id {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Vous ne pouvez pas supprimer votre propre compte"})
+		return
+	}
+
+	userHasAcitivitiesOrProjects, err := services.UserHasActivitiesOrProjects(userID_int)
+	if err != nil {
+		handleError(c, err, userSTR)
+		return
+	}
+
+	if userHasAcitivitiesOrProjects {
+		c.JSON(http.StatusForbidden, gin.H{"error": "L'utilisateur ne peut pas être supprimé car il a des activités ou des projets associés"})
+		return
+	}
+
+	err = services.DeleteUserById(userID)
+	if err != nil {
+		handleError(c, err, userSTR)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Utilisateur supprimé avec succès"})
+}
