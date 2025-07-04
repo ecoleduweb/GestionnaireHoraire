@@ -144,13 +144,13 @@ func DeleteUserById(c *gin.Context) {
 		return
 	}
 
-	userHasAcitivitiesOrProjects, err := services.UserHasActivitiesOrProjects(userID_int)
+	userHasActivitiesOrProjects, err := services.UserHasActivitiesOrProjects(userID_int)
 	if err != nil {
 		handleError(c, err, userSTR)
 		return
 	}
 
-	if userHasAcitivitiesOrProjects {
+	if userHasActivitiesOrProjects {
 		c.JSON(http.StatusForbidden, gin.H{"error": "L'utilisateur ne peut pas être supprimé car il a des activités ou des projets associés"})
 		return
 	}

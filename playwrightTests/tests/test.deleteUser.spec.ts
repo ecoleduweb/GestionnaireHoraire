@@ -25,12 +25,12 @@ test.describe('deleteUser', () => {
       .apply();
 
     await page.locator('#userSelect').click();
-    await page.waitForTimeout(2000);
+    await page.waitForSelector('#userSelect option'); 
     await page.locator('#userSelect').selectOption({ label: 'Charle-ÉtienneTest Soucy' });
     await page.getByText('Supprimer').click();
     await page.locator('#userSelect').click();
     expect(page.locator('#userSelect')).not.toContainText('Charle-ÉtienneTest Soucy');
-    await page.waitForTimeout(2000);    
+    await page.waitForLoadState('networkidle'); 
     });
 
   test('deleteUserError', async ({ page }) => {
