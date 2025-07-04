@@ -55,6 +55,7 @@ jobs:
             AZUREAD_CALLBACK_URL=${{ secrets.PROD_AZUREAD_CALLBACK_URL }}
             SESSION_MAX_AGE=${{ secrets.SESSION_MAX_AGE }}
             SESSION_SECRET=${{ secrets.PROD_SESSION_SECRET }}
+            JWT_DURATION=${{ secrets.PROD_JWT_DURATION }}
             FRONTEND_URL=${{ secrets.PROD_FRONTEND_URL }}
             ENABLE_TRACING=true
             TRACE_URL=https://telemetry.edwrdl.ca/traces
