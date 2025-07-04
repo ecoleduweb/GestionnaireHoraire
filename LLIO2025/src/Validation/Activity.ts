@@ -17,11 +17,15 @@ const schema = yup.object({
     .min(1, 'Veuillez sélectionner un projet'),
   categoryId: yup
     .number()
-    .typeError('Veuillez sélectionner une catégorie')
-    .required('Veuillez sélectionner une catégorie')
-    .min(1, 'Veuillez sélectionner une catégorie')
-    .transform((value) => (value === '' || isNaN(value) ? undefined : Number(value))),
-});
+    .nullable()
+    .transform((value) => (value === '' || isNaN(value) ? null : Number(value)))
+  }).test(
+    'category-required',
+    { categoryId: 'Veuillez sélectionner une catégorie' },
+    (values) => {
+      return values.categoryId !== null && values.categoryId !== undefined;
+    }
+  );
 
 // Fonction qui crée un formulaire avec Felte en utilisant le schéma de validation
 export const validateActivityForm = (handleSubmit: (values) => void, activity:Activity) => {

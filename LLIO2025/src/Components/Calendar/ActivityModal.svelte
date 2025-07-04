@@ -519,7 +519,6 @@
                   <input
                     id="activity-category-search"
                     type="text"
-                    name="categoryId"
                     class="search-input"
                     placeholder="Rechercher une catégorie..."
                     bind:value={searchTerm}
@@ -534,7 +533,6 @@
                     onblur={() => {
                       isSearchFocused = false;
                     }}
-                    required
                     onclick={(e) => e.stopPropagation()}
                   />
 
