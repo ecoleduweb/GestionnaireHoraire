@@ -107,3 +107,38 @@ func UpdateUserRole(userDTO *DTOs.UserDTO) (*DTOs.UserDTO, error) {
 
 	return userDTOResponse, err
 }
+
+func DeleteUserById(id string) error {
+	// Check if the user exists
+	user, err := repositories.GetUserById(id)
+	if err != nil {
+		return err
+	}
+	if user == nil {
+		return nil // User not found, nothing to delete
+	}
+
+	// Delete the user
+	return repositories.DeleteUserById(id)
+}
+
+func UserHasActivitiesOrProjects(userId int) (bool, error) {
+	// Check if the user has any activities
+	activities, err := repositories.GetUsersActivities(userId)
+	if err != nil {
+		return false, err
+	}
+	if len(activities) > 0 {
+		return true, nil
+	}
+	// Check if the user is associated with any projects
+	projects, err := repositories.GetProjectsByManagerId(userId)
+	if err != nil {
+		return false, err
+	}
+	if len(projects) > 0 {
+		return true, nil
+	}
+
+	return false, nil
+}

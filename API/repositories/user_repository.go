@@ -35,3 +35,8 @@ func UpdateUserRole(user *DAOs.User) (*DAOs.User, error) {
 	err := database.DB.Save(user).Error
 	return user, DBErrorManager(err)
 }
+
+func DeleteUserById(id string) error {
+	err := database.DB.Delete(&DAOs.User{}, id).Error
+	return DBErrorManager(err)
+}

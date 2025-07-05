@@ -1,5 +1,5 @@
 import type { User, UserInfo } from '../Models/index';
-import { GET, PATCH, POST } from '../ts/server';
+import { DELETE, GET, PATCH, POST } from '../ts/server';
 
 interface UsersResponse {
   users: User[];
@@ -67,6 +67,25 @@ const logOut = async (): Promise<void> => {
   }
 }
 
+const deleteUser = async (userId: number): Promise<void> => {
+  try {
+    const response = await DELETE(`/user/${userId}`);
+    console.log("Utilisateur supprimé avec succès:", response);
+    return response;
+  } catch (error) {
+    console.error("Erreur lors de la suppression de l'utilisateur:", error);
+    
+    // Vérifier si l'erreur vient du serveur avec un code ou message spécifique
+    if (error.response && error.response.status === 409) {
+      throw new Error("Impossible de supprimer cet utilisateur car il est associé à des projets ou activités.");
+    } else if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("Erreur lors de la suppression de l'utilisateur.");
+    }
+  }
+};
+
 export const UserApiService = {
   getAllUsers,
   getAllManagersAdmin,
@@ -74,4 +93,5 @@ export const UserApiService = {
   getUsers,
   updateUserRole,
   logOut,
+  deleteUser,
 };
