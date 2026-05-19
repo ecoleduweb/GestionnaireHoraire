@@ -172,7 +172,7 @@
 
   onMount(() => {
     let cleanupOutlookClick: (() => void) | undefined;
-
+    document.body.classList.add('overflow-hidden');
     (async () => {
       isLoading = true;
       if (calendarEl) {
@@ -335,6 +335,7 @@
     })();
 
     return () => {
+      document.body.classList.remove('overflow-hidden');
       cleanupOutlookClick?.();
     };
   });
@@ -666,9 +667,7 @@
 {/if}
 
 <style>
-  :global(body) {
-    overflow: hidden;
-  }
+  
   :global(.fc .fc-timegrid-slot) {
     height: 25px !important;
     min-height: 25px !important;
