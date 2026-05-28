@@ -14,11 +14,22 @@ const GraphApiBaseUrl = "https://graph.microsoft.com/v1.0"
 func GetCalendarEvents(accessToken string, date time.Time) ([]DTOs.GraphEvent, error) {
 	startOfDay := useful.ToStartOfDay(date)
 	endOfDay := useful.ToEndOfDay(date)
+
+	startOfDayUTC, err := useful.AsTorontoThenUTC(startOfDay)
+	if err != nil {
+		return nil, err
+	}
+
+	endOfDayUTC, err := useful.AsTorontoThenUTC(endOfDay)
+	if err != nil {
+		return nil, err
+	}
+
 	url := fmt.Sprintf(
 		"%s/me/calendarView?startDateTime=%s&endDateTime=%s",
 		GraphApiBaseUrl,
-		useful.DateToISOString(startOfDay),
-		useful.DateToISOString(endOfDay),
+		useful.DateToISOString(startOfDayUTC),
+		useful.DateToISOString(endOfDayUTC),
 	)
 
 	body, err := GraphApiGetRequest(url, accessToken)
