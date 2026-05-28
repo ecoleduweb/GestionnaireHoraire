@@ -39,9 +39,20 @@ func GenerateExcel(w io.Writer) error {
 	row := 2
 
 	for _, a := range activities {
-		status := "actif"
-		if a.Project.Status == enums.ProjectStatus(enums.Archived) {
+		status := "inconnu"
+
+		switch a.Project.Status {
+		case enums.ProjectStatus(enums.Archived):
 			status = "archivé"
+
+		case enums.ProjectStatus(enums.InProgress):
+			status = "actif"
+
+		case enums.ProjectStatus(enums.NotStart):
+			status = "non-démarré"
+
+		case enums.ProjectStatus(enums.Cancel):
+			status = "annulé"
 		}
 
 		f.SetCellValue(sheet, fmt.Sprintf("A%d", row), a.User.FirstName)
