@@ -3,6 +3,7 @@ package services
 import (
 	"fmt"
 	"io"
+	"llio-api/customs_errors"
 	"llio-api/models/enums"
 	"llio-api/repositories"
 	"time"
@@ -18,7 +19,7 @@ func GenerateExcel(w io.Writer) error {
 
 	loc, err := time.LoadLocation("America/Toronto")
 	if err != nil {
-		return fmt.Errorf("failed to load timezone: %w", err)
+		return customs_errors.ErrCantLoadLocalTimezone
 	}
 
 	f := excelize.NewFile()

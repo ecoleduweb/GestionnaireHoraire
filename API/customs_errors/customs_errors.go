@@ -23,4 +23,5 @@ var (
 	ErrCantGetProjects             = errors.New("Erreur - Impossible de récupérer les projets")
 	ErrInvalidRequest              = errors.New("requête invalide")
 	ErrSelectedUserIsNotCoManager  = errors.New("l'utilisateur sélectionné n'est pas co-chargé de ce projet")
+	ErrCantLoadLocalTimezone       = errors.New("erreur système - impossible d'obtenir le fuseau horaire local")
 )
