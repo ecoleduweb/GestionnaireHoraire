@@ -28,7 +28,7 @@
 
     let selectedEventInt = $state<number>(0);
     let selectedEvent = $derived(events[selectedEventInt]);
-    let selectedEventProject = $derived(selectedEvent ? projects.find((p) => selectedEvent.subject.includes(p.uniqueId)) : undefined)
+    let selectedEventProject = $derived(selectedEvent ? projects.find((p) => selectedEvent.subject.startsWith(p.uniqueId)) : undefined)
     let activity = $state<Activity>({} as Activity);
     let eventsDoneInt = $state<number[]>([]);
     let eventsLeftInt = $derived<number[]>(
