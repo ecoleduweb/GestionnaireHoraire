@@ -20,7 +20,7 @@ func handleError(ctx *gin.Context, err error, subject string) {
 		errorMsg := fmt.Sprintf("La catégorie a une ou des activités associées, suppression impossible")
 		log.Printf("ERREUR - Suppression impossible: %s - %v", errorMsg, err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": errorMsg})
-		
+
 	case customs_errors.ErrNotFound:
 		errorMsg := fmt.Sprintf("Le(La) %s n'a pas été trouvé(e)", subject)
 		log.Printf("ERREUR - Ressource non trouvée: %s - %v", errorMsg, err)
@@ -83,6 +83,11 @@ func handleError(ctx *gin.Context, err error, subject string) {
 	case customs_errors.ErrProjectCouldntModifyArchive:
 		errorMsg := fmt.Sprintf("Impossible d'archiver le projet, il y a eu une erreur avec la base de données")
 		log.Printf("ERREUR - impossible d'archiver le projet, il y a eu une erreur avec la base de données: %s - %v", errorMsg, err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": errorMsg})
+
+	case customs_errors.ErrCantLoadLocalTimezone:
+		errorMsg := fmt.Sprintf("Impossible d'effectuer cette action, car il y a eu une erreur serveur à l'obtention du fuseau horaire.")
+		log.Printf("ERREUR SERVEUR - impossible d'obtenir le fuseau horaire local, vérifiez le nom du fuseau fourni ou faites import _ \"time/tzdata\" au dessus du fichier l'utilisant : %s - %v", errorMsg, err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": errorMsg})
 
 	default:

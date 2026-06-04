@@ -1,7 +1,7 @@
 package useful
 
 import (
-	"fmt"
+	"llio-api/customs_errors"
 	"time"
 )
 
@@ -24,7 +24,7 @@ func ToEndOfDay(date time.Time) time.Time {
 func AsTorontoThenUTC(date time.Time) (time.Time, error) {
 	loc, err := time.LoadLocation("America/Toronto")
 	if err != nil {
-		return time.Time{}, fmt.Errorf("failed to load timezone: %w", err)
+		return time.Time{}, customs_errors.ErrCantLoadLocalTimezone
 	}
 
 	// Reprends les mêmes chiffres que la date originale, mais lui applique le fuseau horaire America/Toronto plutôt que
